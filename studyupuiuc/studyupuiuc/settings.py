@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'studyupuiuc',
         'USER': 'admin',
-        'PASSWORD': 'study123',
+        'PASSWORD': 'admin',
         'HOST': 'localhost',
         'PORT': '',
     }
