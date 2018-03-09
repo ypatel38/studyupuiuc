@@ -18,4 +18,5 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/', include('accounts.urls')) #this maps to urls in accounts app urls
 ]
