@@ -8,12 +8,12 @@ from accounts.forms import RegistrationForm
 
 # Create your views here.
 class RegisterView(TemplateView):
-    template_name = "accounts/login.html"
+    template_name = "accounts/register.html"
 
     def get(self, request):
         form = RegistrationForm()
         args = {'form': form}
-        return render(request, 'accounts/register.html', args)
+        return render(request, self.template_name, args)
 
     def post(self, request):
         form = RegistrationForm(request.POST)
