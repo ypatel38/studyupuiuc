@@ -17,7 +17,8 @@ class RegisterView(TemplateView):
 
     def post(self, request):
         form = RegistrationForm(request.POST)
-        if form.is_valid():
+
+        if form.is_valid(): #override is_valid later for more restriction
             form.save()
             return redirect(reverse('accounts:login'))
         else:
