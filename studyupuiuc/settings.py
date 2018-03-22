@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'studyupuiuc.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'studyupuiuc.urls'
@@ -123,8 +124,12 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/'
 
-LOGIN_URL = ''
+LOGIN_URL = '/account/login/'
 
-LOGIN_EXEMPT_URLS = {
-
-}
+LOGIN_EXEMPT_URLS = (
+    r'^account/register/$',
+    #r'^account/reset_password/$',
+    #r'^account/reset_password/done/$',
+    #r'^account/reset_password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+    #r'^account/reset_password/complete/$',
+)

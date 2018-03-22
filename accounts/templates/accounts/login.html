@@ -11,6 +11,9 @@
 		{{ form.as_p }} <!-- username/pass fields, as_p means as paragraph, can make prettier-->
 		<button type="submit">Login</button>
 	</form>
+	<form action="{% url 'accounts:register' %}">
+		<input type="submit" value="Register" />
+	</form>
 </div>
 
 {% endblock %}
