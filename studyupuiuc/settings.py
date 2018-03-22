@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fm0tx1m@=!+ia0)2vq2q&+7p)t4)+pllr$3(6+c9p+ch92(j-5'
+SECRET_KEY = 'jjqj3(rjuxu9t2*u+*(+3ceopovm&(2%52#bl(&f9671%av0jv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,14 +75,6 @@ WSGI_APPLICATION = 'studyupuiuc.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbsdvur2h0vhlr',
-        'USER': 'qxulbpfyinpwzl',
-        'PASSWORD': 'ee5d6c34bd3f8f134aee4c944c5399881d88fe66a26c628215394e200df5e4a7',
-        'HOST': 'ec2-107-22-168-211.compute-1.amazonaws.com',
-        'PORT': '5432',
-    },
-    'test': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
