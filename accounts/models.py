@@ -17,3 +17,10 @@ class PartneredWith(models.Model):
 
     class Meta:
         unique_together = (('netID_1', 'netID_2'),)
+
+class EnrolledIn(models.Model):
+    netID = models.TextField()
+    class_code = models.TextField()
+
+    class Meta:
+        unique_together = (('netID', 'class_code'),)
