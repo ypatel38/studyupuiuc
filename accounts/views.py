@@ -2,13 +2,14 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.urls import reverse #used for namespaces
 
+
 from accounts.forms import RegistrationForm
 
 
 
 # Create your views here.
 class RegisterView(TemplateView):
-    template_name = "accounts/register.html"
+    template_name = 'accounts/register.html'
 
     def get(self, request):
         form = RegistrationForm()
@@ -23,3 +24,13 @@ class RegisterView(TemplateView):
             return redirect(reverse('accounts:login'))
         else:
             return redirect(reverse('accounts:register')) #deal with fail cases here
+
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get(self, request):
+        args = {'user': request.user}
+        return render(request, self.template_name, args)
+
+    def post():
+        pass
