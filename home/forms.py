@@ -5,7 +5,7 @@ from django.db import connection #sql
 class NewSessionForm(forms.Form):
     enrolled_class = forms.CharField(required=True, label="Class")
     start_time = forms.CharField(required=True, label="Start Time")
-    end_time = forms.CharField(required=True, label="Last Name")
+    end_time = forms.CharField(required=True, label="End Time")
     date = forms.DateField(required=True, label="Date")
     building = forms.CharField(required=True, label="Building")
     room_number = forms.CharField(required=True, label="Room Number")

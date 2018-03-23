@@ -13,6 +13,7 @@ class HomeView(TemplateView):
         #sql query's here to get all info and put into args (temp)
         #TODO: THIS QUERY IS TEMPORARY FOR A TEST, NEEDS TO BE CLEANED UP WITH SORTS, ORGANIZED ARGS, ETC!!!
 
+        # find session corresponding to users enrolled ClassOfSession
         cursor = connection.cursor()
         cursor.execute("SELECT      home_studysession.start_time, \
                                     home_studysession.end_time, \
@@ -33,19 +34,37 @@ class HomeView(TemplateView):
                                     home_classofsession.seshID = home_studysession.seshID \
                         ORDER BY    home_studysession.start_time")
 
-        sessions = cursor.fetchall()
+        sessions_arr = cursor.fetchall()
 
+        #reorganize queryset to dict
+        sessions = []
+        for i in range(len(sessions_arr)):
+            sessions.append({})
+            sessions[i]['start_time'] = sessions_arr[i][0]
+            sessions[i]['end_time'] = sessions_arr[i][1]
+            sessions[i]['date'] = sessions_arr[i][2]
+            sessions[i]['building'] = sessions_arr[i][3]
+            sessions[i]['room_number'] = sessions_arr[i][4]
+            sessions[i]['description'] = sessions_arr[i][5]
+            sessions[i]['class_code'] = sessions_arr[i][6]
+            sessions[i]['class_name'] = sessions_arr[i][7]
+
+        # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             auth_user, \
                                          accounts_enrolledin, \
                                          home_classes \
                         WHERE            auth_user.username = accounts_enrolledin.netID")
 
-        enrolledin = cursor.fetchall()
+        #reorganize queryset to dict
+        enrolledin_arr = cursor.fetchall()
+        enrolledin = []
+        for i in range(len(enrolledin_arr)):
+            enrolledin.append({})
+            enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
 
         connection.close()
 
-        #print(sessions)
         args = {'sessions': sessions, 'enrolledin': enrolledin}
         return render(request, self.template_name, args)
 
