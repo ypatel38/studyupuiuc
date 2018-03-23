@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <title>My Profile</title>
+{% endblock %}
+
+{% block body %}
+<h1>My Profile</h1>
+<p>NetID: {{ user.username }}</p>
+<p>First Name: {{ user.first_name }}</p>
+<p>Last Name: {{ user.last_name }}</p>
+
+<!-- TODO: Classes enrolled in !-->
+
+{% endblock %}
