@@ -1,6 +1,8 @@
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection #sql
+from django.urls import reverse #used for namespaces
+from home.forms import *
 
 # Create your views here.
 
@@ -30,7 +32,7 @@ class HomeView(TemplateView):
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
                         ORDER BY    home_studysession.start_time")
-                        
+
         sessions = cursor.fetchall()
 
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
@@ -43,9 +45,38 @@ class HomeView(TemplateView):
 
         connection.close()
 
-        print(enrolledin)
+        #print(sessions)
         args = {'sessions': sessions, 'enrolledin': enrolledin}
         return render(request, self.template_name, args)
 
     def post(self, request):
         pass
+
+
+class NewSessionView(TemplateView):
+    template_name = 'home/new_session.html'
+
+    def get(self, request):
+        form = NewSessionForm()
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+    def post(self, request):
+        form = NewSessionForm(request.POST)
+
+        if form.is_valid(): #override is_valid later for more restriction
+            #sql query here
+            form.save(request);
+            # StudySession.objects.raw('INSERT INTO  home_studysession(start_time,
+            #                                        end_time,
+            #                                        date,
+            #                                        building,
+            #                                        room_number,
+            #                                        description) \
+            #                           VALUES       auth_user, \
+            #                                        accounts_enrolledin, \
+            #                                        home_classes')
+
+            return redirect(reverse('home:home'))
+        else:
+            return redirect(reverse('home:new_session')) #deal with fail cases here

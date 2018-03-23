@@ -34,6 +34,7 @@ class Classes(models.Model):
 #relationships
 class SessionHas(models.Model):
     netID = models.TextField()
+    is_owner = models.BooleanField()
     seshID = models.UUIDField(default=uuid.uuid4, editable=False)
 
     class Meta:
