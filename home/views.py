@@ -30,8 +30,20 @@ class HomeView(TemplateView):
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
                         ORDER BY    home_studysession.start_time")
-                        
-        sessions = cursor.fetchall()
+           
+        sessions_arr = cursor.fetchall()
+        sessions = [] 
+        for i in range(len(sessions_arr)):
+            sessions.append({})
+            sessions[i]['start_time'] = sessions_arr[i][0]
+            sessions[i]['end_time'] = sessions_arr[i][1]
+            sessions[i]['date'] = sessions_arr[i][2]
+            sessions[i]['building'] = sessions_arr[i][3]
+            sessions[i]['room_number'] = sessions_arr[i][4]
+            sessions[i]['description'] = sessions_arr[i][5]
+            sessions[i]['class_code'] = sessions_arr[i][6]
+            sessions[i]['class_name'] = sessions_arr[i][7]
+
 
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             auth_user, \
@@ -39,11 +51,15 @@ class HomeView(TemplateView):
                                          home_classes \
                         WHERE            auth_user.username = accounts_enrolledin.netID")
 
-        enrolledin = cursor.fetchall()
-
+        enrolledin_arr = cursor.fetchall()
+        enrolledin = []
+        for i in range(len(enrolledin_arr)):
+            enrolledin.append({})
+            enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
         connection.close()
 
         print(enrolledin)
+        print(sessions)
         args = {'sessions': sessions, 'enrolledin': enrolledin}
         return render(request, self.template_name, args)
 

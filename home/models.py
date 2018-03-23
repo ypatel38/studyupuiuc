@@ -7,7 +7,7 @@ from django.db import models
 class StudySession(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
-    date = models.DateField()
+    date = models.TextField()
     building = models.TextField()
     room_number = models.PositiveSmallIntegerField()
     description = models.TextField()
