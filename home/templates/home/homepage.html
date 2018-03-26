@@ -146,7 +146,7 @@
                     {% for session in sessions %}
                     {% if session.class_code == classes.auth_user %}
                     <div class="well">
-                        <div class = "btn-toolbar">
+                        <div>
                             <span class="sessionLabel"><label>Study Session</label></span>
                             <span class="sessionLabel"><label>{{ session.start_time }} - {{ session.end_time }}</label></span> <!-- start and end time -->
                             <span class="sessionLabel"><label>{{ session.building }} {{ session.room_number }}</label></span> <!-- location and room number -->
