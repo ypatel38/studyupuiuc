@@ -34,7 +34,8 @@ class HomeView(TemplateView):
                         WHERE       auth_user.username = accounts_enrolledin.netID AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
-                                    home_classofsession.seshID = home_studysession.seshID \
+                                    home_classofsession.seshID = home_studysession.seshID AND \
+                                    home_classofsession.seshID = home_sessionhas.seshID \
                         ORDER BY    home_studysession.start_time")
 
         sessions_arr = cursor.fetchall()
@@ -52,7 +53,7 @@ class HomeView(TemplateView):
             sessions[i]['class_code'] = sessions_arr[i][6]
             sessions[i]['class_name'] = sessions_arr[i][7]
             sessions[i]['is_owner'] = sessions_arr[i][8]
-            sessions[i]['seshID'] = sessions_arr[i][8]
+            sessions[i]['seshID'] = sessions_arr[i][9]
 
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
