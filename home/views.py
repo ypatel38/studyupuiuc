@@ -23,7 +23,8 @@ class HomeView(TemplateView):
                                     home_studysession.description, \
                                     home_classes.class_code, \
                                     home_classes.class_name, \
-                                    home_sessionhas.is_owner \
+                                    home_sessionhas.is_owner, \
+                                    home_sessionhas.seshID \
                         FROM        auth_user, \
                                     accounts_enrolledin, \
                                     home_classes, \
@@ -51,6 +52,7 @@ class HomeView(TemplateView):
             sessions[i]['class_code'] = sessions_arr[i][6]
             sessions[i]['class_name'] = sessions_arr[i][7]
             sessions[i]['is_owner'] = sessions_arr[i][8]
+            sessions[i]['seshID'] = sessions_arr[i][8]
 
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
