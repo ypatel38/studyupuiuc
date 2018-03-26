@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
-    path('', views.testview) #default /account/ url
+    path('', views.temp) #this will be redirected to profile eventually
 ]
