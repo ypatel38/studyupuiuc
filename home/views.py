@@ -75,7 +75,10 @@ class HomeView(TemplateView):
         return render(request, self.template_name, args)
 
     def post(self, request):
-        pass
+        print("SELF: ")
+        print(self)
+        print("REQ: ")
+        print(request)
 
 
 class NewSessionView(TemplateView):
