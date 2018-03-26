@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.db import connection #sql
 from django.urls import reverse #used for namespaces
+from django.views.decorators.csrf import csrf_exempt #YIKES
 from home.forms import *
 
 # Create your views here.
@@ -74,11 +75,13 @@ class HomeView(TemplateView):
         args = {'sessions': sessions, 'enrolledin': enrolledin}
         return render(request, self.template_name, args)
 
+    @csrf_exempt
     def post(self, request):
-        print("SELF: ")
-        print(self)
+        #print("SELF: ")
+        #print(self.value)
         print("REQ: ")
-        print(request)
+        print(request.POST)
+        return render(request, self.template_name, {args})
 
 
 class NewSessionView(TemplateView):
