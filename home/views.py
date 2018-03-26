@@ -50,6 +50,7 @@ class HomeView(TemplateView):
             sessions[i]['description'] = sessions_arr[i][5]
             sessions[i]['class_code'] = sessions_arr[i][6]
             sessions[i]['class_name'] = sessions_arr[i][7]
+            sessions[i]['is_owner'] = sessions_arr[i][8]
 
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
