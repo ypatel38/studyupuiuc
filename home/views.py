@@ -81,7 +81,20 @@ class HomeView(TemplateView):
         #print(self.value)
         print("REQ: ")
         print(request.POST)
-        return render(request, self.template_name, {args})
+        print(request.user)
+
+        cursor = connection.cursor()
+        cursor.execute("SELECT           auth_user.username  \
+                        FROM             home_sessionhas \
+                        WHERE            home_sessionhas.netID = %s\
+                                         home_sessionhas.is_owner = 1 \
+                                         home_sessionhas.seshID = %s", [request.user, request.value])
+
+
+
+        cursor.close()
+
+        get()
 
 
 class NewSessionView(TemplateView):
