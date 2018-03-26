@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	<title>Login</title>
+{% endblock %}
+
+{% block body %}
+	<h2>Login</h2>
+	<form method="post">
+		{% csrf_token %} <!-- security -->
+		{{ form.as_p }} <!-- username/pass fields, as_p means as paragraph, can make prettier-->
+		<button type="submit">Login</button>
+	</form>
+	<form action="{% url 'accounts:register' %}">
+		<input type="submit" value="Register" />
+	</form>
+</div>
+
+{% endblock %}

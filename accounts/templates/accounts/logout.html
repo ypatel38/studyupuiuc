@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block head %}
+	<title>Logged Out</title>
+{% endblock %}
+
+{% block body %}
+
+	<h1>Logged out</h1>
+	<form action="{% url 'accounts:login' %}">
+		<input type="submit" value="Login" />
+	</form>
+{% endblock %}

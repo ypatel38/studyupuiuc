@@ -1,14 +1,36 @@
-from django.shortcuts import render
-from django.http import HttpResponse #delete later
-from django.db import connection, transaction #for sql
+from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.urls import reverse #used for namespaces
+
+
+from accounts.forms import RegistrationForm
+
+
 
 # Create your views here.
+class RegisterView(TemplateView):
+    template_name = 'accounts/register.html'
 
-#this will be the view for the homepage
-def temp(request):
-    '''cursor = connection.cursor()
-    cursor.execute("DROP TABLE test")
-    row = cursor.fetchone()
-    cursor.close()'''
-    return HttpResponse("hi")
- 
+    def get(self, request):
+        form = RegistrationForm()
+        args = {'form': form}
+        return render(request, self.template_name, args)
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid(): #override is_valid later for more restriction
+            form.save()
+            return redirect(reverse('accounts:login'))
+        else:
+            return redirect(reverse('accounts:register')) #deal with fail cases here
+
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get(self, request):
+        args = {'user': request.user}
+        return render(request, self.template_name, args)
+
+    def post():
+        pass
