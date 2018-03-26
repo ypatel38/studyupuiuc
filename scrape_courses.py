@@ -44,12 +44,13 @@ for k in departments:
                 departments[k][cls][crn] = {}
                 obj = departments[k][cls][crn]
                 for atr in attrs:
-                    print(atr)
+                    #print(atr)
                     details = BeautifulSoup(data[j][atr], 'lxml').find_all('div', {"class":"app-meeting"})
-                    print(details[0].text.strip())
+                    #print(details[0].text.strip())
                     obj[atr] = details[0].text.strip()
         time.sleep(0.05)
 
 #save the file
 with open('data.p', 'wb') as fp:
     pickle.dump(departments, fp, protocol=pickle.HIGHEST_PROTOCOL)
+
