@@ -10,6 +10,8 @@ from home.forms import *
 class HomeView(TemplateView):
     template_name = "home/homepage.html"
 
+
+
     def get(self, request):
         #sql query's here to get all info and put into args (temp)
         #TODO: THIS QUERY IS TEMPORARY FOR A TEST, NEEDS TO BE CLEANED UP WITH SORTS, ORGANIZED ARGS, ETC!!!
@@ -77,24 +79,98 @@ class HomeView(TemplateView):
 
     @csrf_exempt
     def post(self, request):
-        #print("SELF: ")
-        #print(self.value)
-        print("REQ: ")
+
         print(request.POST)
-        print(request.user)
+        seshID = ""
+        if "delete" in request.POST.keys():
+            seshID = request.POST["delete"]
+        elif "edit" in request.POST.keys():
+            seshID = request.POST["edit"]
 
         cursor = connection.cursor()
-        cursor.execute("SELECT           auth_user.username  \
+        cursor.execute("SELECT           home_sessionhas.netID  \
                         FROM             home_sessionhas \
-                        WHERE            home_sessionhas.netID = %s\
-                                         home_sessionhas.is_owner = 1 \
-                                         home_sessionhas.seshID = %s", [request.user, request.value])
+                        WHERE            home_sessionhas.netID = %s AND\
+                                         home_sessionhas.is_owner = 1 AND \
+                                         home_sessionhas.seshID = %s", [str(request.user), seshID])
 
 
+        is_valid_delete = cursor.fetchall()
+        print(is_valid_delete)
 
-        cursor.close()
+        if is_valid_delete:
+            print("flag1")
+            if "delete" in request.POST.keys():
+                print("flag2")
+                cursor.execute("DELETE FROM      home_studysession \
+                                WHERE            home_studysession.seshID = %s", [seshID])
+                cursor.execute("DELETE FROM      home_sessionhas \
+                                WHERE            home_sessionhas.seshID =  %s", [seshID])
+                cursor.execute("DELETE FROM      home_classofsession \
+                                WHERE            home_classofsession.seshID = %s", [seshID])
+            elif "edit" in request.POST.keys():
+                pass
 
-        get()
+        #GET REQUEST
+        # find session corresponding to users enrolled ClassOfSession
+        cursor.execute("SELECT      home_studysession.start_time, \
+                                    home_studysession.end_time, \
+                                    home_studysession.date, \
+                                    home_studysession.building, \
+                                    home_studysession.room_number, \
+                                    home_studysession.description, \
+                                    home_classes.class_code, \
+                                    home_classes.class_name, \
+                                    home_sessionhas.is_owner, \
+                                    home_sessionhas.seshID \
+                        FROM        auth_user, \
+                                    accounts_enrolledin, \
+                                    home_classes, \
+                                    home_classofsession, \
+                                    home_studysession, \
+                                    home_sessionhas \
+                        WHERE       auth_user.username = accounts_enrolledin.netID AND \
+                                    accounts_enrolledin.class_code = home_classes.class_code AND \
+                                    home_classes.class_code = home_classofsession.class_code AND \
+                                    home_classofsession.seshID = home_studysession.seshID AND \
+                                    home_classofsession.seshID = home_sessionhas.seshID \
+                        ORDER BY    home_studysession.start_time")
+
+        sessions_arr = cursor.fetchall()
+
+        #reorganize queryset to dict
+        sessions = []
+        for i in range(len(sessions_arr)):
+            sessions.append({})
+            sessions[i]['start_time'] = sessions_arr[i][0]
+            sessions[i]['end_time'] = sessions_arr[i][1]
+            sessions[i]['date'] = sessions_arr[i][2]
+            sessions[i]['building'] = sessions_arr[i][3]
+            sessions[i]['room_number'] = sessions_arr[i][4]
+            sessions[i]['description'] = sessions_arr[i][5]
+            sessions[i]['class_code'] = sessions_arr[i][6]
+            sessions[i]['class_name'] = sessions_arr[i][7]
+            sessions[i]['is_owner'] = sessions_arr[i][8]
+            sessions[i]['seshID'] = sessions_arr[i][9]
+
+        # find classes user is enrolled in
+        cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                        FROM             auth_user, \
+                                         accounts_enrolledin, \
+                                         home_classes \
+                        WHERE            auth_user.username = accounts_enrolledin.netID")
+
+        #reorganize queryset to dict
+        enrolledin_arr = cursor.fetchall()
+        enrolledin = []
+        for i in range(len(enrolledin_arr)):
+            enrolledin.append({})
+            enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
+
+        connection.close()
+
+        args = {'sessions': sessions, 'enrolledin': enrolledin}
+        return render(request, self.template_name, args)
 
 
 class NewSessionView(TemplateView):
