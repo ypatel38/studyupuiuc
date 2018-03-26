@@ -22,12 +22,14 @@ class HomeView(TemplateView):
                                     home_studysession.room_number, \
                                     home_studysession.description, \
                                     home_classes.class_code, \
-                                    home_classes.class_name \
+                                    home_classes.class_name, \
+                                    home_sessionhas.is_owner \
                         FROM        auth_user, \
                                     accounts_enrolledin, \
                                     home_classes, \
                                     home_classofsession, \
-                                    home_studysession \
+                                    home_studysession, \
+                                    home_sessionhas \
                         WHERE       auth_user.username = accounts_enrolledin.netID AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
