@@ -34,12 +34,12 @@ class HomeView(TemplateView):
                                     home_classofsession, \
                                     home_studysession, \
                                     home_sessionhas \
-                        WHERE       auth_user.username = accounts_enrolledin.netID AND \
+                        WHERE       accounts_enrolledin.netID = %s AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID AND \
                                     home_classofsession.seshID = home_sessionhas.seshID \
-                        ORDER BY    home_studysession.start_time")
+                        ORDER BY    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
 
