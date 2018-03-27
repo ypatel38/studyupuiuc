@@ -1,0 +1,16 @@
+<!--{% extends 'base.html' %}-->
+
+{% block head %}
+	<title>Edit Existing Session</title>
+{% endblock %}
+
+{% block body %}
+	<h2>Edit Existing Session</h2>
+	<form method="post">
+		{% csrf_token %} <!-- security -->
+		{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
+		<button type="submit">Edit Session</button>
+	</form>
+</div>
+
+<!--{% endblock %}-->
