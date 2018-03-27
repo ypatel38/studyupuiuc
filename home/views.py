@@ -232,16 +232,17 @@ class NewSessionView(TemplateView):
         else:
             return redirect(reverse('home:new_session')) #deal with fail cases here
 
+
 class EditSessionView(TemplateView):
     template_name = 'home/edit_session.html'
 
     def get(self, request, seshID):
-        form = EditSessionForm()
+        form = EditSessionForm(seshID)
         args = {'form': form}
         return render(request, self.template_name, args)
 
     def post(self, request, seshID):
-        form = EditSessionForm(request.POST)
+        form = EditSessionForm(seshID)
 
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
