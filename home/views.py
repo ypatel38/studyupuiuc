@@ -246,6 +246,7 @@ class EditSessionView(TemplateView):
 
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
+            print(request)
             form.save(request, seshID);
             # StudySession.objects.raw('INSERT INTO  home_studysession(start_time,
             #                                        end_time,

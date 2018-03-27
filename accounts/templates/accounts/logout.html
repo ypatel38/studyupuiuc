@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block body %}
-
-	<h1>Logged out</h1>
-	<form action="{% url 'accounts:login' %}">
-		<input type="submit" value="Login" />
-	</form>
+	<div class="row">
+    <div class="col-md-2 col-md-offset-5">
+		<h1>Logged out</h1>
+		<form action="{% url 'accounts:login' %}">
+<!-- 			<input type="submit" value="Login" /> -->
+		<button type="submit" class="btn btn-submit" role="button" value="login">Login</button>
+		</form>
+	</div>
+	</div>
 {% endblock %}

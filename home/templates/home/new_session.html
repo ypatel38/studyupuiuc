@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
-
 {% block head %}
 	<title>Create New Session</title>
 {% endblock %}
 
 {% block body %}
+<div class="container">
 	<h2>Create New Session</h2>
-	<form method="post">
-		{% csrf_token %} <!-- security -->
-		{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
-		<button type="submit">Create Session</button>
-	</form>
+	<div class="container">
+		<form method="post">
+			{% csrf_token %} <!-- security -->
+			{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
+			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
+		</form>
+	</div>
 </div>
 
 {% endblock %}

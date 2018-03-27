@@ -150,13 +150,14 @@ class EditSessionForm(forms.Form):
     def save(self, request, seshID):
         session_data = {}
 
-        for each in self:
-            id = each.auto_id
-            value = each.value()
-            session_data[id] = value
+        # for each in request:
+        #     id = each.auto_id
+        #     value = each.value()
+        #     session_data[id] = value
 
         cursor = connection.cursor()
 
+        print(request.POST)
 
         #add new session in sql
         cursor.execute("UPDATE        home_studysession \
@@ -167,19 +168,19 @@ class EditSessionForm(forms.Form):
                                       room_number = %s, \
                                       description = %s \
                         WHERE         seshID = %s",
-                                      [session_data['id_' + 'start_time'],
-                                      session_data['id_' + 'end_time'],
-                                      session_data['id_' + 'date'],
-                                      session_data['id_' + 'building'],
-                                      session_data['id_' + 'room_number'],
-                                      session_data['id_' + 'description'],
+                                      [request.POST['start_time'],
+                                      request.POST['end_time'],
+                                      request.POST['date'],
+                                      request.POST['building'],
+                                      request.POST['room_number'],
+                                      request.POST['description'],
                                       seshID])
 
         #add class of session in sql
         cursor.execute("UPDATE        home_classofsession \
                         SET           class_code = %s \
                         WHERE         seshID = %s",
-                                      [session_data['id_' + 'enrolled_class'],
+                                      [request.POST['enrolled_class'],
                                       seshID])
 
         connection.close()

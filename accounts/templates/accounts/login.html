@@ -1,19 +1,43 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<style type="text/css">
+	.btn-space{
+    margin-right: 50px;
+}
+</style>
+
 	<title>Login</title>
 {% endblock %}
 
 {% block body %}
-	<h2>Login</h2>
-	<form method="post">
-		{% csrf_token %} <!-- security -->
-		{{ form.as_p }} <!-- username/pass fields, as_p means as paragraph, can make prettier-->
-		<button type="submit">Login</button>
-	</form>
-	<form action="{% url 'accounts:register' %}">
-		<input type="submit" value="Register" />
-	</form>
-</div>
+
+	<div class="row">
+    <div class="col-md-2 col-md-offset-5">
+	<div class="container">
+
+		<h2>Login</h2>
+
+		<br>
+
+		<div class="btn-toolbar">
+		<form method="post">
+			{% csrf_token %} <!-- security -->
+			{{ form.as_p }} <!-- username/pass fields, as_p means as paragraph, can make prettier-->
+<!-- 			<button type="submit">Login</button> -->
+			<br>
+			<button type="submit" class="btn btn-submit btn-space" role="button">Login</button>
+		</form>
+		<form action="{% url 'accounts:register' %}">
+<!-- 			<input type="submit" value="Register" /> -->
+			<button type="submit" class="btn btn-submit" role="button" value="Register">Create an Account</button>
+		</form>
+		</div>
+
+	</div>
+    </div>
+	</div>
+
+
 
 {% endblock %}
