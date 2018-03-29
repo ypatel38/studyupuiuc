@@ -234,25 +234,15 @@
 <script type="text/javascript">
 
     $(document).on('submit','#join_session',function(e){
-        e.stopPropagation();
+        //e.stopPropagation();
         e.preventDefault();
         var seshID =  $(this).attr('value');
         var is_joined = ((parseInt($("#btnjoin" + seshID).attr('is_joined'))) + 1) % 2;
-        <!--alert($("#btnjoin" + seshID).attr('is_joined'))-->
+
 
         $("#btnjoin" + seshID).attr('is_joined', is_joined.toString())
 
-        <!--alert($("#btnjoin" + seshID).attr('is_joined'))-->
-        if($("#btnjoin" + seshID).attr('is_joined') == "0"){
-          $("#btnjoin" + seshID).removeClass('btn-danger');
-          $("#btnjoin" + seshID).addClass('btn-success');
-          $("#btnjoin" + seshID).html('</span><span><strong>Join</strong></span>');
-        }
-        else{
-          $("#btnjoin" + seshID).removeClass('btn-success');
-          $("#btnjoin" + seshID).addClass('btn-danger');
-          $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
-        }
+
 
         // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX
         function getCookie(name) {
@@ -294,7 +284,17 @@
           },
           contentType: 'json',
           success:function(){
-            alert("hm");
+              //var seshID =  $(this).attr('value');       
+              if($("#btnjoin" + seshID).attr('is_joined') == "0"){
+                $("#btnjoin" + seshID).removeClass('btn-danger');
+                $("#btnjoin" + seshID).addClass('btn-success');
+                $("#btnjoin" + seshID).html('</span><span><strong>Join</strong></span>');
+              }
+              else{
+                $("#btnjoin" + seshID).removeClass('btn-success');
+                $("#btnjoin" + seshID).addClass('btn-danger');
+                $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
+              }
           }
 
         });
