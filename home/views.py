@@ -57,7 +57,11 @@ class HomeView(TemplateView):
             sessions[i]['class_name'] = sessions_arr[i][7]
             sessions[i]['is_owner'] = sessions_arr[i][8]
             sessions[i]['seshID'] = sessions_arr[i][9]
+            sessions[i]['is_joined'] = 0
+            if sessions_arr[i][8] == True or sessions_arr[i][8] == False:
+                sessions[i]['is_joined'] = 1
 
+            print(sessions[i]['is_joined'])
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             auth_user, \
@@ -75,17 +79,19 @@ class HomeView(TemplateView):
         connection.close()
 
         args = {'sessions': sessions, 'enrolledin': enrolledin}
-        return render(request, self.template_name, args)
+        return render(request, self.template_name, {})
 
-    @csrf_exempt
+
     def post(self, request):
 
-        print(request.POST)
+        #print(request.POST)
         seshID = ""
         if "delete" in request.POST.keys():
             seshID = request.POST["delete"]
         elif "edit" in request.POST.keys():
             seshID = request.POST["edit"]
+        if(not request.POST):
+            return render(request, self.template_name, args)
 
         cursor = connection.cursor()
         cursor.execute("SELECT           home_sessionhas.netID  \
@@ -246,7 +252,7 @@ class EditSessionView(TemplateView):
 
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
-            print(request)
+            #print(request)
             form.save(request, seshID);
             # StudySession.objects.raw('INSERT INTO  home_studysession(start_time,
             #                                        end_time,

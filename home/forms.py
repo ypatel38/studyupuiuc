@@ -157,8 +157,6 @@ class EditSessionForm(forms.Form):
 
         cursor = connection.cursor()
 
-        print(request.POST)
-
         #add new session in sql
         cursor.execute("UPDATE        home_studysession \
                         SET           start_time = %s, \
