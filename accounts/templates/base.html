@@ -3,9 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> <!--ORDER OF THESE MATTERS-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     {% block head %}
 
     {% endblock %}
+
   </head>
   <body>
 
@@ -18,7 +22,7 @@
     <title>test</title>
 
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <nav class="navbar navbar-inverse" style="background-color:"">
+        <nav class="navbar navbar-inverse" > <!-- style="background-color:"" -->
           <div class="container-fluid">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -50,23 +54,8 @@
     {% block body %}
 
     {% endblock %}
+
+
   </body>
 
-  <!-- <html class="no-js" lang="en">
-      <head>
-          <title>AWESOME-GAME ///</title>
-          <meta http-equiv="x-ua-compatible" content="ie=edge">
-  	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
-          <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-          <link rel="stylesheet" href="/css/bootstrap.css">
-          <link rel="stylesheet" href="/css/style.css">
-      </head>
-
-      <body>
-          <script src="/js/jquery.min.js"></script>
-          <script src="/js/tether.min.js"></script>
-          <script src="/js/bootstrap.min.js"></script>
-      </body> -->
 </html>

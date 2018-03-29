@@ -79,7 +79,7 @@ class HomeView(TemplateView):
         connection.close()
 
         args = {'sessions': sessions, 'enrolledin': enrolledin}
-        return render(request, self.template_name, {})
+        return render(request, self.template_name, args)
 
 
     def post(self, request):
@@ -91,7 +91,7 @@ class HomeView(TemplateView):
         elif "edit" in request.POST.keys():
             seshID = request.POST["edit"]
         if(not request.POST):
-            return render(request, self.template_name, args)
+            return render(request, self.template_name, {})
 
         cursor = connection.cursor()
         cursor.execute("SELECT           home_sessionhas.netID  \
