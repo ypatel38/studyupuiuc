@@ -282,9 +282,8 @@
             seshID: $(this).attr('value'),
             is_joined: $("#btnjoin" + seshID).attr('is_joined')
           },
-          contentType: 'json',
           success:function(){
-              //var seshID =  $(this).attr('value');       
+              //var seshID =  $(this).attr('value');
               if($("#btnjoin" + seshID).attr('is_joined') == "0"){
                 $("#btnjoin" + seshID).removeClass('btn-danger');
                 $("#btnjoin" + seshID).addClass('btn-success');

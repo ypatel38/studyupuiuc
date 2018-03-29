@@ -61,7 +61,6 @@ class HomeView(TemplateView):
             if sessions_arr[i][8] == True or sessions_arr[i][8] == False:
                 sessions[i]['is_joined'] = 1
 
-            print(sessions[i]['is_joined'])
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             auth_user, \
@@ -84,28 +83,33 @@ class HomeView(TemplateView):
 
     def post(self, request):
 
-        #print(request.POST)
+
         seshID = ""
         if "delete" in request.POST.keys():
             seshID = request.POST["delete"]
         elif "edit" in request.POST.keys():
             seshID = request.POST["edit"]
-        if(not request.POST):
-            return render(request, self.template_name, {})
+        elif "is_joined" in request.POST.keys():
+            seshID = request.POST["is_joined"]
+            #TODO: update sessionHas here 
+
 
         cursor = connection.cursor()
-        cursor.execute("SELECT           home_sessionhas.netID  \
-                        FROM             home_sessionhas \
-                        WHERE            home_sessionhas.netID = %s AND\
-                                         home_sessionhas.is_owner = 1 AND \
-                                         home_sessionhas.seshID = %s", [str(request.user), seshID])
+
+        if("is_joined" not in request.POST.keys()):
+            cursor.execute("SELECT           home_sessionhas.netID  \
+                            FROM             home_sessionhas \
+                            WHERE            home_sessionhas.netID = %s AND\
+                                             home_sessionhas.is_owner = 1 AND \
+                                             home_sessionhas.seshID = %s", [str(request.user), seshID])
 
 
         is_valid_delete = cursor.fetchall()
 
-        if is_valid_delete:
+        if is_valid_delete or ("is_joined" in request.POST.keys()):
             #DELETE
-            if "delete" in request.POST.keys():
+            if "delete" in request.POST.keys() or "is_joined" in request.POST.keys():
+
                 cursor.execute("DELETE FROM      home_studysession \
                                 WHERE            home_studysession.seshID = %s", [seshID])
                 cursor.execute("DELETE FROM      home_sessionhas \
@@ -176,33 +180,6 @@ class HomeView(TemplateView):
 
             #EDIT
             elif "edit" in request.POST.keys():
-                # editSession = NewSessionForm()
-                # #get data about selected session
-                # cursor.execute("SELECT      home_studysession.start_time, \
-                #                             home_studysession.end_time, \
-                #                             home_studysession.date, \
-                #                             home_studysession.building, \
-                #                             home_studysession.room_number, \
-                #                             home_studysession.description, \
-                #                             home_classofsession.class_code \
-                #                 FROM        home_classofsession, \
-                #                             home_studysession \
-                #                 WHERE       home_classofsession.seshID = %s AND \
-                #                             home_studysession.seshID = %s", [seshID, seshID])
-                #
-                # old_session_sql = cursor.fetchall()
-                # #print(old_session_sql)
-                # old_session_data = {}
-                # old_session_data["start_time"] = old_session_sql[0][0]
-                # old_session_data["end_time"] = old_session_sql[0][1]
-                # old_session_data["date"] = old_session_sql[0][2]
-                # old_session_data["building"] = old_session_sql[0][3]
-                # old_session_data["room_number"] = old_session_sql[0][4]
-                # old_session_data["description"] = old_session_sql[0][5]
-                # old_session_data["enrolled_class"] = old_session_sql[0][6]
-
-
-                #args = {"form": form}
                 connection.close()
                 return redirect(reverse('home:edit_session', kwargs={"seshID": seshID}))
 
