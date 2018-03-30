@@ -157,13 +157,14 @@
                                     <span><strong>Edit</strong></span>
                                 </button>
                             </form>
-                            {% endif %}
+                            {% else %}
                             <form id="join_session" value="{{session.seshID}}">
                                 {% csrf_token %} <!-- security -->
                                 <button class="btn btn-success a-btn-slide-text btn-space pull-right btn-primary btn-s" id='btnjoin{{session.seshID}}' name="join" type="submit" value="{{session.seshID}}" is_joined = "{{session.is_joined}}">
                                     <span><strong>Join</strong></span>
                                 </button>
                             </form>
+                            {% endif %}
                         </div>
                         <br>
                         <div class="container">
@@ -175,76 +176,85 @@
                     {% endfor %}
                 </div>
                 {% endfor %}
-                <!--
-                <h4><a href="#cs411Content" data-toggle="collapse">CS 411</a></h4>
-                <div id="cs411Content" class="collapse in">
-                    <div class="well">
-                        <div>
-                            <span class="sessionLabel"><label>Office Hours</label></span>
-                            <span class="sessionLabel"><label>2-3pm</label></span>
-                            <span class="sessionLabel"><label>TA John Smith</label></span>
-                            <span class="sessionLabel"><label>0207 Siebel Center</label></span>
-                        </div>
-                        <br>
-                        <div class="container">
-                            <p>Help with homework and prep for quizzes</p>
-                        </div>
-                    </div>
-                    <div class="well">
-                        <div>
-                            <span class="sessionLabel"><label>Study Session</label></span>
-                            <span class="sessionLabel"><label>6pm</label></span>
-                            <span class="sessionLabel"><label>Grainger Basement</label></span>
-                        </div>
-                        <br>
-                        <div class="container">
-                            <p>Working on Homework 2. Seeking smart people.</p>
-                        </div>
-                    </div>
-                    <div class="well">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam aliquam enim massa, id imperdiet dui pellentesque consequat. Quisque interdum risus ut justo condimentum, sed gravida felis consequat. Curabitur gravida tristique mattis. Praesent erat mauris, placerat vel blandit quis, volutpat eget nibh. Fusce semper lacinia efficitur. Pellentesque consectetur sed quam ut congue. Nulla in metus sodales, viverra orci et, volutpat sem. Nulla vulputate enim vel interdum congue. Curabitur venenatis gravida enim, quis commodo erat porttitor et. Etiam id molestie ligula. Quisque fringilla odio diam, sit amet pharetra nisi viverra sit amet. Quisque sit amet luctus massa. Aliquam varius laoreet iaculis. Vivamus fringilla risus metus, id sodales lacus finibus non.</p>
-                    </div>
-                </div>
-                <h4><a href="#cs498Content" data-toggle="collapse">CS 498 AML</a></h4>
-                <div id="cs498Content" class="collapse in">
-                    <div class="well">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam aliquam enim massa, id imperdiet dui pellentesque consequat. Quisque interdum risus ut justo condimentum, sed gravida felis consequat. Curabitur gravida tristique mattis. Praesent erat mauris, placerat vel blandit quis, volutpat eget nibh. Fusce semper lacinia efficitur. Pellentesque consectetur sed quam ut congue. Nulla in metus sodales, viverra orci et, volutpat sem. Nulla vulputate enim vel interdum congue. Curabitur venenatis gravida enim, quis commodo erat porttitor et. Etiam id molestie ligula. Quisque fringilla odio diam, sit amet pharetra nisi viverra sit amet. Quisque sit amet luctus massa. Aliquam varius laoreet iaculis. Vivamus fringilla risus metus, id sodales lacus finibus non.</p>
-                    </div>
-                </div>
-              -->
             </div>
     </div>
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function() {
+    //ON GET
+    $(document).ready(function() {
 
-    {% for session in sessions %}
-      var seshID =  "{{session.seshID}}";
-      if($("#btnjoin" + seshID).attr('is_joined') == '1'){
-        $("#btnjoin" + seshID).removeClass('btn-success');
-        $("#btnjoin" + seshID).addClass('btn-danger');
-        $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
+      {% for session in sessions %}
+        var seshID =  "{{session.seshID}}";
+        if($("#btnjoin" + seshID).attr('is_joined') == '1'){
+          $("#btnjoin" + seshID).removeClass('btn-success');
+          $("#btnjoin" + seshID).addClass('btn-danger');
+          $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
+        }
+      {% endfor %}
+    });
+  </script>
+
+<!-- <script type="text/javascript">
+  //DELETE Session
+  $(document).on('submit','#delete_session',function(e){
+      //e.stopPropagation();
+      var seshID =  $(this).attr('value');
+
+      // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie != '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
       }
-    {% endfor %}
+
+      var csrftoken = getCookie('csrftoken');
+      function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+      //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      $.ajax({
+        type:'POST',
+        url:'',
+        data:{
+          seshID: $(this).attr('value'),
+          function: "delete"
+        },
+        success:function(){
+            alert("hmm");
+        },
+      });
   });
-</script>
+</script> -->
 
+<!-- <script type="text/javascript">
 
-<script type="text/javascript">
-
-    $(document).on('submit','#join_session',function(e){
+    //EDIT Session
+    $(document).on('submit','#edit_session',function(e){
         //e.stopPropagation();
         e.preventDefault();
         var seshID =  $(this).attr('value');
-        var is_joined = ((parseInt($("#btnjoin" + seshID).attr('is_joined'))) + 1) % 2;
 
-
-        $("#btnjoin" + seshID).attr('is_joined', is_joined.toString())
-
-
-
-        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX
+        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -273,13 +283,74 @@
                 }
             }
         });
-        //END here
+        //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         $.ajax({
           type:'POST',
           url:'',
           data:{
             seshID: $(this).attr('value'),
+            function: "edit"
+          },
+          success:function(){
+
+          }
+
+        });
+    });
+</script> -->
+
+<script type="text/javascript">
+
+    //JOIN SESSION
+    $(document).on('submit','#join_session',function(e){
+        //e.stopPropagation();
+        e.preventDefault();
+        var seshID =  $(this).attr('value');
+        var is_joined = ((parseInt($("#btnjoin" + seshID).attr('is_joined'))) + 1) % 2;
+
+
+        $("#btnjoin" + seshID).attr('is_joined', is_joined.toString())
+
+
+
+        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        $.ajax({
+          type:'POST',
+          url:'',
+          data:{
+            seshID: $(this).attr('value'),
+            function: "is_joined",
             is_joined: $("#btnjoin" + seshID).attr('is_joined')
           },
           success:function(){
@@ -299,34 +370,6 @@
         });
     });
 </script>
-
-<!-- <div class="container">
-<div class="page-header">
-    <h1>Bootsrap tut</h1>
-</div>
-<div class="jumbotron">
-    <p>asfgnsjknasdjfnalnsd fnasldfn nkjrng kjnksjnksjnktjn knkjdsfgnjn jnj jwjnrtjnjrnt nksengskdjfgnksjdnrnekrtkn</p>
-    <p>
-        <a href="#" class="btn btn-default btn-lg" role="button">More Info</a>
-        <button type="button" value="Info" class="btn btn-info" role="button">
-        <button type="submit" class="btn btn-danger" role="button">Button</button>
-        <button type="submit" class="btn btn-success btn-xs" role="button">Button</button>
-        <button type="submit" class="btn btn-primary btn-sm" role="button">Button</button>
-        <button type="submit" class="btn btn-success btn-xs" role="button">Button</button>
-        <button type="submit" class="btn btn-warning btn-lg" role="button">Button</button>
-        <button type="submit" class="btn btn-link btn-lg" role="button">Button</button>
-        <button type="button" class="btn btn-lg btn-primary" disabled="disabled">Primary</button>
-        <a href="#" class="btn btn-default btn-lg disabled" role="button">Link</a>
-        <div class="btn-group btn-group-lg" role="group">
-            <button type="button" class="btn btn-default" role="button">Small</button>
-            <button type="button" class="btn btn-default" role="button">Medium</button>
-            <button type="button" class="btn btn-default" role="button">Large</button>
-        </div>
-    </p>
-</div> -->
-
-
-
 
 
 {% endblock %}
