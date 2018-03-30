@@ -31,6 +31,15 @@ class Classes(models.Model):
     class_code = models.TextField(primary_key=True)
     class_name = models.TextField()
 
+class Section(models.Model):
+    crn = models.PositiveIntegerField(primary_key = True)
+    instructor = models.TextField()
+    location = models.TextField()
+    type = models.TextField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    day = models.TextField()
+
 #relationships
 class SessionHas(models.Model):
     netID = models.TextField()
@@ -74,3 +83,10 @@ class OfficeHourTopic(models.Model):
 
     class Meta:
         unique_together = (('class_code', 'ohID'),)
+
+class SectionOf(models.Model):
+    class_code = models.TextField()
+    crn = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = (('class_code', 'crn'))
