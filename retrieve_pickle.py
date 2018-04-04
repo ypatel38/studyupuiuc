@@ -1,3 +1,3 @@
 import pickle
 #use pickle.load(open("data.p", "rb")) to retrieve the dictionary
-print(pickle.load(open("data.p", "rb")))
+print(pickle.load(open("alldata.p", "rb")))
