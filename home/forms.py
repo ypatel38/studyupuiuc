@@ -54,6 +54,7 @@ class NewSessionForm(forms.Form):
                                               %s, \
                                               %s, \
                                               %s, \
+                                              %s, \
                                               %s)",
                                               [session_data['id_' + 'start_time'],
                                               session_data['id_' + 'end_time'],
@@ -61,7 +62,8 @@ class NewSessionForm(forms.Form):
                                               session_data['id_' + 'building'],
                                               session_data['id_' + 'room_number'],
                                               session_data['id_' + 'description'],
-                                              new_session_id])
+                                              new_session_id,
+                                              request.user])
 
                 #add class of session in sql
                 cursor.execute("INSERT INTO  home_classofsession(class_code, \

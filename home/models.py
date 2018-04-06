@@ -11,6 +11,7 @@ class StudySession(models.Model):
     building = models.TextField()
     room_number = models.PositiveSmallIntegerField()
     description = models.TextField()
+    owner = models.TextField()
     seshID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
 

@@ -26,19 +26,16 @@ class HomeView(TemplateView):
                                     home_studysession.description, \
                                     home_classes.class_code, \
                                     home_classes.class_name, \
-                                    home_sessionhas.is_owner, \
-                                    home_sessionhas.seshID \
+                                    home_studysession.owner, \
+                                    home_studysession.seshID \
                         FROM        accounts_enrolledin, \
                                     home_classes, \
                                     home_classofsession, \
-                                    home_studysession, \
-                                    home_sessionhas \
+                                    home_studysession \
                         WHERE       accounts_enrolledin.netID = %s AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
-                                    home_classofsession.seshID = home_studysession.seshID AND \
-                                    home_classofsession.seshID = home_sessionhas.seshID AND \
-                                    home_sessionhas.netID = accounts_enrolledin.netID \
+                                    home_classofsession.seshID = home_studysession.seshID \
                         ORDER BY    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
@@ -55,9 +52,9 @@ class HomeView(TemplateView):
             sessions[i]['description'] = sessions_arr[i][5]
             sessions[i]['class_code'] = sessions_arr[i][6]
             sessions[i]['class_name'] = sessions_arr[i][7]
-            sessions[i]['is_owner'] = sessions_arr[i][8]
+            sessions[i]['is_owner'] = (str(sessions_arr[i][8]) == str(request.user))
             sessions[i]['seshID'] = sessions_arr[i][9]
-
+        print(sessions_arr)
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             accounts_enrolledin, \
