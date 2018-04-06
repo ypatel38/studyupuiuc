@@ -339,24 +339,30 @@ class NewSessionView(TemplateView):
         cursor.execute("SELECT  s2.netID, home_classofsession.class_code, COUNT(s2.seshID)        \
                         FROM    home_sessionhas s1,               \
                                 home_sessionhas s2,               \
-                                home_classofsession                \
+                                home_classofsession             \
                         WHERE   %s = s1.netID AND \
                                 s1.seshID = home_classofsession.seshID  AND \
                                 s1.netID <> s2.netID    AND \
-                                s1.seshID = s2.seshID   \
+                                s1.seshID = s2.seshID     \
                         GROUP BY s2.netID, home_classofsession.class_code \
                         ORDER BY COUNT(s2.seshID) DESC", [str(request.user)])
 
         session_arr = cursor.fetchall()
-        print(session_arr)
+        dates = []
+        for i in range(len(session_arr)):
+            cursor.execute("SELECT  home_studysession.date \
+                            FROM    home_studysession, \
+                                    home_sessionhas   \
+                            WHERE   home_sessionhas.seshID = home_studysession.seshID AND \
+                                    home_sessionhas.netID = %s      \
+                            ORDER BY home_studysession.date DESC", [session_arr[i][0]])
+            temp = cursor.fetchall()
+            dates.append(datetime.now().date() - temp[0][0])
 
-        cursor.execute("SELECT  home_studysession.date\
-                        FROM    home_studysession")
-        dates = cursor.fetchall()
-        print(datetime.now().date())
-        for i in range(len(dates)):
-            delta = datetime.now().date() - timedelta(day=dates[i].day, month=dates[i].month, year=dates[i].year)
-            print("There are  " + str(delta.days) + " until " + str(dates[i]))
+        for i in range(len(session_arr)):
+            print(session_arr[i])
+            print(max(0, session_arr[i][2] - (int(dates[i].days/7))))
+        
         cursor.close()
 
         form = NewSessionForm()
