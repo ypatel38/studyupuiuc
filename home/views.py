@@ -354,14 +354,19 @@ class NewSessionView(TemplateView):
                             FROM    home_studysession, \
                                     home_sessionhas   \
                             WHERE   home_sessionhas.seshID = home_studysession.seshID AND \
-                                    home_sessionhas.netID = %s      \
+                                    home_sessionhas.netID = %s \
                             ORDER BY home_studysession.date DESC", [session_arr[i][0]])
             temp = cursor.fetchall()
-            dates.append(datetime.now().date() - temp[0][0])
+            for j in range(len(temp)):
+                if (datetime.now().date() - temp[j][0]).days >= 0: 
+                    dates.append(temp[j][0])
+                    break
 
         for i in range(len(session_arr)):
+            delta = datetime.now().date() - dates[i]
             print(session_arr[i])
-            print(max(0, session_arr[i][2] - (int(dates[i].days/7))))
+            if delta.days >= 0:
+                print(max(0, session_arr[i][2] - (int(delta.days/7))))
         
         cursor.close()
 
