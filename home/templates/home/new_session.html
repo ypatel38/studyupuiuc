@@ -9,7 +9,20 @@
 	<div class="container">
 		<form method="post">
 			{% csrf_token %} <!-- security -->
-			{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
+			<b>Class:</b>
+			{{ form.enrolled_class }} 
+			<b>Start Time:</b>
+			{{ form.start_time}} 
+			<b>End Time:</b>
+			{{ form.end_time}} 
+			<b>Date:</b>
+			{{ form.date}} 
+			<b>Building:</b>
+			{{ form.building}} 
+			<b>Room Number:</b>
+			{{ form.room_number}} 
+			<b>Description:</b>
+			{{ form.description }} 
 			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
 		</form>
 	</div>
