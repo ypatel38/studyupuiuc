@@ -39,7 +39,7 @@ class NewSessionForm(forms.Form):
                 new_session_id = str(uuid.uuid4()) #note in postrgress this might not want to be str
 
                 cursor = connection.cursor()
-
+                print(1234)
                 #add new session in sql
                 cursor.execute("INSERT INTO  home_studysession(start_time, \
                                                                end_time, \
@@ -47,7 +47,8 @@ class NewSessionForm(forms.Form):
                                                                building, \
                                                                room_number, \
                                                                description, \
-                                                               seshID) \
+                                                               seshID, \
+                                                               owner) \
                                 VALUES       (%s, \
                                               %s, \
                                               %s, \
@@ -64,6 +65,7 @@ class NewSessionForm(forms.Form):
                                               session_data['id_' + 'description'],
                                               new_session_id,
                                               request.user])
+                print(5678)
 
                 #add class of session in sql
                 cursor.execute("INSERT INTO  home_classofsession(class_code, \
