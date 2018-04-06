@@ -11,6 +11,23 @@ class NewSessionForm(forms.Form):
     room_number = forms.CharField(required=True, label="Room Number", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '101...' }))
     description = forms.CharField(required=False, label="Description", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Text...' }))
 
+    #populate an array for sesh relations
+    cursor = connection.cursor()
+
+    #obtain array of every other user that has been in a sessino with the current user
+
+    cursor.execute("SELECT  s2.netID, COUNT(s2.seshID)        \
+                    FROM    home_sessionhas s1,               \
+                            home_sessionhas s2,               \
+                            auth_user \
+                    WHERE   auth_user.username = s1.netID AND \
+                            s1.seshID = s2.seshID  ")
+
+    session_arr = cursor.fetchall()
+    print(session_arr)
+
+
+    cursor.close()
     def is_valid(self):
         #use regex to determine true of false here
         return True

@@ -5,14 +5,16 @@ from django.urls import reverse #used for namespaces
 from django.views.decorators.csrf import csrf_exempt #YIKES
 from home.forms import *
 
+
 # Create your views here.
 
 class HomeView(TemplateView):
     template_name = "home/homepage.html"
 
-
-
     def get(self, request):
+        name = request.user
+        print(name)
+        print(10987)
         #sql query's here to get all info and put into args (temp)
         #TODO: THIS QUERY IS TEMPORARY FOR A TEST, NEEDS TO BE CLEANED UP WITH SORTS, ORGANIZED ARGS, ETC!!!
 
@@ -34,12 +36,14 @@ class HomeView(TemplateView):
                                     home_classofsession, \
                                     home_studysession, \
                                     home_sessionhas \
-                        WHERE       auth_user.username = accounts_enrolledin.netID AND \
+                        WHERE       auth_user.username = %s     AND     \
+                                    auth_user.username = accounts_enrolledin.netID AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID AND \
                                     home_classofsession.seshID = home_sessionhas.seshID \
-                        ORDER BY    home_studysession.start_time")
+                        ORDER BY    home_studysession.start_time",
+                                    [request.user.username])
 
         sessions_arr = cursor.fetchall()
 
