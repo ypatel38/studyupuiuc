@@ -61,6 +61,7 @@ class HomeView(TemplateView):
                                     home_studysession, \
                                     home_sessionhas \
                         WHERE       accounts_enrolledin.netID = %s AND \
+                                    home_sessionhas.netID = accounts_enrolledin.netID AND \
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID AND \
@@ -76,8 +77,8 @@ class HomeView(TemplateView):
         for i in range(len(sessions_arr)):
             for j in range(len(sessions)):
                 if(sessions[j]['seshID'] == sessions_arr[i][1]):
-                    sessions[i]['is_owner'] = sessions_arr[i][0]
-                    sessions[i]['is_joined'] = 1
+                    sessions[j]['is_owner'] = sessions_arr[i][0]
+                    sessions[j]['is_joined'] = 1
 
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
@@ -101,7 +102,7 @@ class HomeView(TemplateView):
 
     def post(self, request):
         print("HELLO")
-        print(request.POST)
+        #print(request.POST)
         if("edit" in request.POST):
             seshID = request.POST["edit"]
             function = "edit"
@@ -114,15 +115,17 @@ class HomeView(TemplateView):
 
         if function == "is_joined":
             is_joined  = str(request.POST["is_joined"])
-            #print(is_joined)
+    
+            print(is_joined)
+            print(seshID)
             cursor = connection.cursor()
 
             if (is_joined == "1"):
-                print("yaay")
+                
                 cursor.execute("INSERT INTO      home_sessionhas(seshID, netID, is_owner) \
                                 VALUES           (%s, %s, 0)", [seshID, str(request.user)])
             else:
-                print("boo")
+                
                 cursor.execute("DELETE FROM      home_sessionhas  \
                                 WHERE            home_sessionhas.netID = %s AND\
                                                  home_sessionhas.is_owner = 0 AND \
@@ -174,6 +177,7 @@ class HomeView(TemplateView):
                                         home_studysession, \
                                         home_sessionhas \
                             WHERE       accounts_enrolledin.netID = %s AND \
+                                        home_sessionhas.netID = accounts_enrolledin.netID AND \
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID AND \
@@ -277,6 +281,7 @@ class HomeView(TemplateView):
                                         home_studysession, \
                                         home_sessionhas \
                             WHERE       accounts_enrolledin.netID = %s AND \
+                                        home_sessionhas.netID = accounts_enrolledin.netID AND \
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID AND \
@@ -338,7 +343,8 @@ class NewSessionView(TemplateView):
                                 s1.seshID = home_classofsession.seshID  AND \
                                 s1.netID <> s2.netID    AND \
                                 s1.seshID = s2.seshID   \
-                        GROUP BY s2.netID AND home_classofsession.class_code", [str(request.user)])
+                        GROUP BY s2.netID, home_classofsession.class_code \
+                        ORDER BY COUNT(s2.seshID)", [str(request.user)])
 
         session_arr = cursor.fetchall()
         print(session_arr)
