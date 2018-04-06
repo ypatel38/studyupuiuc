@@ -4,6 +4,7 @@ from django.db import connection #sql
 from django.urls import reverse #used for namespaces
 from django.http import HttpResponse
 from home.forms import *
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -344,11 +345,18 @@ class NewSessionView(TemplateView):
                                 s1.netID <> s2.netID    AND \
                                 s1.seshID = s2.seshID   \
                         GROUP BY s2.netID, home_classofsession.class_code \
-                        ORDER BY COUNT(s2.seshID)", [str(request.user)])
+                        ORDER BY COUNT(s2.seshID) DESC", [str(request.user)])
 
         session_arr = cursor.fetchall()
         print(session_arr)
 
+        cursor.execute("SELECT  home_studysession.date\
+                        FROM    home_studysession")
+        dates = cursor.fetchall()
+        print(datetime.now().date())
+        for i in range(len(dates)):
+            delta = datetime.now().date() - timedelta(day=dates[i].day, month=dates[i].month, year=dates[i].year)
+            print("There are  " + str(delta.days) + " until " + str(dates[i]))
         cursor.close()
 
         form = NewSessionForm()
