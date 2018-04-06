@@ -28,8 +28,7 @@ class HomeView(TemplateView):
                                     home_classes.class_name, \
                                     home_sessionhas.is_owner, \
                                     home_sessionhas.seshID \
-                        FROM        auth_user, \
-                                    accounts_enrolledin, \
+                        FROM        accounts_enrolledin, \
                                     home_classes, \
                                     home_classofsession, \
                                     home_studysession, \
@@ -38,7 +37,8 @@ class HomeView(TemplateView):
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID AND \
-                                    home_classofsession.seshID = home_sessionhas.seshID \
+                                    home_classofsession.seshID = home_sessionhas.seshID AND \
+                                    home_sessionhas.netID = accounts_enrolledin.netID \
                         ORDER BY    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
@@ -60,10 +60,9 @@ class HomeView(TemplateView):
 
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
-                        FROM             auth_user, \
-                                         accounts_enrolledin, \
+                        FROM             accounts_enrolledin, \
                                          home_classes \
-                        WHERE            auth_user.username = accounts_enrolledin.netID")
+                        WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
 
         #reorganize queryset to dict
         enrolledin_arr = cursor.fetchall()
@@ -119,18 +118,18 @@ class HomeView(TemplateView):
                                             home_classes.class_name, \
                                             home_sessionhas.is_owner, \
                                             home_sessionhas.seshID \
-                                FROM        auth_user, \
-                                            accounts_enrolledin, \
+                                FROM        accounts_enrolledin, \
                                             home_classes, \
                                             home_classofsession, \
                                             home_studysession, \
                                             home_sessionhas \
-                                WHERE       auth_user.username = accounts_enrolledin.netID AND \
+                                WHERE       %s = accounts_enrolledin.netID AND \
                                             accounts_enrolledin.class_code = home_classes.class_code AND \
                                             home_classes.class_code = home_classofsession.class_code AND \
                                             home_classofsession.seshID = home_studysession.seshID AND \
                                             home_classofsession.seshID = home_sessionhas.seshID \
-                                ORDER BY    home_studysession.start_time")
+                                ORDER BY    home_studysession.start_time",  \
+                                            [str(request.user)])
 
                 sessions_arr = cursor.fetchall()
 
@@ -151,10 +150,9 @@ class HomeView(TemplateView):
 
                 # find classes user is enrolled in
                 cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
-                                FROM             auth_user, \
-                                                 accounts_enrolledin, \
+                                FROM             accounts_enrolledin, \
                                                  home_classes \
-                                WHERE            auth_user.username = accounts_enrolledin.netID")
+                                WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
 
                 #reorganize queryset to dict
                 enrolledin_arr = cursor.fetchall()
@@ -208,6 +206,25 @@ class NewSessionView(TemplateView):
     template_name = 'home/new_session.html'
 
     def get(self, request):
+
+
+        cursor = connection.cursor()
+        #this gets the other users that the current users has been with
+        cursor.execute("SELECT  s2.netID, home_classofsession.class_code, COUNT(s2.seshID)        \
+                        FROM    home_sessionhas s1,               \
+                                home_sessionhas s2,               \
+                                home_classofsession                \
+                        WHERE   %s = s1.netID AND \
+                                s1.seshID = home_classofsession.seshID  AND \
+                                s1.seshID = s2.seshID   \
+                        GROUP BY s2.netID AND home_classofsession.class_code", [str(request.user)])
+
+        session_arr = cursor.fetchall()
+        print(session_arr)
+
+        cursor.close()
+
+
         form = NewSessionForm()
         args = {'form': form}
         return render(request, self.template_name, args)

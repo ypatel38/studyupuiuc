@@ -11,8 +11,7 @@ class NewSessionForm(forms.Form):
     room_number = forms.CharField(required=True, label="Room Number", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '101...' }))
     description = forms.CharField(required=False, label="Description", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Text...' }))
 
-
-
+    
     class Meta:
         fields = { #use if u want to whitelist
             'enrolled_class',
