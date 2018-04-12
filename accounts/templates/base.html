@@ -8,31 +8,47 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
 
     <style>
       body {
           background-color: #E9EBEE;
+          margin-top: 50px;
+
       }
 
+      .navbar-default {
+        border:0px;
+      }
       .navbar-default .navbar-brand{
-        color: #3A8BC2;
+        font-family: 'Caveat';
+        color: #6D7FCC;
+        font-size: 25px;
       }
 
       .navbar.navbar-default .navbar-brand:hover,
       .navbar.navbar-default .navbar-brand:focus {
-        color: #3A8BC2;
+        color: #6D7FCC;
       }
-      /*navy blue: #265A88*/
+      /*navy blue: #265A88 purple:*/
 
       .navbar.navbar-default .navbar-nav > li > a {
-        color: #3A8BC2;
+        color: #6D7FCC;
+        font-family: 'Viga';
+        letter-spacing: 1px;
+        font-size: 15px;
       }
 
       .navbar.navbar-default .navbar-nav > li > a:hover,
       .navbar.navbar-default .navbar-nav > li > a:focus {
         color: #FFFFFF;
-        background-color: #3A8BC2;
+        background-color: #6D7FCC;
       }
+
+
 /*
 red: #ba0e25
 green: #19a036
@@ -45,7 +61,7 @@ green: #19a036
 
   </head>
   <body>
-    <nav class="navbar navbar-default" > <!-- style="background-color:"" -->
+    <nav class="navbar navbar-default navbar-fixed-top" > <!-- style="background-color:"" -->
       <div class="container-fluid">
         <div class="navbar-header">
 
@@ -55,14 +71,14 @@ green: #19a036
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'home:home' %}"><strong>StudyUpUIUC</strong></a>
+          <a class="navbar-brand" href="{% url 'home:home' %}">StudyUpUIUC</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
 
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
-            <li><a href="{% url 'accounts:logout' %}" class="test"><span class="glyphicon glyphicon-log-out logout"></span> <strong>Logout</strong></a></li>
+            <li><a href="{% url 'accounts:logout' %}"><span class="glyphicon glyphicon-log-out logout"></span> <strong>Logout</strong></a></li>
             {% else %}
             <li><a href="{% url 'accounts:register' %}">Register</a></li>
             <li><a href="{% url 'accounts:login' %}"><span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong></a></li>

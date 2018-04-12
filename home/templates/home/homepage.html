@@ -35,6 +35,7 @@
 .sidenav a:hover {
     color: #f1f1f1;
 }*/
+
 .btn-space{
     margin-right: 10px;
 }
@@ -45,9 +46,8 @@
   width: inherit;
   min-width: 220px;
   max-width: 220px;
-  background-color:#f5f5f5;
+  background-color:#FBFBFB;
   float: right;
-
   z-index: 1;
   min-height: 500px;
   max-height: 500px;
@@ -73,6 +73,12 @@
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
+  font-family: 'Jua';
+}
+
+.classheaders {
+  font-family: 'Jua';
+  color: #4e5b96;
 }
 
 .editanddeletebtn {
@@ -84,13 +90,50 @@
     border-radius:24px;
 }
 
+.newsessionbtn {
+  min-width: 170px;
+  max-width: 170px;
+  min-height: 30px;
+  max-height: 30px;
+  border: 0 none;
+  border-radius:24px;
+  color: #6D7FCC;
+}
+
 .well {
     background: #F8F8F8;
     max-width: 800px;
     min-width: 800px;
 }
 
+.navbar-custom {
+  background-color: #4e5b96;
+  min-height: 38px;
+  max-height: 38px;
+  border-radius: 0px;
+  border: 0px;
+  margin-top: 50px;
 
+}
+.navbar.navbar-custom .navbar-nav > li > a {
+  margin-left: 10px;
+  font-family: 'Jua';
+  padding-top: 5px;
+  margin-top: 4px;
+  min-height: 30px;
+  max-height: 30px;
+  color: #FFFFFF;
+  background-color: #6D7FCC;
+  letter-spacing: 1px;
+  border-radius: 5px;
+}
+
+.navbar.navbar-custom .navbar-nav > li > a:hover,
+.navbar.navbar-custom .navbar-nav > li > a:focus {
+  color: #6D7FCC;
+  background-color: #E9EBEE;/*#798ce0;*/
+  border-radius: 5px;
+}
 </style>
 
 
@@ -98,68 +141,65 @@
 {% endblock %}
 {% block body %}
 
+<nav class="navbar navbar-custom navbar-fixed-top" > <!-- style="background-color:"" -->
+      <ul class="nav navbar-nav">
+        <li><a href="{% url 'home:new_session' %}"><span class="glyphicon glyphicon-plus"></span> Create New Session</span> </a></li>
+      </ul>
 
-<!--     <div class="sidenav">
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#clients">Clients</a>
-      <a href="#contact">Contact</a>
-    </div> -->
 
+</nav>
+<!--
     <div class="row-offcanvas row-offcanvas-left">
       <div id="sidebar" class="sidebar-offcanvas">
           <div class="col-md-12">
             <h4>Study Session Maker</h4>
                 <a href="{% url 'home:new_session' %}" class="btn btn-default btn-lg" role="button">Create New Session</a>
                 <a href="#" class="btn btn-default btn-lg" role="button">Use Past Session</a>
+
+                <form class="form-inline">
+                    <div class="form-group">
+                       <div class="dropdown">
+                          <button class="btn btn-primary dropdown-toggle btn-md" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Class Filter
+
+                             Display icon in button
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu">
+
+                           Unselectable header
+                            <li class="dropdown-header">Select classes to filter</li>
+                            {% for classes in enrolledin %}
+                            <li><a href="#"><input type="checkbox">&nbsp;{{classes.class_code}}</a></li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group date" data-provide="datepicker">
+
+                            <input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text"/>
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
           </div>
       </div>
     </div>
-
+-->
 <div id="main">
-    <div class="container" style="width: 800px;">
-        <form class="form-inline">
-            <div class="form-group">
-               <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle btn-md" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Class Filter
-
-                    <!-- Display icon in button -->
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-
-                    <!-- Unselectable header -->
-                    <li class="dropdown-header">Select classes to filter</li>
-                    {% for classes in enrolledin %}
-                    <li><a href="#"><input type="checkbox">&nbsp;{{classes.class_code}}</a></li>
-                    {% endfor %}
-                  </ul>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="input-group date" data-provide="datepicker">
-
-                    <input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text"/>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-th"></span>
-                    </div>
-                </div>
-            </div>
-
-        </form>
-    </div>
-
-    <br>
-
+    <br><br>
     <div class="container">
-    <br>
-            <div class="container" style="width: 800px;">
+
+            <div class="container" style="width: 850px;">
 
                 <!-- jinja logic here for dynamic homepage -->
                 {% for classes in enrolledin %}
-                <h4><a href="#{{ classes.class_code }}Content" class = "myLink" data-toggle="collapse">{{ classes.class_code }}</a></h4>
+                <br>
+                <h4><a href="#{{ classes.class_code }}Content" class = "myLink classheaders" data-toggle="collapse">{{ classes.class_code }}</a></h4>
                 <div id="{{ classes.class_code }}Content" class="collapse in">
                     {% for session in sessions %}
                     {% if session.class_code == classes.class_code %}
