@@ -336,6 +336,7 @@ class NewSessionView(TemplateView):
 
     def get(self, request):
         cursor = connection.cursor()
+        #obtain # of times current user has studied with any other user per a class
         cursor.execute("SELECT  s2.netID, home_classofsession.class_code, COUNT(s2.seshID)        \
                         FROM    home_sessionhas s1,               \
                                 home_sessionhas s2,               \
@@ -348,25 +349,125 @@ class NewSessionView(TemplateView):
                         ORDER BY COUNT(s2.seshID) DESC", [str(request.user)])
 
         session_arr = cursor.fetchall()
+        print(session_arr)
         dates = []
         for i in range(len(session_arr)):
+            #get last date current user has studied with any user for the specified class
             cursor.execute("SELECT  home_studysession.date \
                             FROM    home_studysession, \
-                                    home_sessionhas   \
-                            WHERE   home_sessionhas.seshID = home_studysession.seshID AND \
-                                    home_sessionhas.netID = %s \
-                            ORDER BY home_studysession.date DESC", [session_arr[i][0]])
+                                    home_sessionhas s1,   \
+                                    home_sessionhas s2,     \
+                                    home_classofsession \
+                            WHERE   s1.seshID = home_studysession.seshID AND \
+                                    s1.seshID = s2.seshID   AND \
+                                    home_classofsession.seshID = s1.seshID AND \
+                                    home_classofsession.class_code = %s AND \
+                                    s1.netID = %s  AND \
+                                    s2.netID = %s \
+                            ORDER BY home_studysession.date DESC", [session_arr[i][1], session_arr[i][0], str(request.user)])
             temp = cursor.fetchall()
+            #obtain the most recent study date in the past since database stores future dates as well
             for j in range(len(temp)):
                 if (datetime.now().date() - temp[j][0]).days >= 0: 
                     dates.append(temp[j][0])
                     break
 
+
+        #################################################################################
+        #       FIND THE CURRENT CLASS. WILL NEED GREG UI INPUT TO DO THIS              #
+        #                           DEFAULT TO CS411 FOR NOW                            #
+        #################################################################################
+
+
+        curr_class = "CS411"
+
+        #aggregate the study sessions such that current class study is weighted fully, diff class study is 1/2 weighted
+        user_dict = {}
         for i in range(len(session_arr)):
             delta = datetime.now().date() - dates[i]
-            print(session_arr[i])
             if delta.days >= 0:
-                print(max(0, session_arr[i][2] - (int(delta.days/7))))
+                if session_arr[i][0] not in user_dict.keys():
+                    #insert into dict
+                    user_dict[session_arr[i][0]] = 5
+                if session_arr[i][1] == curr_class:
+                    #print("Before: " + str(user_dict[session_arr[i][0]]))
+                    user_dict[session_arr[i][0]] = int(max(0, user_dict[session_arr[i][0]] + session_arr[i][2] - (int(delta.days/14))))
+                    #print("After: " + str(user_dict[session_arr[i][0]]))
+                else:
+                    #print("Before: " + str(user_dict[session_arr[i][0]]))
+                    user_dict[session_arr[i][0]] = int(max(0, user_dict[session_arr[i][0]] + (session_arr[i][2] - (int(delta.days/14)))/2))
+                    #print("After: " + str(user_dict[session_arr[i][0]]))
+        print(user_dict)
+        #find if there are any mutual connections 
+        mate_dict = []
+        for j in user_dict.keys():
+            mate_dict.append({})
+            #go through each linked user and see who they have worked with and update the user dict
+            cursor.execute("SELECT  s2.netID, home_classofsession.class_code, COUNT(s2.seshID)        \
+                            FROM    home_sessionhas s1,               \
+                                    home_sessionhas s2,               \
+                                    home_classofsession             \
+                            WHERE   %s = s1.netID AND \
+                                    s1.seshID = home_classofsession.seshID  AND \
+                                    s1.netID <> s2.netID    AND \
+                                    s1.seshID = s2.seshID     AND \
+                                    s2.netID <> %s \
+                            GROUP BY s2.netID, home_classofsession.class_code \
+                            ORDER BY COUNT(s2.seshID) DESC", [str(j), str(request.user)])
+
+            temp_arr = cursor.fetchall()
+            temp_dates = []
+            for i in range(len(temp_arr)):
+                #get last date selected user has studied with any user for the specified class
+                cursor.execute("SELECT  home_studysession.date \
+                                FROM    home_studysession, \
+                                        home_sessionhas s1,   \
+                                        home_sessionhas s2,     \
+                                        home_classofsession \
+                                WHERE   s1.seshID = home_studysession.seshID AND \
+                                        s1.seshID = s2.seshID   AND \
+                                        home_classofsession.seshID = s1.seshID AND \
+                                        home_classofsession.class_code = %s AND \
+                                        s1.netID = %s  AND \
+                                        s2.netID = %s \
+                                ORDER BY home_studysession.date DESC", [temp_arr[i][1], temp_arr[i][0], str(j)])
+                temp = cursor.fetchall()
+                #obtain the most recent study date in the past since database stores future dates as well
+                for k in range(len(temp)):
+                    if (datetime.now().date() - temp[k][0]).days >= 0: 
+                        temp_dates.append(temp[k][0])
+                        break
+
+            #aggregate the study sessions such that current class study is weighted fully, diff class study is 1/2 weighted
+            for i in range(len(temp_arr)):
+                delta = datetime.now().date() - temp_dates[i]
+                if delta.days >= 0:
+                    if temp_arr[i][0] not in mate_dict[len(mate_dict)-1].keys():
+                        #initalize the dictionary
+                        mate_dict[len(mate_dict)-1][temp_arr[i][0]] = 5
+
+                    if temp_arr[i][1] == curr_class:
+                        mate_dict[len(mate_dict)-1][temp_arr[i][0]] = int(max(0, mate_dict[len(mate_dict)-1][temp_arr[i][0]] + temp_arr[i][2] - (int(delta.days/14))))
+                    else:
+                        mate_dict[len(mate_dict)-1][temp_arr[i][0]] = int(max(0, mate_dict[len(mate_dict)-1][temp_arr[i][0]] + (temp_arr[i][2] - (int(delta.days/14)))/2))
+
+
+        for j in range(len(mate_dict)):
+            #using the values in this dictionary, store into user dict
+            for i in mate_dict[j].keys():
+                if i not in user_dict.keys():
+                    user_dict[i] = int(float(mate_dict[j][i]*0.20) + 0.5)
+                else:
+                    user_dict[i] = max(int(float(mate_dict[j][i]*0.20) + 0.5), user_dict[i])
+
+        #MAYBE LATER
+
+
+        #MOM (Mate of a Mate) search. Go into current suggests and see if they have any strong relations
+
+
+        for i in user_dict:
+            print(str(user_dict[i]) + " Weight for study mate " + str(i))
         
         cursor.close()
 
