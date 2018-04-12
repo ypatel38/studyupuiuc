@@ -1,10 +1,43 @@
-<!--TODO: Navbar goes here -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> <!--ORDER OF THESE MATTERS-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <style>
+      body {
+          background-color: #E9EBEE;
+      }
+
+      .navbar-default .navbar-brand{
+        color: #3A8BC2;
+      }
+
+      .navbar.navbar-default .navbar-brand:hover,
+      .navbar.navbar-default .navbar-brand:focus {
+        color: #3A8BC2;
+      }
+      /*navy blue: #265A88*/
+
+      .navbar.navbar-default .navbar-nav > li > a {
+        color: #3A8BC2;
+      }
+
+      .navbar.navbar-default .navbar-nav > li > a:hover,
+      .navbar.navbar-default .navbar-nav > li > a:focus {
+        color: #FFFFFF;
+        background-color: #3A8BC2;
+      }
+/*
+red: #ba0e25
+green: #19a036
+*/
+    </style>
 
     {% block head %}
 
@@ -12,45 +45,32 @@
 
   </head>
   <body>
+    <nav class="navbar navbar-default" > <!-- style="background-color:"" -->
+      <div class="container-fluid">
+        <div class="navbar-header">
 
-    <html lang="en">
-    <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="IE=edge">
-    <meta name="viewport" content="width = device-width, initial-scale = 1">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'home:home' %}"><strong>StudyUpUIUC</strong></a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
 
-    <title>test</title>
-
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <nav class="navbar navbar-inverse" > <!-- style="background-color:"" -->
-          <div class="container-fluid">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="{% url 'home:home' %}">StudyUpUIUC</a>
-            </div>
-            <div class="collapse navbar-collapse" id="myNavbar">
-        <!--           <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">Contact</a></li>
-              </ul> -->
-              <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
-                <li><a href="{% url 'accounts:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                {% else %}
-                <li><a href="{% url 'accounts:register' %}">Register</a></li>
-                <li><a href="{% url 'accounts:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                {% endif %}
-              </ul>
-            </div>
-          </div>
-        </nav>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
+            <li><a href="{% url 'accounts:logout' %}" class="test"><span class="glyphicon glyphicon-log-out logout"></span> <strong>Logout</strong></a></li>
+            {% else %}
+            <li><a href="{% url 'accounts:register' %}">Register</a></li>
+            <li><a href="{% url 'accounts:login' %}"><span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong></a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
     {% block body %}
 
     {% endblock %}

@@ -93,7 +93,7 @@ class HomeView(TemplateView):
         enrolledin = []
         for i in range(len(enrolledin_arr)):
             enrolledin.append({})
-            enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
+            enrolledin[i]['class_code'] = enrolledin_arr[i][0]
 
         connection.close()
         #print(sessions)
@@ -209,7 +209,7 @@ class HomeView(TemplateView):
             enrolledin = []
             for i in range(len(enrolledin_arr)):
                 enrolledin.append({})
-                enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
+                enrolledin[i]['class_code'] = enrolledin_arr[i][0]
 
             connection.close()
             #print(sessions)
@@ -315,7 +315,7 @@ class HomeView(TemplateView):
             enrolledin = []
             for i in range(len(enrolledin_arr)):
                 enrolledin.append({})
-                enrolledin[i]['auth_user'] = enrolledin_arr[i][0]
+                enrolledin[i]['class_code'] = enrolledin_arr[i][0]
 
             connection.close()
             #print(sessions)
