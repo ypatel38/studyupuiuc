@@ -2,16 +2,38 @@
 
 {% block head %}
   <title>My Profile</title>
+  <style>
+		.btn {
+			background-color: #FFFFFF;
+			color: #3a4470;
+			font-weight: bold;
+		}
+		.btn:hover, .btn:focus, .btn:active {
+			background-color: #3a4470;
+			color: #FFFFFF;
+		}
+		.title_header {
+			font-family: 'Caveat';
+			color: #3a4470;
+			font-size: 80px;
+      text-align: center;
+		}
+    .info {
+      text-align: center;
+      font-weight: bold;
+
+    }
+	</style>
 {% endblock %}
 
 {% block body %}
 	<div class="row">
-    <div class="col-md-2 col-md-offset-5">
-		<h1>My Profile</h1>
-		<p>NetID: {{ user.username }}</p>
-		<p>First Name: {{ user.first_name }}</p>
-		<p>Last Name: {{ user.last_name }}</p>
-	</div>
+
+  		<h1 class="title_header">My Profile</h1>
+      <br>
+      <p class="info">Name: {{ user.first_name }} {{ user.last_name }}</p>
+  		<p class="info">netID: {{ user.username }}</p>
+
 	</div>
 
 <!-- TODO: Classes enrolled in !-->

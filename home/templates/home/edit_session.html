@@ -4,19 +4,24 @@
 	<style>
 		.btn {
 			background-color: #FFFFFF;
-			color: #6D7FCC;
+			color: #3a4470;
 			font-weight: bold;
 		}
 		.btn:hover, .btn:focus, .btn:active {
-			background-color: #6D7FCC;
+			background-color: #3a4470;
 			color: #FFFFFF;
+		}
+		.title_header {
+			font-family: 'Caveat';
+			color: #3a4470;
+			font-size: 50px;
 		}
 	</style>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-	<h2>Edit Existing Session</h2>
+	<h2 class="title_header">Edit Existing Session</h2>
 	<div class="container">
 		<form method="post">
 			{% csrf_token %} <!-- security -->

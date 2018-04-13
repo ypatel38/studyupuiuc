@@ -343,6 +343,7 @@ class NewSessionView(TemplateView):
         return render(request, self.template_name, args)
 
     def post(self, request):
+        print(request.POST)
         form = NewSessionForm(request.POST)
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here

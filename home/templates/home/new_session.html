@@ -4,27 +4,21 @@
 	<style>
 		.btn {
 			background-color: #FFFFFF;
-			color: #6D7FCC;
+			color: #3a4470;
 			font-weight: bold;
 		}
 		.btn:hover, .btn:focus, .btn:active {
-			background-color: #6D7FCC;
+			background-color: #3a4470;
 			color: #FFFFFF;
+		}
+		.title_header {
+			font-family: 'Caveat';
+			color: #3a4470;
+			font-size: 50px;
 		}
 	</style>
 
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
 
-<!-- for the date picker -->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<!-- for the multiselect menu -->
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.min.css">
-
-	<script src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.jquery.min.js"></script>
 
 
 
@@ -32,32 +26,40 @@
 
 {% block body %}
 <div class="container">
-	<h2>Create New Session</h2>
+	<h2 class="title_header">Create New Session</h2>
 	<div class="container">
 		<form method="post">
 			{% csrf_token %} <!-- security -->
-			{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
 
-			<p>Date: <input type="text" id="datepicker"></p>
+			<tr><th><label for="id_enrolled_class">Class:</label></th><td><input type="text" name="enrolled_class" class="form-control" placeholder="Select a Class" required id="id_enrolled_class" /></td></tr><br>
+			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control" placeholder="Select a Start Time" required id="id_start_time" /></td></tr><br>
+			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control" placeholder="Select a End Time" required id="id_end_time" /></td></tr><br>
+			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Select a Date" required id="datepicker" /></td></tr><br>
+			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" class="form-control" placeholder="Enter a Building Name" required id="id_building" /></td></tr><br>
+			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" class="form-control" placeholder="Enter a Room Number" required id="id_room_number" /></td></tr><br>
+			<tr><th><label for="id_description">Description:</label></th><td><input type="text" name="description" class="form-control" placeholder="Enter a Description (optional)" id="id_description" /></td></tr><br>
 
-			  <select data-placeholder="Choose session members..." name="tags[]" multiple class="chosen-select">
-			    <option value="Engineering">Engineering</option>
-			    <option value="Carpentry">Carpentry</option>
-			    <option value="Plumbing">Plumbing</option>
-			    <option value="Electical">Electrical</option>
-			    <option value="Mechanical">Mechanical</option>
-			    <option value="HVAC">HVAC</option>
-			  </select>
+
+			<label for="id_suggested_friends">Invite Friends:</label>
+		  <select data-placeholder="  Choose people to invite..." name="invited_friends" multiple class="form-control chosen-select" id="id_suggested_friends">
+				<!-- Eventually populated with suggested friends -->
+		    <option value="Engineering">Engineering</option>
+		    <option value="Carpentry">Carpentry</option>
+		    <option value="Plumbing">Plumbing</option>
+		    <option value="Electical">Electrical</option>
+		    <option value="Mechanical">Mechanical</option>
+		    <option value="HVAC">HVAC</option>
+		  </select>
+
+			<br><br>
 
 			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
 		</form>
 
-
-
 	</div>
 </div>
 
-<script type="text/javascript">
+<script>
 	// $.noConflict();
 	// jQuery(document).ready(function($){
 	// 	$( "#datepicker" ).datepicker();
@@ -65,12 +67,62 @@
 
 	// $(".chosen-select").chosen({width: "100%"});
 
-	
+	// /YYYY-MM-DD...
 	$(document).ready(function(){
 		$( "#datepicker" ).datepicker();
 		$(".chosen-select").chosen({width: "100%"});
-	})//end of jquery
+	})
 
 </script>
+<!--
+<script>
+
+    //JOIN SESSION
+    $(document).on('submit','#session_submit',function(e){
+					alert($("#id_suggested_friends").val());
+        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        $.ajax({
+          type:'POST',
+          url:'',
+          data:{
+          },
+          success:function(){
+              alert($("#id_suggested_friends").val());
+          }
+
+        });
+    });
+</script>
+-->
 
 {% endblock %}

@@ -221,7 +221,7 @@
 
                                 </button>
                             </form>
-                            <form method="post" id="test" value="{{session.seshID}}">
+                            <form method="post" value="{{session.seshID}}">
                                 {% csrf_token %} <!-- security -->
                                 <button class="btn btn-primary a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" id='btnedit{{session.seshID}}' name="edit" type="submit" value="{{session.seshID}}">
                                    <span class="glyphicon glyphicon-pencil" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
@@ -370,7 +370,7 @@
     });
 </script> -->
 
-<script type="text/javascript">
+<script>
 
     //JOIN SESSION
     $(document).on('submit','#join_session',function(e){

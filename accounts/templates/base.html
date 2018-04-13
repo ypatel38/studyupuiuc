@@ -8,7 +8,17 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <!-- FONTS -->
+
+    <!-- for the date picker -->
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- for the multiselect menu -->
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.min.css">
+      <script src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.jquery.min.js"></script>
+
+<!-- FONTS -->
     <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Jua" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
@@ -55,6 +65,177 @@ green: #19a036
 */
     </style>
 
+    <style>
+    /* https://gist.github.com/koenpunt/6424137 for Chosen to Bootstrap syling */
+
+      select{
+          width: 80%;/* Only for example */
+      }
+
+      select.form-control + .chosen-container.chosen-container-single .chosen-single {
+          display: block;
+          width: 100%;
+          height: 34px;
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.428571429;
+          color: #555;
+          vertical-align: middle;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+          -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+          background-image:none;
+      }
+
+      select.form-control + .chosen-container.chosen-container-single .chosen-single div {
+          top:4px;
+          color:#000;
+      }
+
+      select.form-control + .chosen-container .chosen-drop {
+          background-color: #FFF;
+          border: 1px solid #CCC;
+          border: 1px solid rgba(0, 0, 0, 0.15);
+          border-radius: 4px;
+          -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+          background-clip: padding-box;
+          margin: 2px 0 0;
+
+      }
+
+      select.form-control + .chosen-container .chosen-search input[type=text] {
+          display: block;
+          width: 100%;
+          height: 34px;
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.428571429;
+          color: #555;
+          vertical-align: middle;
+          background-color: #FFF;
+          border: 1px solid #CCC;
+          border-radius: 4px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+          transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+          background-image:none;
+      }
+
+      select.form-control + .chosen-container .chosen-results {
+          margin: 2px 0 0;
+          padding: 5px 0;
+          font-size: 14px;
+          list-style: none;
+          background-color: #fff;
+          margin-bottom: 5px;
+      }
+
+      select.form-control + .chosen-container .chosen-results li ,
+      select.form-control + .chosen-container .chosen-results li.active-result {
+          display: block;
+          padding: 3px 20px;
+          clear: both;
+          font-weight: normal;
+          line-height: 1.428571429;
+          color: #333;
+          white-space: nowrap;
+          background-image:none;
+      }
+      select.form-control + .chosen-container .chosen-results li:hover,
+      select.form-control + .chosen-container .chosen-results li.active-result:hover,
+      select.form-control + .chosen-container .chosen-results li.highlighted
+      {
+          color: #FFF;
+          text-decoration: none;
+          background-color: #428BCA;
+          background-image:none;
+      }
+
+      select.form-control + .chosen-container-multi .chosen-choices {
+          display: block;
+          width: 100%;
+          min-height: 20px;
+          padding: 4px;
+          font-size: 14px;
+          line-height: 1.428571429;
+          color: #555;
+          vertical-align: middle;
+          background-color: #FFF;
+          border: 1px solid #CCC;
+          border-radius: 4px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+          transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+          background-image:none;
+      }
+
+      select.form-control + .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+          height:auto;
+          padding:3px 0;
+      }
+
+      select.form-control + .chosen-container-multi .chosen-choices li.search-choice {
+
+          background-image: none;
+          padding: 3px 24px 3px 5px;
+          margin: 0 6px 0 0;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 1.428571429;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: middle;
+          cursor: pointer;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          color: #333;
+          background-color: #FFF;
+          border-color: #CCC;
+      }
+
+      select.form-control + .chosen-container-multi .chosen-choices li.search-choice .search-choice-close {
+          top:8px;
+          right:6px;
+      }
+
+      select.form-control + .chosen-container-multi.chosen-container-active .chosen-choices,
+      select.form-control + .chosen-container.chosen-container-single.chosen-container-active .chosen-single,
+      select.form-control + .chosen-container .chosen-search input[type=text]:focus{
+          border-color: #66AFE9;
+          outline: 0;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(102, 175, 233, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(102, 175, 233, 0.6);
+      }
+
+      select.form-control + .chosen-container-multi .chosen-results li.result-selected{
+          display: list-item;
+          color: #ccc;
+          cursor: default;
+          background-color: white;
+      }
+    </style>
+
+    <script>
+      var config = {
+        '.chosen-select'           : {},
+        '.chosen-select-deselect'  : {allow_single_deselect:true},
+        '.chosen-select-no-single' : {disable_search_threshold:10},
+        '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+        '.chosen-select-width'     : {width:"95%"}
+      }
+      for (var selector in config) {
+        $(selector).chosen(config[selector]);
+      }
+    /* https://gist.github.com/koenpunt/6424137 code ends here*/
+    </script>
+
     {% block head %}
 
     {% endblock %}
@@ -76,6 +257,7 @@ green: #19a036
         <div class="collapse navbar-collapse" id="myNavbar">
 
           <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'home:home' %}">Home</a>
             {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
             <li><a href="{% url 'accounts:logout' %}"><span class="glyphicon glyphicon-log-out logout"></span> <strong>Logout</strong></a></li>
