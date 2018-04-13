@@ -53,10 +53,11 @@
 			<label for="id_suggested_friends">Invite Friends:</label>
 		  <select data-placeholder="  Choose people to invite..." name="invited_friends" multiple class="form-control chosen-select" id="id_suggested_friends">
 				<!-- Eventually populated with suggested friends -->
+
 		    <option value="Engineering">Engineering</option>
 		    <option value="Carpentry">Carpentry</option>
 		    <option value="Plumbing">Plumbing</option>
-		    <option value="Electical">Electrical</option>
+		    <option value="Electrical">Electrical</option>
 		    <option value="Mechanical">Mechanical</option>
 		    <option value="HVAC">HVAC</option>
 		  </select>
@@ -68,14 +69,7 @@
 </div>
 
 <script>
-	// $.noConflict();
-	// jQuery(document).ready(function($){
-	// 	$( "#datepicker" ).datepicker();
-	// })//end of jquery
-
-	// $(".chosen-select").chosen({width: "100%"});
-
-	// /YYYY-MM-DD...
+	//date
 	$(document).ready(function(){
 		$("#id_date" ).datepicker();
 		$(".chosen-select").chosen({width: "100%"});
@@ -84,8 +78,17 @@
 </script>
 
 <script>
+		//time
 		$('#id_start_time').timepicker();
 		$('#id_end_time').timepicker();
+</script>
+
+<script>
+		//change friend addition list
+		$( "#id_enrolled_class" ).change(function() {
+			//update list of suggested friends to add
+			$('#id_suggested_friends').children('option').remove();
+		});
 </script>
 <!--
 <script>
