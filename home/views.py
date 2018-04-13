@@ -5,6 +5,7 @@ from django.urls import reverse #used for namespaces
 from django.http import HttpResponse
 from home.forms import *
 from datetime import datetime, timedelta
+import operator
 
 # Create your views here.
 
@@ -70,7 +71,7 @@ class HomeView(TemplateView):
                         ORDER BY    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
-        print(sessions_arr)
+        #print(sessions_arr)
 
         for i in range(len(sessions)):
             sessions[i]['is_owner'] = 0
@@ -372,13 +373,10 @@ class NewSessionView(TemplateView):
                         session_arr[len(session_arr)-1].append(date_arr[i][0])
                         session_arr[len(session_arr)-1].append(1)
                         session_arr[len(session_arr)-1].append(date_arr[i][1])
-                        print(session_arr[exists_dict[date_arr[i][0]]][2])
                 else:
                     session_arr[exists_dict[date_arr[i][0]]][1] += 1
                     if (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - session_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
                         session_arr[exists_dict[date_arr[i][0]]][2] = date_arr[i][1]
-
-
             print(session_arr)
             #aggregate the study sessions
             user_dict = {}
@@ -389,7 +387,7 @@ class NewSessionView(TemplateView):
                 delta = datetime.now().date() - session_arr[i][2]
                 if delta.days >= 0:
                     user_dict[session_arr[i][0]] = max(0, user_dict[session_arr[i][0]] - (int(delta.days/14)))
-            print(user_dict)
+            #print(user_dict)
             
             #MOM (Mate of a Mate) search. Go into current suggests and see if they have any strong relations
             mate_dict = []
@@ -411,7 +409,7 @@ class NewSessionView(TemplateView):
 
 
                 date_arr = cursor.fetchall()
-                print(date_arr)
+                #print(date_arr)
                 exists_dict = {}
                 temp_arr = []
                 for i in range(len(date_arr)):
@@ -422,7 +420,6 @@ class NewSessionView(TemplateView):
                             temp_arr[len(temp_arr)-1].append(date_arr[i][0])
                             temp_arr[len(temp_arr)-1].append(1)
                             temp_arr[len(temp_arr)-1].append(date_arr[i][1])
-                            print(temp_arr[exists_dict[date_arr[i][0]]][2])
                     else:
                         temp_arr[exists_dict[date_arr[i][0]]][1] += 1
                         if (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - temp_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
@@ -444,14 +441,15 @@ class NewSessionView(TemplateView):
                         user_dict[i] = int(float(mate_dict[j][i]*0.20) + 0.5)
                     else:
                         user_dict[i] = max(int(float(mate_dict[j][i]*0.20) + 0.5), user_dict[i])
-
-            class_dict[curr_class] = user_dict
+            #sort user_dict
+            sorted_x = sorted(user_dict.items(), key=operator.itemgetter(1), reverse = True)
+            class_dict[curr_class] = sorted_x
 
         #debug print
         for j in class_dict.keys():
             print(j)
-            for i in class_dict[j].keys():
-                print(str(class_dict[j][i]) + " Weight for study mate " + str(i))
+            for i in range(len(class_dict[j])):
+                print(str(class_dict[j][i][1]) + " Weight for study mate " + str(class_dict[j][i][0]))
         
         cursor.close()
 
