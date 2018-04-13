@@ -14,6 +14,7 @@ class RegisterView(TemplateView):
     def get(self, request):
         form = RegistrationForm()
         args = {'form': form}
+        print(form)
         return render(request, self.template_name, args)
 
     def post(self, request):

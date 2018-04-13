@@ -31,14 +31,24 @@
 		<form method="post">
 			{% csrf_token %} <!-- security -->
 
-			<tr><th><label for="id_enrolled_class">Class:</label></th><td><input type="text" name="enrolled_class" class="form-control" placeholder="Select a Class" required id="id_enrolled_class" /></td></tr><br>
-			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control" placeholder="Select a Start Time" required id="id_start_time" /></td></tr><br>
-			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control" placeholder="Select a End Time" required id="id_end_time" /></td></tr><br>
-			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Select a Date" required id="datepicker" /></td></tr><br>
+			<tr><th><label for="id_enrolled_class">Class:</label></th><td><br>
+
+			<select data-placeholder="  Select a Class" name="enrolled_class" class="form-control chosen-select" required id="id_enrolled_class">
+				{% for class_code in classes %}
+				<!-- Eventually populated with suggested friends -->
+		    <option value="{{class_code}}">{{ class_code }}</option>
+				{% endfor %}
+		  </select>
+			<br><br>
+
+			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Select a Start Time" required id="id_start_time" /></td></tr><br>
+			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Select a End Time" required id="id_end_time" /></td></tr><br>
+			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Select a Date" required id="id_date" /></td></tr><br>
 			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" class="form-control" placeholder="Enter a Building Name" required id="id_building" /></td></tr><br>
 			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" class="form-control" placeholder="Enter a Room Number" required id="id_room_number" /></td></tr><br>
 			<tr><th><label for="id_description">Description:</label></th><td><input type="text" name="description" class="form-control" placeholder="Enter a Description (optional)" id="id_description" /></td></tr><br>
 
+			<!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
 
 			<label for="id_suggested_friends">Invite Friends:</label>
 		  <select data-placeholder="  Choose people to invite..." name="invited_friends" multiple class="form-control chosen-select" id="id_suggested_friends">
@@ -55,8 +65,6 @@
 
 			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
 		</form>
-
-	</div>
 </div>
 
 <script>
@@ -69,10 +77,15 @@
 
 	// /YYYY-MM-DD...
 	$(document).ready(function(){
-		$( "#datepicker" ).datepicker();
+		$("#id_date" ).datepicker();
 		$(".chosen-select").chosen({width: "100%"});
 	})
 
+</script>
+
+<script>
+		$('#id_start_time').timepicker();
+		$('#id_end_time').timepicker();
 </script>
 <!--
 <script>

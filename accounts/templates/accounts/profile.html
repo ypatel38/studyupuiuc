@@ -15,13 +15,16 @@
 		.title_header {
 			font-family: 'Caveat';
 			color: #3a4470;
-			font-size: 80px;
+			font-size: 60px;
       text-align: center;
 		}
     .info {
       text-align: center;
       font-weight: bold;
-
+    }
+    .chosen-select{
+      max-width: 30px;
+      min-width: 30px;
     }
 	</style>
 {% endblock %}
@@ -34,8 +37,33 @@
       <p class="info">Name: {{ user.first_name }} {{ user.last_name }}</p>
   		<p class="info">netID: {{ user.username }}</p>
 
+      <!-- TODO: Classes enrolled in !-->
+      <div class="col-md-9 col-md-offset-5">
+        <label for="id_classes">Enrolled Classes:</label><br>
+
+        <select class="selectpicker" multiple style="text-align: center;" id="id_classes">
+          <!-- dynamically list classes here-->
+          <option>Mustard</option>
+          <option>Ketchup</option>
+          <option>Relish</option>
+        </select>
 	</div>
 
-<!-- TODO: Classes enrolled in !-->
+  <script>
+  	// $.noConflict();
+  	// jQuery(document).ready(function($){
+  	// 	$( "#datepicker" ).datepicker();
+  	// })//end of jquery
+
+  	// $(".chosen-select").chosen({width: "100%"});
+
+  	// /YYYY-MM-DD...
+  	$(document).ready(function(){
+  		$( "#datepicker" ).datepicker();
+  		$(".chosen-select").chosen({width: "100%"});
+  	})
+
+  </script>
+
 
 {% endblock %}

@@ -11,20 +11,26 @@
       background-color:  #3a4470;
       color: #FFFFFF;
     }
+    .title_header {
+			font-family: 'Caveat';
+			color: #3a4470;
+			font-size: 50px;
+		}
 	</style>
 {% endblock %}
 
 {% block body %}
 	<div class="row">
     <div class="col-md-3 col-md-offset-5">
-<h2>Register</h2>
-<form method="post">
-  		{% csrf_token %} <!-- security -->
-      {{ form.as_p }} <!-- renders as paragraph tag -->
+    <h2 class="title_header">Register</h2>
+      <br>
+      <form method="post">
+        		{% csrf_token %} <!-- security -->
+            {{ form.as_p }} <!-- renders as paragraph tag -->
 
-<!--       <button type="submit">Register</button> -->
-      <button type="submit" class="btn btn-submit" role="button">Register</button>
-</form>
-</div>
-</div>
+      <!--       <button type="submit">Register</button> -->
+            <button type="submit" class="btn btn-submit" role="button">Register</button>
+      </form>
+    </div>
+  </div>
 {% endblock %}

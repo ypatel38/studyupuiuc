@@ -14,6 +14,11 @@
 		background-color: #3a4470;
 		color: #FFFFFF;
 	}
+	.title_header {
+		font-family: 'Caveat';
+		color: #3a4470;
+		font-size: 50px;
+	}
 </style>
 
 	<title>Login</title>
@@ -25,14 +30,16 @@
     <div class="col-md-2 col-md-offset-5">
 	<div class="container">
 
-		<h2>Login</h2>
+		<h2 class="title_header">Login</h2>
 
 		<br>
 
 		<div class="btn-toolbar">
 		<form method="post">
 			{% csrf_token %} <!-- security -->
-			{{ form.as_p }} <!-- username/pass fields, as_p means as paragraph, can make prettier-->
+
+			<tr><th><label for="id_username">Username:</label></th><td><input type="text" name="username" class="form-control" required id="id_username" style="max-width: 270px;"/></td></tr><br>
+			<tr><th><label for="id_password">Password</label></th><td><input type="password" name="password" class="form-control" required id="id_password" style="max-width: 270px;"/></td></tr><br>
 <!-- 			<button type="submit">Login</button> -->
 			<br>
 			<button type="submit" class="btn btn-submit btn-space" role="button">Login</button>

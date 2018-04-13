@@ -7,10 +7,17 @@
 			background-color: #FFFFFF;
 			color: #3a4470;
 			font-weight: bold;
+			text-align: center;
 		}
 		.btn:hover, .btn:focus, .btn:active {
 			background-color: #3a4470;
 			color: #FFFFFF;
+		}
+		.title_header {
+			font-family: 'Caveat';
+			color: #3a4470;
+			font-size: 80px;
+			text-align: center;
 		}
 	</style>
 {% endblock %}
@@ -18,7 +25,8 @@
 {% block body %}
 	<div class="row">
     <div class="col-md-2 col-md-offset-5">
-		<h1>Logged out</h1>
+		<h1 class="title_header">Logged out</h1>
+		<br>
 		<form action="{% url 'accounts:login' %}">
 <!-- 			<input type="submit" value="Login" /> -->
 		<button type="submit" class="btn btn-submit" role="button" value="login">Login</button>
