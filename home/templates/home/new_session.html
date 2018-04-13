@@ -13,6 +13,21 @@
 		}
 	</style>
 
+	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+
+<!-- for the date picker -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<!-- for the multiselect menu -->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.min.css">
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.jquery.min.js"></script>
+
+
+
 {% endblock %}
 
 {% block body %}
@@ -22,9 +37,40 @@
 		<form method="post">
 			{% csrf_token %} <!-- security -->
 			{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
+
+			<p>Date: <input type="text" id="datepicker"></p>
+
+			  <select data-placeholder="Choose session members..." name="tags[]" multiple class="chosen-select">
+			    <option value="Engineering">Engineering</option>
+			    <option value="Carpentry">Carpentry</option>
+			    <option value="Plumbing">Plumbing</option>
+			    <option value="Electical">Electrical</option>
+			    <option value="Mechanical">Mechanical</option>
+			    <option value="HVAC">HVAC</option>
+			  </select>
+
 			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
 		</form>
+
+
+
 	</div>
 </div>
+
+<script type="text/javascript">
+	// $.noConflict();
+	// jQuery(document).ready(function($){
+	// 	$( "#datepicker" ).datepicker();
+	// })//end of jquery
+
+	// $(".chosen-select").chosen({width: "100%"});
+
+	
+	$(document).ready(function(){
+		$( "#datepicker" ).datepicker();
+		$(".chosen-select").chosen({width: "100%"});
+	})//end of jquery
+
+</script>
 
 {% endblock %}
