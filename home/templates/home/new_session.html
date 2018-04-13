@@ -87,7 +87,9 @@
 		//change friend addition list
 		$( "#id_enrolled_class" ).change(function() {
 			//update list of suggested friends to add
-			$('#id_suggested_friends').children('option').remove();
+			//$('#id_suggested_friends').children('option').remove();
+			var $sf = $("test");
+			$sf.remove();
 		});
 </script>
 <!--

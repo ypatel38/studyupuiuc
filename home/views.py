@@ -373,9 +373,8 @@ class NewSessionView(TemplateView):
                         session_arr[len(session_arr)-1].append(date_arr[i][0])
                         session_arr[len(session_arr)-1].append(1)
                         session_arr[len(session_arr)-1].append(date_arr[i][1])
-                else:
-                    session_arr[exists_dict[date_arr[i][0]]][1] += 1
-                    if (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - session_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
+                elif (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - session_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
+                        session_arr[exists_dict[date_arr[i][0]]][1] += 1
                         session_arr[exists_dict[date_arr[i][0]]][2] = date_arr[i][1]
             print(session_arr)
             #aggregate the study sessions
@@ -420,9 +419,8 @@ class NewSessionView(TemplateView):
                             temp_arr[len(temp_arr)-1].append(date_arr[i][0])
                             temp_arr[len(temp_arr)-1].append(1)
                             temp_arr[len(temp_arr)-1].append(date_arr[i][1])
-                    else:
-                        temp_arr[exists_dict[date_arr[i][0]]][1] += 1
-                        if (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - temp_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
+                    elif (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - temp_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
+                            temp_arr[exists_dict[date_arr[i][0]]][1] += 1
                             temp_arr[exists_dict[date_arr[i][0]]][2] = date_arr[i][1]
 
                 #aggregate the study sessions
