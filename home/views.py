@@ -388,7 +388,10 @@ class NewSessionView(TemplateView):
             if delta.days >= 0:
                 if session_arr[i][0] not in user_dict.keys():
                     #insert into dict
-                    user_dict[session_arr[i][0]] = 5
+                    if session_arr[i][1] == curr_class:
+                        user_dict[session_arr[i][0]] = 5
+                    else:
+                        user_dict[session_arr[i][0]] = 2
                 if session_arr[i][1] == curr_class:
                     #print("Before: " + str(user_dict[session_arr[i][0]]))
                     user_dict[session_arr[i][0]] = int(max(0, user_dict[session_arr[i][0]] + session_arr[i][2] - (int(delta.days/14))))
@@ -444,7 +447,10 @@ class NewSessionView(TemplateView):
                 if delta.days >= 0:
                     if temp_arr[i][0] not in mate_dict[len(mate_dict)-1].keys():
                         #initalize the dictionary
-                        mate_dict[len(mate_dict)-1][temp_arr[i][0]] = 5
+                        if temp_arr[i][1] == curr_class:
+                            mate_dict[len(mate_dict)-1][temp_arr[i][0]] = 5
+                        else:
+                            mate_dict[len(mate_dict)-1][temp_arr[i][0]] = 2
 
                     if temp_arr[i][1] == curr_class:
                         mate_dict[len(mate_dict)-1][temp_arr[i][0]] = int(max(0, mate_dict[len(mate_dict)-1][temp_arr[i][0]] + temp_arr[i][2] - (int(delta.days/14))))
