@@ -7,17 +7,17 @@
 			background-color: #FFFFFF;
 			color: #3a4470;
 			font-weight: bold;
-			text-align: center;
+			margin-left: 140px;
 		}
 		.btn:hover, .btn:focus, .btn:active {
 			background-color: #3a4470;
 			color: #FFFFFF;
 		}
 		.title_header {
-			font-family: 'Caveat';
-			color: #3a4470;
-			font-size: 80px;
-			text-align: center;
+			font-family: 'Coustard';
+  		color: #3a4470;
+  		font-size: 40px;
+  		margin-left: 70px;
 		}
 	</style>
 {% endblock %}
@@ -25,6 +25,7 @@
 {% block body %}
 	<div class="row">
     <div class="col-md-2 col-md-offset-5">
+			<br>
 		<h1 class="title_header">Logged out</h1>
 		<br>
 		<form action="{% url 'accounts:login' %}">

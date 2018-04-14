@@ -59,6 +59,7 @@
   height:100%;
   overflow:auto;
 }
+
 .sessionLabel {
     margin-right: 25px;
 }
@@ -107,6 +108,10 @@
     /*
     border-color: #6D7FCC;
     border-width: 2px;*/
+}
+
+label {
+  font-family: "Overlock";
 }
 
 .navbar-custom {
@@ -265,6 +270,87 @@
     });
   </script>
 
+<script>
+
+    //JOIN SESSION
+    $(document).on('submit','#join_session',function(e){
+        //e.stopPropagation();
+        e.preventDefault();
+        var seshID =  $(this).attr('value');
+        var is_joined = ((parseInt($("#btnjoin" + seshID).attr('is_joined'))) + 1) % 2;
+
+
+        $("#btnjoin" + seshID).attr('is_joined', is_joined.toString())
+
+
+
+        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        $.ajax({
+          type:'POST',
+          url:'',
+          data:{
+            seshID: $(this).attr('value'),
+            function: "is_joined",
+            is_joined: $("#btnjoin" + seshID).attr('is_joined')
+          },
+          success:function(){
+              //var seshID =  $(this).attr('value');
+              if($("#btnjoin" + seshID).attr('is_joined') == "0"){
+                $("#btnjoin" + seshID).removeClass('btn-danger');
+                $("#btnjoin" + seshID).addClass('btn-success');
+                $("#btnjoin" + seshID).html('</span><span><strong>Join</strong></span>');
+              }
+              else{
+                $("#btnjoin" + seshID).removeClass('btn-success');
+                $("#btnjoin" + seshID).addClass('btn-danger');
+                $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
+              }
+          }
+
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    var seshID =  $(this).attr('value');
+    $(document).on('hover','#join_session',function(e){
+      var seshID =  $(this).attr('value');
+      $("#btnedit" + seshID).html('Test');
+    });
+</script>
+
+{% endblock %}
+
 <!-- <script type="text/javascript">
   //DELETE Session
   $(document).on('submit','#delete_session',function(e){
@@ -369,84 +455,3 @@
         });
     });
 </script> -->
-
-<script>
-
-    //JOIN SESSION
-    $(document).on('submit','#join_session',function(e){
-        //e.stopPropagation();
-        e.preventDefault();
-        var seshID =  $(this).attr('value');
-        var is_joined = ((parseInt($("#btnjoin" + seshID).attr('is_joined'))) + 1) % 2;
-
-
-        $("#btnjoin" + seshID).attr('is_joined', is_joined.toString())
-
-
-
-        // FOLLOWING FROM DJANGO WEBSITE IS FOR CSRF+AJAX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        var csrftoken = getCookie('csrftoken');
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-        //END here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        $.ajax({
-          type:'POST',
-          url:'',
-          data:{
-            seshID: $(this).attr('value'),
-            function: "is_joined",
-            is_joined: $("#btnjoin" + seshID).attr('is_joined')
-          },
-          success:function(){
-              //var seshID =  $(this).attr('value');
-              if($("#btnjoin" + seshID).attr('is_joined') == "0"){
-                $("#btnjoin" + seshID).removeClass('btn-danger');
-                $("#btnjoin" + seshID).addClass('btn-success');
-                $("#btnjoin" + seshID).html('</span><span><strong>Join</strong></span>');
-              }
-              else{
-                $("#btnjoin" + seshID).removeClass('btn-success');
-                $("#btnjoin" + seshID).addClass('btn-danger');
-                $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
-              }
-          }
-
-        });
-    });
-</script>
-
-<script type="text/javascript">
-    var seshID =  $(this).attr('value');
-    $(document).on('hover','#join_session',function(e){
-      var seshID =  $(this).attr('value');
-      $("#btnedit" + seshID).html('Test');
-    });
-</script>
-
-{% endblock %}

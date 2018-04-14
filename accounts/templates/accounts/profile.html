@@ -13,9 +13,9 @@
 			color: #FFFFFF;
 		}
 		.title_header {
-			font-family: 'Caveat';
+			font-family: 'Coustard';
 			color: #3a4470;
-			font-size: 60px;
+			font-size: 40px;
       text-align: center;
 		}
     .info {
@@ -31,22 +31,14 @@
 
 {% block body %}
 	<div class="row">
-
-  		<h1 class="title_header">My Profile</h1>
       <br>
+  		<h1 class="title_header">My Profile</h1>
+
       <p class="info">Name: {{ user.first_name }} {{ user.last_name }}</p>
   		<p class="info">netID: {{ user.username }}</p>
 
       <!-- TODO: Classes enrolled in !-->
-      <div class="col-md-9 col-md-offset-5">
-        <label for="id_classes">Enrolled Classes:</label><br>
 
-        <select class="selectpicker" multiple style="text-align: center;" id="id_classes">
-          <!-- dynamically list classes here-->
-          <option>Mustard</option>
-          <option>Ketchup</option>
-          <option>Relish</option>
-        </select>
 	</div>
 
   <script>

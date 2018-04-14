@@ -12,10 +12,11 @@
 			color: #FFFFFF;
 		}
 		.title_header {
-			font-family: 'Caveat';
+			font-family: 'Coustard';
 			color: #3a4470;
-			font-size: 50px;
+			font-size: 40px;
 		}
+		textarea { resize:none; }
 	</style>
 
 
@@ -27,6 +28,7 @@
 {% block body %}
 <div class="container">
 	<h2 class="title_header">Create New Session</h2>
+	<br>
 	<div class="container">
 		<form method="post">
 			{% csrf_token %} <!-- security -->
@@ -41,27 +43,26 @@
 		  </select>
 			<br><br>
 
-			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Select a Start Time" required id="id_start_time" /></td></tr><br>
-			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Select a End Time" required id="id_end_time" /></td></tr><br>
-			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Select a Date" required id="id_date" /></td></tr><br>
-			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" class="form-control" placeholder="Enter a Building Name" required id="id_building" /></td></tr><br>
-			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" class="form-control" placeholder="Enter a Room Number" required id="id_room_number" /></td></tr><br>
-			<tr><th><label for="id_description">Description:</label></th><td><input type="text" name="description" class="form-control" placeholder="Enter a Description (optional)" id="id_description" /></td></tr><br>
+			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select a start time..." required id="id_start_time" /></td></tr><br>
+			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select an end time..." required id="id_end_time" /></td></tr><br>
+			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Click to select a date..." required id="id_date" /></td></tr><br>
+			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" class="form-control" placeholder="Enter a building name..." required id="id_building" /></td></tr><br>
+			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" class="form-control" placeholder="Enter a room number.." required id="id_room_number" /></td></tr><br>
+			<tr><th><label for="id_description">Description:</label></th><td><textarea rows="3" type="text" name="description" class="form-control" placeholder="Enter a description (optional)..." id="id_description"> </textarea></td></tr><br>
 
 			<!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
 
 			<label for="id_suggested_friends">Invite Friends:</label>
-		  <select data-placeholder="  Choose people to invite..." name="invited_friends" multiple class="form-control chosen-select" id="id_suggested_friends">
-				<!-- Eventually populated with suggested friends -->
-
-		    <option value="Engineering">Engineering</option>
-		    <option value="Carpentry">Carpentry</option>
-		    <option value="Plumbing">Plumbing</option>
-		    <option value="Electrical">Electrical</option>
-		    <option value="Mechanical">Mechanical</option>
-		    <option value="HVAC">HVAC</option>
-		  </select>
-
+			<div class="friend_picker">
+			  <select data-placeholder="  Choose people to invite..." name="invited_friends" multiple class="form-control chosen-select" id="id_suggested_friends">
+					<!-- Eventually populated with suggested friends -->
+					{% for key1, class in class_dict.items %}
+						{% for student in class %}
+			    		<option value="{{student.0}}">{{student.0}}  ({{key1}})</option>
+						{% endfor %}
+					{% endfor %}
+			  </select>
+			</div>
 			<br><br>
 
 			<button type="submit" class="btn btn-submit" role="button">Create Session</button>
@@ -73,6 +74,54 @@
 	$(document).ready(function(){
 		$("#id_date" ).datepicker();
 		$(".chosen-select").chosen({width: "100%"});
+
+/*
+		//The following takes html JSON and converts to JS JSON
+		var html_classes = "{{class_dict}}";
+		var html_split = html_classes.split('&quot;')
+		var json_classes = "";
+
+		for(var i = 0; i < html_split.length; i++){
+			json_classes += html_split[i];
+			json_classes += "\"";
+		}
+
+		json_classes = json_classes.substring(0, json_classes.length-1);
+
+		//json_classes now holds json info in a string
+
+		var json_classes_conv = JSON.parse(json_classes);
+		console.log(json_classes_conv); // outputs &quot;&amp;
+
+		var class_picked = $("#id_enrolled_class option:selected").text(); //currently selected class
+		console.log(class_picked);
+
+		var new_flist = "";
+
+
+		new_flist += "<div class=\"friend_picker\">"
+
+		for(var i = 0; i < json_classes_conv.ECE391.length; i++){
+			console.log(json_classes_conv.ECE391[i][0]);
+		}
+
+		for(var i = 0; i < json_classes_conv[class_picked].length; i++){
+			new_flist += ("<option value=\"" + json_classes_conv[class_picked][i][0] + "\">" + json_classes_conv[class_picked][i][0] + "</option>")
+			console.log(json_classes_conv[class_picked][i]);
+		}
+
+
+		new_flist += "</div>";
+
+		console.log(new_flist);
+
+		//$("div.friend_picker").replaceWith(new_flist);
+
+
+
+		$('#id_suggested_friends').change();
+
+*/
 	})
 
 </script>
@@ -85,12 +134,16 @@
 
 <script>
 		//change friend addition list
+		/*
 		$( "#id_enrolled_class" ).change(function() {
 			//update list of suggested friends to add
 			//$('#id_suggested_friends').children('option').remove();
-			var $sf = $("test");
-			$sf.remove();
+			var classes = $("#id_enrolled_class option:selected").text();
+			//$("div.friend_picker").replaceWith("<h2>" +  + "</h2>");
+			$("#id_suggested_friends").append('<option value="option6">option6</option>');
+			$('#id_suggested_friends').change();
 		});
+		*/
 </script>
 <!--
 <script>

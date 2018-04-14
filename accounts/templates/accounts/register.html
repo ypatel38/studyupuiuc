@@ -6,15 +6,17 @@
       background-color: #FFFFFF;
       color:  #3a4470;
       font-weight: bold;
+      margin-left: 110px;
     }
     .btn:hover, .btn:focus, .btn:active {
       background-color:  #3a4470;
       color: #FFFFFF;
     }
     .title_header {
-			font-family: 'Caveat';
-			color: #3a4470;
-			font-size: 50px;
+      font-family: 'Coustard';
+  		color: #3a4470;
+  		font-size: 40px;
+  		margin-left: 70px;
 		}
 	</style>
 {% endblock %}
@@ -22,6 +24,7 @@
 {% block body %}
 	<div class="row">
     <div class="col-md-3 col-md-offset-5">
+      <br><br>
     <h2 class="title_header">Register</h2>
       <br>
       <form method="post">
@@ -29,6 +32,7 @@
             {{ form.as_p }} <!-- renders as paragraph tag -->
 
       <!--       <button type="submit">Register</button> -->
+      <br>
             <button type="submit" class="btn btn-submit" role="button">Register</button>
       </form>
     </div>

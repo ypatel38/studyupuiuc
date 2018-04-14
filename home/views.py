@@ -5,7 +5,7 @@ from django.urls import reverse #used for namespaces
 from django.http import HttpResponse
 from home.forms import *
 from datetime import datetime, timedelta
-import operator
+import operator, json
 
 # Create your views here.
 
@@ -452,6 +452,12 @@ class NewSessionView(TemplateView):
         cursor.close()
 
         form = NewSessionForm()
+
+        # use this if jquery works
+        #js_class_dict = json.dumps(class_dict)
+        #print(type(js_class_dict))
+        print(class_dict)
+
         args = {'form': form, 'classes': classes, 'class_dict': class_dict}
         return render(request, self.template_name, args)
 
