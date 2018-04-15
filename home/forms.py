@@ -80,7 +80,7 @@ class NewSessionForm(forms.Form):
                                               [request.user.username,
                                               new_session_id,
                                               True])
-
+                                              
                 #get data to pass
                 currTime = str(datetime.datetime.now().time())
                 currDate = str(datetime.datetime.now().date())

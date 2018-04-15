@@ -289,7 +289,8 @@ class HomeView(TemplateView):
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID AND \
                                         home_classofsession.seshID = home_sessionhas.seshID \
-                            ORDER BY    home_studysession.start_time", [str(request.user)])
+                            ORDER BY    home_studysession.date, \
+                                        home_studysession.start_time", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -506,7 +507,10 @@ class NewSessionView(TemplateView):
         else:
             req['start_time'] = req['start_time'][:colon_idx+3]
 
-        start_hours = req['start_time'][:colon_idx]
+        start_hours = int(req['start_time'][:colon_idx])
+
+        if start_hours == 12:
+            start_hours = 0
         start_min = req['start_time'][colon_idx:]
 
 
@@ -534,15 +538,17 @@ class NewSessionView(TemplateView):
             req['end_time'] = req['end_time'][:colon_idx+3]
 
 
-        end_hours = req['end_time'][:colon_idx]
+        end_hours = int(req['end_time'][:colon_idx])
+        if end_hours == 12:
+            end_hours = 0
         end_min = req['end_time'][colon_idx:]
 
 
-        if(end_hours < start_hours):
-            is_correct = False
-        elif(end_hours == start_hours):
+        if(end_hours == start_hours):
             if(end_min <= start_min):
                 is_correct = False
+        elif(end_hours < start_hours):
+            is_correct = False
 
         #check date TODO
         # check_date = re.compile('regex here')
