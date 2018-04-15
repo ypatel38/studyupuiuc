@@ -38,7 +38,8 @@ class HomeView(TemplateView):
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    home_studysession.start_time", [str(request.user)])
+                        ORDER BY    home_studysession.date, \
+                                    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
         #print(sessions_arr)
@@ -69,7 +70,8 @@ class HomeView(TemplateView):
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID AND \
                                     home_classofsession.seshID = home_sessionhas.seshID \
-                        ORDER BY    home_studysession.start_time", [str(request.user)])
+                        ORDER BY    home_studysession.date, \
+                                    home_studysession.start_time", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
         #print(sessions_arr)
@@ -154,7 +156,8 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                            ORDER BY    home_studysession.start_time", [str(request.user)])
+                            ORDER BY    home_studysession.date, \
+                                        home_studysession.start_time", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -185,7 +188,8 @@ class HomeView(TemplateView):
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID AND \
                                         home_classofsession.seshID = home_sessionhas.seshID \
-                            ORDER BY    home_studysession.start_time", [str(request.user)])
+                            ORDER BY    home_studysession.date, \
+                                        home_studysession.start_time", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -258,7 +262,8 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                            ORDER BY    home_studysession.start_time", [str(request.user)])
+                            ORDER BY    home_studysession.date, \
+                                        home_studysession.start_time", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
