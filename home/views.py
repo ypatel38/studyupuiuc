@@ -18,6 +18,7 @@ class HomeView(TemplateView):
         #sql query's here to get all info and put into args (temp)
         #TODO: THIS QUERY IS TEMPORARY FOR A TEST, NEEDS TO BE CLEANED UP WITH SORTS, ORGANIZED ARGS, ETC!!!
 
+
         # find session corresponding to users enrolled ClassOfSession
         cursor = connection.cursor()
         cursor.execute("SELECT      home_studysession.start_time, \
@@ -326,7 +327,7 @@ class HomeView(TemplateView):
             return redirect(reverse('home:edit_session', kwargs={"seshID": seshID}))
 
         else:
-            return HttpResponse("ERROR")
+            return HttpResponse("You shouldn't be here")
 
 
 

@@ -1,4 +1,4 @@
-import uuid
+import uuid, datetime
 from django import forms
 from django.db import connection #sql
 
@@ -80,6 +80,56 @@ class NewSessionForm(forms.Form):
                                               [request.user.username,
                                               new_session_id,
                                               True])
+
+                #get data to pass
+                currTime = str(datetime.datetime.now().time())
+                currDate = str(datetime.datetime.now().date())
+                for i in range(0, len(currTime)):
+                    if(currTime[i] == '.'):
+                        decimal_idx = i
+                        break;
+
+                currTime = currTime[:decimal_idx]
+
+                currDateTime = currDate + " " + currTime
+
+                newNotId =str(uuid.uuid4())
+
+                #update notifications with invited people
+                cursor.execute("INSERT INTO  home_notification(created, \
+                                                               is_read, \
+                                                               seshID, \
+                                                               notID) \
+                                VALUES       (%s, \
+                                              %s, \
+                                              %s, \
+                                              %s)",
+                                              [currDateTime,
+                                              False,
+                                              new_session_id,
+                                              newNotId])
+
+                cursor.execute("INSERT INTO  home_sentfrom(netID, \
+                                                           notID) \
+                                VALUES       (%s, \
+                                              %s)",
+                                              [request.user.username,
+                                              newNotId])
+
+
+                print(request.POST.getlist('invited_friends'))
+                #print(request.POST['invited_friends'])
+
+                for i in range(0, len(request.POST.getlist('invited_friends'))):
+
+                    cursor.execute("INSERT INTO  home_sentto(netID, \
+                                                             notID) \
+                                    VALUES       (%s, \
+                                                  %s)",
+                                                  [request.POST.getlist('invited_friends')[i],
+                                                  newNotId])
+
+                cursor.close()
 
 class EditSessionForm(forms.Form):
 

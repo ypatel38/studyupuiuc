@@ -1,4 +1,4 @@
-import uuid
+import uuid, datetime
 from django.db import models
 
 # Create your models here.
@@ -18,6 +18,7 @@ class Notification(models.Model):
     created = models.DateTimeField(auto_now_add=True) #auto_now_add saves on first create
     is_read = models.BooleanField()
     notID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    seshID = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
 class OfficeHours(models.Model):
     start_time = models.TimeField()
@@ -65,10 +66,10 @@ class SentFrom(models.Model):
 
 class SentTo(models.Model):
     netID = models.TextField()
-    seshID = models.UUIDField(default=uuid.uuid4, editable=False)
+    notID = models.UUIDField(default=uuid.uuid4, editable=False)
 
     class Meta:
-        unique_together = (('netID', 'seshID'),)
+        unique_together = (('netID', 'notID'),)
 
 class OfficeHoursOf(models.Model):
     netID = models.TextField()
