@@ -7,6 +7,7 @@
 			background-color: #FFFFFF;
 			color: #3a4470;
 			font-weight: bold;
+
 		}
 		.btn:hover, .btn:focus, .btn:active {
 			background-color: #3a4470;
@@ -38,6 +39,34 @@
   		<p class="info">netID: {{ user.username }}</p>
 
       <!-- TODO: Classes enrolled in !-->
+      <!-- List enrolled classes here -->
+
+
+      <!-- enroll in classes here -->
+      <br><br>
+      <div class="col-md-2 col-md-offset-5">
+        <label for="id_class_enroller">Currently Joined Classes:</label>
+        <br>
+          <!-- dynamically put enrolled classes here -->
+          <p>ECE391</p>
+          <button type="submit" class="btn btn-submit" role="button">Leave</button>
+
+        <br><br>
+        <form method="post">
+          {% csrf_token %} <!-- security -->
+
+          <label for="id_class_enroller">Select Classes:</label>
+          <select data-placeholder="  Select classes to join..." name="classes_select" multiple class="form-control chosen-select" id="classes_select">
+            <!-- Eventually populated with classes not enrollled in -->
+            <option value="test">test</option>
+            <option value="test2">test2</option>
+          </select>
+          <br><br>
+
+          <button type="submit" class="btn btn-submit" role="button">Join Classes</button>
+        </form>
+      </div>
+
 
 	</div>
 
