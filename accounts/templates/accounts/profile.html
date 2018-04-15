@@ -39,32 +39,44 @@
   		<p class="info">netID: {{ user.username }}</p>
 
       <!-- TODO: Classes enrolled in !-->
-      <!-- List enrolled classes here -->
 
 
-      <!-- enroll in classes here -->
+
+
       <br><br>
       <div class="col-md-2 col-md-offset-5">
-        <label for="id_class_enroller">Currently Joined Classes:</label>
-        <br><br>
-          <!-- dynamically put enrolled classes here -->
-          <p>ECE391</p>
-          <button type="submit" class="btn btn-submit" role="button">Leave</button>
 
-        <br><br><br>
+      <!-- enroll in classes here -->
         <form method="post">
           {% csrf_token %} <!-- security -->
 
           <label for="id_class_enroller">Join Classes:</label>
           <select data-placeholder="  Select classes to join..." name="classes_select" multiple class="form-control chosen-select" id="classes_select">
             <!-- Eventually populated with classes not enrollled in -->
-            <option value="test">test</option>
-            <option value="test2">test2</option>
+            {% for each in other_classes %}
+              <option value="{{ each }}">{{ each }}</option>
+            {% endfor %}
+
           </select>
           <br><br>
 
           <button type="submit" class="btn btn-submit" role="button">Join Classes</button>
         </form>
+
+        <br><br><br>
+
+      <!-- List enrolled classes here -->
+        <label for="id_class_enroller">Currently Joined Classes:</label>
+        <br><br>
+          <!-- dynamically put enrolled classes here -->
+        <form method="post">
+          {% for each in enrolled_classes %}
+            <p>{{ each }}</p>
+            <button type="submit" class="btn btn-submit" value = "{{ each }}" role="button">Leave</button>
+            <br><br>
+          {% endfor %}
+        </form>
+
       </div>
 
 
