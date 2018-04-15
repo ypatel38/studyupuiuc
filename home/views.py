@@ -219,7 +219,7 @@ class HomeView(TemplateView):
             connection.close()
             #print(sessions)
             args = {'sessions': sessions, 'enrolledin': enrolledin}
-            print(sessions)
+            #print(sessions)
             return render(request, self.template_name, args)
 
         elif function == "delete":

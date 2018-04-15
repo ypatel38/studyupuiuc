@@ -70,9 +70,11 @@
         <br><br>
           <!-- dynamically put enrolled classes here -->
         <form method="post">
+          {% csrf_token %} <!-- security -->
+
           {% for each in enrolled_classes %}
             <p>{{ each }}</p>
-            <button type="submit" class="btn btn-submit" value = "{{ each }}" role="button">Leave</button>
+            <button type="submit" class="btn btn-submit" name="remove_class" value = "{{ each }}" role="button">Leave</button>
             <br><br>
           {% endfor %}
         </form>
