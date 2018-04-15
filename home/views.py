@@ -5,7 +5,7 @@ from django.urls import reverse #used for namespaces
 from django.http import HttpResponse
 from home.forms import *
 from datetime import datetime, timedelta
-import operator, json
+import operator, json, re
 
 # Create your views here.
 
@@ -462,7 +462,137 @@ class NewSessionView(TemplateView):
         return render(request, self.template_name, args)
 
     def post(self, request):
-        form = NewSessionForm(request.POST)
+        #temp_post = request.POST.copy() use this to edit the request.POST
+        req = request.POST.copy()
+        is_correct = True
+
+        #check enrolled class TODO
+        # check_class = re.compile('regex here')
+        # if not check_class.match(req['enrolled_class']:
+        #     is_correct = False
+
+        #check start_time and end_time TODO
+        # check_time = re.compile('regex here')
+        # if not check_time.match(req['start_time']:
+        #     is_correct = False
+        # if not check_time.match(req['end_time']:
+        #     is_correct = False
+
+
+        #fix the times here
+
+        #start time
+        colon_idx = -1
+        am_or_pm = ""
+
+        for i in range(0, len(req['start_time'])):
+            if(req['start_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['start_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['start_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+        if(am_or_pm == "pm"):
+            hours = req['start_time'][:colon_idx]
+            hours = int(hours)
+            hours += 12
+            if(hours >= 10):
+                colon_idx=2
+            req['start_time'] = str(hours) + ':' + req['start_time'][colon_idx:colon_idx+2]
+        else:
+            req['start_time'] = req['start_time'][:colon_idx+3]
+
+        start_hours = req['start_time'][:colon_idx]
+        start_min = req['start_time'][colon_idx:]
+
+
+        #end time
+        colon_idx = -1
+        am_or_pm = ""
+        for i in range(0, len(req['end_time'])):
+            if(req['end_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['end_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['end_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+        if(am_or_pm == "pm"):
+            hours = req['end_time'][:colon_idx]
+            hours = int(hours)
+            hours += 12
+            if(hours <= 21):
+                colon_idx+=1
+            req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
+        else:
+            req['end_time'] = req['end_time'][:colon_idx+3]
+
+
+        end_hours = req['end_time'][:colon_idx]
+        end_min = req['end_time'][colon_idx:]
+
+
+        if(end_hours < start_hours):
+            is_correct = False
+        elif(end_hours == start_hours):
+            if(end_min <= start_min):
+                is_correct = False
+
+        #check date TODO
+        # check_date = re.compile('regex here')
+        # if not check_date.match(req['date']:
+        #     is_correct = False
+
+        #fix date here
+        first_slash_idx = -1
+        second_slash_idx = -1
+        for i in range(0, len(req['date'])):
+            if(req['date'][i] == '/'):
+                if(first_slash_idx == -1):
+                    first_slash_idx = i
+                else:
+                    second_slash_idx = i
+                    break
+
+        req['date'] = req['date'][second_slash_idx+1:] + '-' + req['date'][:first_slash_idx] + '-' + req['date'][first_slash_idx+1:second_slash_idx]
+
+
+        #check building TODO
+        # check_building = re.compile('regex here')
+        # if not check_building.match(req['building']:
+        #     is_correct = False
+
+        #check room_number TODO
+        # check_room = re.compile('regex here')
+        # if not check_room.match(req['date']:
+        #     is_correct = False
+
+        #check invited_friends (not done atm)
+
+        #use regex to determine true of false here
+        #STILL NEED TO CHECK IF THE USER OWNS THE STUDY SESSION THEY ARE EDITING
+
+        #temp = re.compile("regex here")
+        #temp.match("input string")
+        #need to fix data here
+
+        if not is_correct:
+            return redirect(reverse('home:new_session'))
+
+        form = NewSessionForm(req)
+
+        #example post request below:
+        # <QueryDict: {
+        # 'csrfmiddlewaretoken': ['nc8vJkznn8z1ZJeFwe4xdokfEg7lx7grKiIyNGwujoS0f0n6xRiUhM80HtQUlotB'],
+        # 'enrolled_class': ['CS411'], 'start_time': ['12:30am'], 'end_time': ['1:30am'],
+        # 'date': ['04/18/2018'], 'building': ['ECEB'], 'room_number': ['1000'],
+        # 'description': ['asdasdasdadasdad'], 'invited_friends': ['bill', 'joe']}>
+
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
             form.save(request);

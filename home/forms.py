@@ -10,7 +10,7 @@ class NewSessionForm(forms.Form):
     building = forms.CharField(required=True, label="Building", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Text...' }))
     room_number = forms.CharField(required=True, label="Room Number", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '101...' }))
     description = forms.CharField(required=False, label="Description", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Text...' }))
-    
+
     class Meta:
         fields = { #use if u want to whitelist
             'enrolled_class',
@@ -141,8 +141,6 @@ class EditSessionForm(forms.Form):
         self.fields['description'] = forms.CharField(required=False, label="Description", initial = old_session_data["description"], widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Text...' }))
 
     def is_valid(self):
-        #use regex to determine true of false here
-        #STILL NEED TO CHECK IF THE USER OWNS THE STUDY SESSION THEY ARE EDITING
         return True
 
     def save(self, request, seshID):
@@ -180,5 +178,3 @@ class EditSessionForm(forms.Form):
                                       seshID])
 
         connection.close()
-
-
