@@ -628,12 +628,174 @@ class EditSessionView(TemplateView):
 
     def get(self, request, seshID):
         form = EditSessionForm(seshID)
-        args = {'form': form}
+        print(form.fields["enrolled_class"].to_python('s'))
+        cursor = connection.cursor()
+        #find current enrolled classes
+        cursor.execute("SELECT  accounts_enrolledin.class_code  \
+                        FROM    accounts_enrolledin \
+                        WHERE   accounts_enrolledin.netID = %s", [str(request.user)])
+        middleman = cursor.fetchall()
+        classes = []
+        for i in range(len(middleman)):
+            classes.append(middleman[i][0])
+
+        cursor.execute("SELECT      home_studysession.start_time, \
+                                    home_studysession.end_time, \
+                                    home_studysession.date, \
+                                    home_studysession.building, \
+                                    home_studysession.room_number, \
+                                    home_studysession.description, \
+                                    home_classofsession.class_code \
+                        FROM        home_classofsession, \
+                                    home_studysession \
+                        WHERE       home_classofsession.seshID = %s AND \
+                                    home_studysession.seshID = %s", [seshID, seshID])
+
+        old_session_sql = cursor.fetchall()
+
+        old_session_data = {}
+        old_session_data["start_time"] = old_session_sql[0][0]
+        old_session_data["end_time"] = old_session_sql[0][1]
+        old_session_data["date"] = str(old_session_sql[0][2])[5:7] + "/" + str(old_session_sql[0][2])[8:10] + "/" + str(old_session_sql[0][2])[:4]
+        old_session_data["building"] = old_session_sql[0][3]
+        old_session_data["room_number"] = old_session_sql[0][4]
+        old_session_data["description"] = old_session_sql[0][5]
+        old_session_data["enrolled_class"] = old_session_sql[0][6]
+
+        cursor.close()
+
+        args = {'form': form, 'classes': classes, 'old_session_data': old_session_data}
         return render(request, self.template_name, args)
 
     def post(self, request, seshID):
         form = EditSessionForm(seshID)
 
+        req = request.POST.copy()
+        is_correct = True
+
+        #check enrolled class TODO
+        # check_class = re.compile('regex here')
+        # if not check_class.match(req['enrolled_class']:
+        #     is_correct = False
+
+        #check start_time and end_time TODO
+        # check_time = re.compile('regex here')
+        # if not check_time.match(req['start_time']:
+        #     is_correct = False
+        # if not check_time.match(req['end_time']:
+        #     is_correct = False
+
+
+        #fix the times here
+
+        #start time
+        colon_idx = -1
+        am_or_pm = ""
+
+        for i in range(0, len(req['start_time'])):
+            if(req['start_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['start_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['start_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+        if(am_or_pm == "pm"):
+            hours = req['start_time'][:colon_idx]
+            hours = int(hours)
+            hours += 12
+            if(hours >= 10):
+                colon_idx=2
+            req['start_time'] = str(hours) + ':' + req['start_time'][colon_idx:colon_idx+2]
+        else:
+            req['start_time'] = req['start_time'][:colon_idx+3]
+
+        start_hours = int(req['start_time'][:colon_idx])
+
+        if start_hours == 12:
+            start_hours = 0
+        start_min = req['start_time'][colon_idx:]
+
+
+        #end time
+        colon_idx = -1
+        am_or_pm = ""
+        for i in range(0, len(req['end_time'])):
+            if(req['end_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['end_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['end_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+        if(am_or_pm == "pm"):
+            hours = req['end_time'][:colon_idx]
+            hours = int(hours)
+            hours += 12
+            if(hours <= 21):
+                colon_idx+=1
+            req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
+        else:
+            req['end_time'] = req['end_time'][:colon_idx+3]
+
+
+        end_hours = int(req['end_time'][:colon_idx])
+        if end_hours == 12:
+            end_hours = 0
+        end_min = req['end_time'][colon_idx:]
+
+
+        if(end_hours == start_hours):
+            if(end_min <= start_min):
+                is_correct = False
+        elif(end_hours < start_hours):
+            is_correct = False
+
+        #check date TODO
+        # check_date = re.compile('regex here')
+        # if not check_date.match(req['date']:
+        #     is_correct = False
+
+        #fix date here
+        first_slash_idx = -1
+        second_slash_idx = -1
+        for i in range(0, len(req['date'])):
+            if(req['date'][i] == '/'):
+                if(first_slash_idx == -1):
+                    first_slash_idx = i
+                else:
+                    second_slash_idx = i
+                    break
+
+        req['date'] = req['date'][second_slash_idx+1:] + '-' + req['date'][:first_slash_idx] + '-' + req['date'][first_slash_idx+1:second_slash_idx]
+
+
+        #check building TODO
+        # check_building = re.compile('regex here')
+        # if not check_building.match(req['building']:
+        #     is_correct = False
+
+        #check room_number TODO
+        # check_room = re.compile('regex here')
+        # if not check_room.match(req['date']:
+        #     is_correct = False
+
+        #check invited_friends (not done atm)
+
+        #use regex to determine true of false here
+        #STILL NEED TO CHECK IF THE USER OWNS THE STUDY SESSION THEY ARE EDITING
+
+        #temp = re.compile("regex here")
+        #temp.match("input string")
+        #need to fix data here
+
+        if not is_correct:
+            return redirect(reverse('home:new_session'))
+            
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
             #print(request)

@@ -13,6 +13,7 @@
 			background-color: #3a4470;
 			color: #FFFFFF;
 		}
+
 		.title_header {
 			font-family: 'Coustard';
 			color: #3a4470;
@@ -23,15 +24,12 @@
       text-align: center;
       font-weight: bold;
     }
-    .chosen-select{
-      max-width: 30px;
-      min-width: 30px;
-    }
+
 	</style>
 {% endblock %}
 
 {% block body %}
-	<div class="row">
+
       <br>
   		<h1 class="title_header">My Profile</h1>
 
@@ -43,8 +41,8 @@
 
 
 
-      <br><br>
-      <div class="col-md-2 col-md-offset-5">
+      <br><br><br>
+      <div class="col-md-2 col-md-offset-4" style="float: left;">
 
       <!-- enroll in classes here -->
         <form method="post">
@@ -60,13 +58,17 @@
           </select>
           <br><br>
 
-          <button type="submit" class="btn btn-submit" role="button">Join Classes</button>
+          <button type="submit" class="btn btn-submit join_btn" role="button">Join Classes</button>
         </form>
+      </div>
 
-        <br><br><br>
-
+      <div class="col-md-2 col-md-offset-1">
       <!-- List enrolled classes here -->
         <label for="id_class_enroller">Currently Joined Classes:</label>
+        {% if not enrolled_classes %}
+          <h5>You have not joined any classes!</h5>
+        {% endif %}
+
         <br><br>
           <!-- dynamically put enrolled classes here -->
         <form method="post">
@@ -78,11 +80,11 @@
             <br><br>
           {% endfor %}
         </form>
-
       </div>
 
 
-	</div>
+
+
 
   <script>
   	// $.noConflict();

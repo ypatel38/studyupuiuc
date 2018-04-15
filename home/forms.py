@@ -22,6 +22,7 @@ class NewSessionForm(forms.Form):
             'description'
         }
 
+
     def is_valid(self):
         #use regex to determine true of false here
         return True
@@ -80,7 +81,7 @@ class NewSessionForm(forms.Form):
                                               [request.user.username,
                                               new_session_id,
                                               True])
-                                              
+
                 #get data to pass
                 currTime = str(datetime.datetime.now().time())
                 currDate = str(datetime.datetime.now().date())

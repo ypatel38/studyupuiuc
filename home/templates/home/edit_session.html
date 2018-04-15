@@ -16,6 +16,7 @@
 			color: #3a4470;
 			font-size: 40px;
 		}
+		textarea { resize:none; }
 	</style>
 {% endblock %}
 
@@ -26,10 +27,49 @@
 	<div class="container">
 		<form method="post">
 			{% csrf_token %} <!-- security -->
-			{{ form.as_p }} <!--  as_p means as paragraph, can make prettier-->
+
+			<tr><th><label for="id_enrolled_class">Class:</label></th><td><br>
+
+			<select data-placeholder="  Select a Class" name="enrolled_class" class="form-control chosen-select" required id="id_enrolled_class">
+				{% for class_code in classes %}
+				<!-- Eventually populated with suggested friends -->
+				{% if class_code == old_session_data.enrolled_class %}
+					<option value="{{class_code}}" selected="selected">{{ class_code }}</option>
+				{% else %}
+		    	<option value="{{class_code}}">{{ class_code }}</option>
+				{% endif %}
+
+				{% endfor %}
+		  </select>
+			<br><br>
+
+			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" value="{{ old_session_data.start_time }}" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select a start time..." required id="id_start_time" /></td></tr><br>
+			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" value="{{ old_session_data.end_time }}" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select an end time..." required id="id_end_time" /></td></tr><br>
+			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" value="{{ old_session_data.date }}" class="form-control" placeholder="Click to select a date..." required id="id_date" /></td></tr><br>
+			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" value="{{ old_session_data.building }}" class="form-control" placeholder="Enter a building name..." required id="id_building" /></td></tr><br>
+			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" value="{{ old_session_data.room_number }}" class="form-control" placeholder="Enter a room number.." required id="id_room_number" /></td></tr><br>
+			<tr><th><label for="id_description">Description:</label></th><td><textarea rows="3" type="text" name="description" value="{{ old_session_data.description }}" class="form-control" placeholder="Enter a description (optional)..." id="id_description">{{ old_session_data.description }}</textarea></td></tr><br>
+
 			<button type="submit" class="btn btn-submit" role="button">Edit Session</button>
 		</form>
 	</div>
 </div>
+
+
+
+<script>
+	//date
+	$(document).ready(function(){
+		$("#id_date" ).datepicker();
+		$(".chosen-select").chosen({width: "100%"});
+	})
+
+</script>
+
+<script>
+		//time
+		$('#id_start_time').timepicker();
+		$('#id_end_time').timepicker();
+</script>
 
 {% endblock %}

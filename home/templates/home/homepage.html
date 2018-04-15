@@ -114,6 +114,22 @@ label {
   font-family: "Overlock";
 }
 
+.no_classes {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 40px;
+  margin-left: 70px;
+  text-align: center;
+}
+
+.no_classes2 {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 30px;
+  margin-left: 70px;
+  text-align: center;
+}
+
 .navbar-custom {
   background-color: #3a4470;
   min-height: 38px;
@@ -201,8 +217,14 @@ label {
 <div id="main">
     <br><br>
     <div class="container">
+            {% if not enrolledin %}
+            <br><br>
+              <h2 class="no_classes">You have not joined any classes.</h2>
+              <h2 class="no_classes2"> Please go to My Account to add classes you are enrolled in!</h3>
+            {% endif %}
 
             <div class="container" style="width: 850px;">
+
 
                 <!-- jinja logic here for dynamic homepage -->
                 {% for classes in enrolledin %}
