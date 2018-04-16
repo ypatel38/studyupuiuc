@@ -24,12 +24,9 @@ for dep in data.keys():
     for course in data[dep].keys():
         #obj = data[dep][course]
         #print(course)
-        if(course != 'link'):
-			try:
-		        cursor.execute("INSERT INTO home_classes(class_code, \
+        if(course != 'link' and 'name' in data[dep][course].keys()):
+		    cursor.execute("INSERT INTO home_classes(class_code, \
 		                                                class_name)\
 		                                        VALUES (%s,\
 		                                                %s)",
 		                                                [course.replace(" ", ""), data[dep][course]['name']]
-			except:
-				continue
