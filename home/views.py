@@ -454,10 +454,21 @@ class NewSessionView(TemplateView):
             class_dict[curr_class] = sorted_x
 
         #debug print
-        for j in class_dict.keys():
-            print(j)
-            for i in range(len(class_dict[j])):
-                print(str(class_dict[j][i][1]) + " Weight for study mate " + str(class_dict[j][i][0]))
+        # for j in class_dict.keys():
+        #     print(j)
+        #     for i in range(len(class_dict[j])):
+        #         print(str(class_dict[j][i][1]) + " Weight for study mate " + str(class_dict[j][i][0]))
+
+        #find all buildings on campus
+        cursor.execute("SELECT      map_buildings.building  \
+                        FROM        map_buildings \
+                        ORDER BY    map_buildings.building")
+
+        buildings_arr = cursor.fetchall()
+
+        buildings = []
+        for i in range(len(buildings_arr)):
+            buildings.append(buildings_arr[i][0])
 
         cursor.close()
 
@@ -466,9 +477,9 @@ class NewSessionView(TemplateView):
         # use this if jquery works
         #js_class_dict = json.dumps(class_dict)
         #print(type(js_class_dict))
-        print(class_dict)
+        #print(class_dict)
 
-        args = {'form': form, 'classes': classes, 'class_dict': class_dict}
+        args = {'form': form, 'buildings': buildings, 'classes': classes, 'class_dict': class_dict}
         return render(request, self.template_name, args)
 
     def post(self, request):
@@ -631,16 +642,16 @@ class EditSessionView(TemplateView):
 
     def get(self, request, seshID):
         form = EditSessionForm(seshID)
-        print(form.fields["enrolled_class"].to_python('s'))
+        #print(form.fields["enrolled_class"].to_python('s'))
         cursor = connection.cursor()
         #find current enrolled classes
         cursor.execute("SELECT  accounts_enrolledin.class_code  \
                         FROM    accounts_enrolledin \
                         WHERE   accounts_enrolledin.netID = %s", [str(request.user)])
-        middleman = cursor.fetchall()
+        classes_arr = cursor.fetchall()
         classes = []
-        for i in range(len(middleman)):
-            classes.append(middleman[i][0])
+        for i in range(len(classes_arr)):
+            classes.append(classes_arr[i][0])
 
         cursor.execute("SELECT      home_studysession.start_time, \
                                     home_studysession.end_time, \
@@ -665,9 +676,21 @@ class EditSessionView(TemplateView):
         old_session_data["description"] = old_session_sql[0][5]
         old_session_data["enrolled_class"] = old_session_sql[0][6]
 
+
+        #find all buildings on campus
+        cursor.execute("SELECT      map_buildings.building  \
+                        FROM        map_buildings \
+                        ORDER BY    map_buildings.building")
+
+        buildings_arr = cursor.fetchall()
+
+        buildings = []
+        for i in range(len(buildings_arr)):
+            buildings.append(buildings_arr[i][0])
+
         cursor.close()
 
-        args = {'form': form, 'classes': classes, 'old_session_data': old_session_data}
+        args = {'form': form, 'buildings': buildings, 'classes': classes, 'old_session_data': old_session_data}
         return render(request, self.template_name, args)
 
     def post(self, request, seshID):

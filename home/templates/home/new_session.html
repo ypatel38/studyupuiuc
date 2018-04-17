@@ -30,23 +30,32 @@
 	<h2 class="title_header">Create New Session</h2>
 	<br>
 	<div class="container">
-		<form method="post">
+		<form method="post" autocomplete="off">
 			{% csrf_token %} <!-- security -->
 
 			<tr><th><label for="id_enrolled_class">Class:</label></th><td><br>
 
-			<select data-placeholder="  Select a Class" name="enrolled_class" class="form-control chosen-select" required id="id_enrolled_class">
+			<select data-placeholder="  Click to select a class..." name="enrolled_class" class="form-control chosen-select" required id="id_enrolled_class">
 				{% for class_code in classes %}
-				<!-- Eventually populated with suggested friends -->
-		    <option value="{{class_code}}">{{ class_code }}</option>
+		    	<option value="{{class_code}}">{{ class_code }}</option>
 				{% endfor %}
+				<!--<option class="placeholder" selected disabled value="">Select language</option>-->
 		  </select>
 			<br><br>
 
 			<tr><th><label for="id_start_time">Start Time:</label></th><td><input type="text" name="start_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select a start time..." required id="id_start_time" /></td></tr><br>
 			<tr><th><label for="id_end_time">End Time:</label></th><td><input type="text" name="end_time" class="form-control time ui-timepicker-input" autocomplete="off" placeholder="Click to select an end time..." required id="id_end_time" /></td></tr><br>
 			<tr><th><label for="id_date">Date:</label></th><td><input type="text" name="date" class="form-control" placeholder="Click to select a date..." required id="id_date" /></td></tr><br>
-			<tr><th><label for="id_building">Building:</label></th><td><input type="text" name="building" class="form-control" placeholder="Enter a building name..." required id="id_building" /></td></tr><br>
+
+			<tr><th><label for="id_building">Building:</label></th><td><br>
+
+			<select data-placeholder="  Click to select a building..." name="building" class="form-control chosen-select" required id="id_building">
+				{% for building in buildings %}
+		    	<option value="{{building}}">{{ building }}</option>
+				{% endfor %}
+		  </select>
+			<br><br>
+
 			<tr><th><label for="id_room_number">Room Number:</label></th><td><input type="text" name="room_number" class="form-control" placeholder="Enter a room number.." required id="id_room_number" /></td></tr><br>
 			<tr><th><label for="id_description">Description:</label></th><td><textarea rows="3" type="text" name="description" class="form-control" placeholder="Enter a description (optional)..." id="id_description"> </textarea></td></tr><br>
 

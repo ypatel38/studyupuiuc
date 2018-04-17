@@ -52,7 +52,7 @@
           <select data-placeholder="  Select classes to join..." name="classes_select" multiple class="form-control chosen-select" id="classes_select">
             <!-- Eventually populated with classes not enrollled in -->
             {% for each in other_classes %}
-              <option value="{{ each }}">{{ each }}</option>
+              <option value="{{ each.class_code }}">{{ each.class_code }}</strong></option>
             {% endfor %}
 
           </select>

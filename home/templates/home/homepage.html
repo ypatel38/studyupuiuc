@@ -225,14 +225,15 @@ label {
 
             <div class="container" style="width: 850px;">
 
-
                 <!-- jinja logic here for dynamic homepage -->
                 {% for classes in enrolledin %}
                 <br>
                 <h4><a href="#{{ classes.class_code }}Content" class = "myLink classheaders" data-toggle="collapse">{{ classes.class_code }}</a></h4>
                 <div id="{{ classes.class_code }}Content" class="collapse in">
+
                     {% for session in sessions %}
                     {% if session.class_code == classes.class_code %}
+
                     <div class="well">
                           <div>
                             <span class="sessionLabel"><label>Study Session</label></span>
@@ -271,6 +272,7 @@ label {
                     <!-- <input type="hidden" name="hidden_session_{{session.id}}" value={{session.id}}> -->
                     {% endif %}
                     {% endfor %}
+
                 </div>
                 {% endfor %}
             </div>

@@ -31,7 +31,7 @@ class ProfileView(TemplateView):
     template_name = 'accounts/profile.html'
 
     def get(self, request):
-
+        #get enrolled classes
         cursor = connection.cursor()
         cursor.execute("SELECT DISTINCT     home_classes.class_code \
                         FROM                accounts_enrolledin, \
@@ -63,7 +63,9 @@ class ProfileView(TemplateView):
         #
         # print(cursor.fetchall())
 
-        cursor.execute("SELECT DISTINCT     home_classes.class_code \
+        #get other classes
+        cursor.execute("SELECT DISTINCT     home_classes.class_code, \
+                                            home_classes.class_name \
                         FROM                home_classes \
                         WHERE               home_classes.class_code NOT IN(SELECT accounts_enrolledin.class_code FROM accounts_enrolledin WHERE accounts_enrolledin.netID = %s) \
                         ORDER BY            home_classes.class_code", [str(request.user)])
@@ -71,9 +73,10 @@ class ProfileView(TemplateView):
         other_classses_arr = cursor.fetchall()
 
         other_classes = []
-
         for i in range(len(other_classses_arr)):
-            other_classes.append(other_classses_arr[i][0])
+            other_classes.append({})
+            other_classes[i]['class_code'] = other_classses_arr[i][0]
+            other_classes[i]['class_name'] = other_classses_arr[i][1]
 
         #print(other_classes)
 
@@ -126,7 +129,9 @@ class ProfileView(TemplateView):
 
             cursor = connection.cursor()
 
-            cursor.execute("SELECT DISTINCT     home_classes.class_code \
+            #get other classes
+            cursor.execute("SELECT DISTINCT     home_classes.class_code, \
+                                                home_classes.class_name \
                             FROM                home_classes \
                             WHERE               home_classes.class_code NOT IN(SELECT accounts_enrolledin.class_code FROM accounts_enrolledin WHERE accounts_enrolledin.netID = %s) \
                             ORDER BY            home_classes.class_code", [str(request.user)])
@@ -134,9 +139,11 @@ class ProfileView(TemplateView):
             other_classses_arr = cursor.fetchall()
 
             other_classes = []
+            for i in range(len(other_classses_arr)):
+                other_classes.append({})
+                other_classes[i]['class_code'] = other_classses_arr[i][0]
+                other_classes[i]['class_name'] = other_classses_arr[i][1]
 
-            for i in range(0, len(other_classses_arr)):
-                other_classes.append(other_classses_arr[i][0])
 
             #print(other_classes)
             cursor.close()
@@ -178,7 +185,10 @@ class ProfileView(TemplateView):
 
             cursor = connection.cursor()
 
-            cursor.execute("SELECT DISTINCT     home_classes.class_code \
+
+            #get other classes
+            cursor.execute("SELECT DISTINCT     home_classes.class_code, \
+                                                home_classes.class_name \
                             FROM                home_classes \
                             WHERE               home_classes.class_code NOT IN(SELECT accounts_enrolledin.class_code FROM accounts_enrolledin WHERE accounts_enrolledin.netID = %s) \
                             ORDER BY            home_classes.class_code", [str(request.user)])
@@ -186,9 +196,10 @@ class ProfileView(TemplateView):
             other_classses_arr = cursor.fetchall()
 
             other_classes = []
-
-            for i in range(0, len(other_classses_arr)):
-                other_classes.append(other_classses_arr[i][0])
+            for i in range(len(other_classses_arr)):
+                other_classes.append({})
+                other_classes[i]['class_code'] = other_classses_arr[i][0]
+                other_classes[i]['class_name'] = other_classses_arr[i][1]
 
             #print(other_classes)
             cursor.close()
@@ -217,7 +228,10 @@ class ProfileView(TemplateView):
 
             cursor = connection.cursor()
 
-            cursor.execute("SELECT DISTINCT     home_classes.class_code \
+
+            #get other classes
+            cursor.execute("SELECT DISTINCT     home_classes.class_code, \
+                                                home_classes.class_name \
                             FROM                home_classes \
                             WHERE               home_classes.class_code NOT IN(SELECT accounts_enrolledin.class_code FROM accounts_enrolledin WHERE accounts_enrolledin.netID = %s) \
                             ORDER BY            home_classes.class_code", [str(request.user)])
@@ -225,9 +239,10 @@ class ProfileView(TemplateView):
             other_classses_arr = cursor.fetchall()
 
             other_classes = []
-
-            for i in range(0, len(other_classses_arr)):
-                other_classes.append(other_classses_arr[i][0])
+            for i in range(len(other_classses_arr)):
+                other_classes.append({})
+                other_classes[i]['class_code'] = other_classses_arr[i][0]
+                other_classes[i]['class_name'] = other_classses_arr[i][1]
 
             #print(other_classes)
             cursor.close()
