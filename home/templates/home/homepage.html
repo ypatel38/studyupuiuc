@@ -130,6 +130,13 @@ label {
   text-align: center;
 }
 
+.no_sesh {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 15px;
+  text-align: center;
+}
+
 .navbar-custom {
   background-color: #3a4470;
   min-height: 38px;
@@ -220,7 +227,7 @@ label {
             {% if not enrolledin %}
             <br><br>
               <h2 class="no_classes">You have not joined any classes.</h2>
-              <h2 class="no_classes2"> Please go to My Account to add classes you are enrolled in!</h3>
+              <h2 class="no_classes2"> Please go to My Account to add classes you are enrolled in!</h2>
             {% endif %}
 
             <div class="container" style="width: 850px;">
@@ -230,49 +237,51 @@ label {
                 <br>
                 <h4><a href="#{{ classes.class_code }}Content" class = "myLink classheaders" data-toggle="collapse">{{ classes.class_code }}</a></h4>
                 <div id="{{ classes.class_code }}Content" class="collapse in">
+                    {% if classes.class_empty %}
+                      <h4 class="no_sesh"> There are no scheduled Study Sessions for this class.</h2>
+                    {% else %}
+                      {% for session in sessions %}
+                      {% if session.class_code == classes.class_code %}
 
-                    {% for session in sessions %}
-                    {% if session.class_code == classes.class_code %}
+                      <div class="well">
+                            <div>
+                              <span class="sessionLabel"><label>Study Session</label></span>
+                              <span class="sessionLabel"><label>{{ session.date }}</label></span> <!-- date -->
+                              <span class="sessionLabel"><label>{{ session.start_time }} - {{ session.end_time }}</label></span> <!-- start and end time -->
+                              <span class="sessionLabel"><label>{{ session.building }} {{ session.room_number }}</label></span> <!-- location and room number -->
 
-                    <div class="well">
-                          <div>
-                            <span class="sessionLabel"><label>Study Session</label></span>
-                            <span class="sessionLabel"><label>{{ session.date }}</label></span> <!-- date -->
-                            <span class="sessionLabel"><label>{{ session.start_time }} - {{ session.end_time }}</label></span> <!-- start and end time -->
-                            <span class="sessionLabel"><label>{{ session.building }} {{ session.room_number }}</label></span> <!-- location and room number -->
+                              {% if session.is_owner == 1 %}
+                              <form method="post">
+                                  {% csrf_token %} <!-- security -->
+                                  <button class="btn btn-danger a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" name="delete" type="submit" value="{{session.seshID}}" style="margin-right: 24px;">
+                                     <span class="glyphicon glyphicon-remove" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
 
-                            {% if session.is_owner == 1 %}
-                            <form method="post">
-                                {% csrf_token %} <!-- security -->
-                                <button class="btn btn-danger a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" name="delete" type="submit" value="{{session.seshID}}" style="margin-right: 24px;">
-                                   <span class="glyphicon glyphicon-remove" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
-
-                                </button>
-                            </form>
-                            <form method="post" value="{{session.seshID}}">
-                                {% csrf_token %} <!-- security -->
-                                <button class="btn btn-primary a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" id='btnedit{{session.seshID}}' name="edit" type="submit" value="{{session.seshID}}">
-                                   <span class="glyphicon glyphicon-pencil" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
-                                </button>
-                            </form>
-                            {% else %}
-                            <form id="join_session" value="{{session.seshID}}">
-                                {% csrf_token %} <!-- security -->
-                                <button class="btn btn-success a-btn-slide-text btn-space pull-right btn-primary btn-md joinandleavebtn" id='btnjoin{{session.seshID}}' name="join" type="submit" value="{{session.seshID}}" is_joined = "{{session.is_joined}}">
-                                    <span><strong>Join</strong></span>
-                                </button>
-                            </form>
-                            {% endif %}
-                        </div>
-                        <br>
-                        <div class="container">
-                            <p>{{ session.description }}</p> <!-- decription -->
-                        </div>
-                    </div>
-                    <!-- <input type="hidden" name="hidden_session_{{session.id}}" value={{session.id}}> -->
+                                  </button>
+                              </form>
+                              <form method="post" value="{{session.seshID}}">
+                                  {% csrf_token %} <!-- security -->
+                                  <button class="btn btn-primary a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" id='btnedit{{session.seshID}}' name="edit" type="submit" value="{{session.seshID}}">
+                                     <span class="glyphicon glyphicon-pencil" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
+                                  </button>
+                              </form>
+                              {% else %}
+                              <form id="join_session" value="{{session.seshID}}">
+                                  {% csrf_token %} <!-- security -->
+                                  <button class="btn btn-success a-btn-slide-text btn-space pull-right btn-primary btn-md joinandleavebtn" id='btnjoin{{session.seshID}}' name="join" type="submit" value="{{session.seshID}}" is_joined = "{{session.is_joined}}">
+                                      <span><strong>Join</strong></span>
+                                  </button>
+                              </form>
+                              {% endif %}
+                          </div>
+                          <br>
+                          <div class="container">
+                              <p>{{ session.description }}</p> <!-- decription -->
+                          </div>
+                      </div>
+                      <!-- <input type="hidden" name="hidden_session_{{session.id}}" value={{session.id}}> -->
                     {% endif %}
                     {% endfor %}
-
+                  {% endif %}
                 </div>
                 {% endfor %}
             </div>

@@ -86,6 +86,25 @@ class HomeView(TemplateView):
                     sessions[j]['is_owner'] = sessions_arr[i][0]
                     sessions[j]['is_joined'] = 1
 
+
+
+
+        # find classes user is enrolled in and are empty
+        cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                        FROM             accounts_enrolledin \
+                        WHERE            %s = accounts_enrolledin.netID AND \
+                                         accounts_enrolledin.class_code IN( \
+                                            SELECT DISTINCT home_classofsession.class_code \
+                                            FROM home_studysession, home_classofsession \
+                                            WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+
+        #reorganize queryset to dict
+        enrolledin_empty_arr = cursor.fetchall()
+        enrolledin_empty = []
+        for i in range(len(enrolledin_empty_arr)):
+            enrolledin_empty.append(enrolledin_empty_arr[i][0])
+
+
         # find classes user is enrolled in
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             accounts_enrolledin, \
@@ -98,8 +117,16 @@ class HomeView(TemplateView):
         for i in range(len(enrolledin_arr)):
             enrolledin.append({})
             enrolledin[i]['class_code'] = enrolledin_arr[i][0]
+            if(enrolledin[i]['class_code'] in enrolledin_empty):
+                enrolledin[i]['class_empty'] = False
+            else:
+                enrolledin[i]['class_empty'] = True
+
+
+
 
         connection.close()
+
         #print(sessions)
         args = {'sessions': sessions, 'enrolledin': enrolledin}
         #print(sessions)
@@ -205,6 +232,22 @@ class HomeView(TemplateView):
                         sessions[j]['is_owner'] = sessions_arr[i][0]
                         sessions[j]['is_joined'] = 1
 
+            # find classes user is enrolled in and are empty
+            cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                            FROM             accounts_enrolledin \
+                            WHERE            %s = accounts_enrolledin.netID AND \
+                                             accounts_enrolledin.class_code IN( \
+                                                SELECT DISTINCT home_classofsession.class_code \
+                                                FROM home_studysession, home_classofsession \
+                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+
+            #reorganize queryset to dict
+            enrolledin_empty_arr = cursor.fetchall()
+            enrolledin_empty = []
+            for i in range(len(enrolledin_empty_arr)):
+                enrolledin_empty.append(enrolledin_empty_arr[i][0])
+
+
             # find classes user is enrolled in
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                             FROM             accounts_enrolledin, \
@@ -217,6 +260,10 @@ class HomeView(TemplateView):
             for i in range(len(enrolledin_arr)):
                 enrolledin.append({})
                 enrolledin[i]['class_code'] = enrolledin_arr[i][0]
+                if(enrolledin[i]['class_code'] in enrolledin_empty):
+                    enrolledin[i]['class_empty'] = False
+                else:
+                    enrolledin[i]['class_empty'] = True
 
             connection.close()
             #print(sessions)
@@ -312,6 +359,22 @@ class HomeView(TemplateView):
                         sessions[i]['is_owner'] = sessions_arr[i][0]
                         sessions[i]['is_joined'] = 1
 
+            # find classes user is enrolled in and are empty
+            cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                            FROM             accounts_enrolledin \
+                            WHERE            %s = accounts_enrolledin.netID AND \
+                                             accounts_enrolledin.class_code IN( \
+                                                SELECT DISTINCT home_classofsession.class_code \
+                                                FROM home_studysession, home_classofsession \
+                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+
+            #reorganize queryset to dict
+            enrolledin_empty_arr = cursor.fetchall()
+            enrolledin_empty = []
+            for i in range(len(enrolledin_empty_arr)):
+                enrolledin_empty.append(enrolledin_empty_arr[i][0])
+
+
             # find classes user is enrolled in
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                             FROM             accounts_enrolledin, \
@@ -324,6 +387,10 @@ class HomeView(TemplateView):
             for i in range(len(enrolledin_arr)):
                 enrolledin.append({})
                 enrolledin[i]['class_code'] = enrolledin_arr[i][0]
+                if(enrolledin[i]['class_code'] in enrolledin_empty):
+                    enrolledin[i]['class_empty'] = False
+                else:
+                    enrolledin[i]['class_empty'] = True
 
             connection.close()
             #print(sessions)
