@@ -2,7 +2,6 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.db import connection #sql
 from django.urls import reverse #used for namespaces
-from django.http import HttpResponse
 from home.forms import *
 from datetime import datetime, timedelta
 import operator, json, re
@@ -38,11 +37,14 @@ class HomeView(TemplateView):
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    home_studysession.date, \
-                                    home_studysession.start_time, \
-                                    home_studysession.end_time", [str(request.user)])
+                        ORDER BY    datetime(home_studysession.date), \
+                                    datetime(home_studysession.start_time), \
+                                    datetime(home_studysession.end_time), \
+                                    home_studysession.building, \
+                                    home_studysession.room_number", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
+
         #print(sessions_arr)
         #reorganize queryset to dict
         sessions = []
@@ -155,9 +157,11 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                            ORDER BY    home_studysession.date, \
-                                        home_studysession.start_time, \
-                                        home_studysession.end_time", [str(request.user)])
+                        ORDER BY    datetime(home_studysession.date), \
+                                    datetime(home_studysession.start_time), \
+                                    datetime(home_studysession.end_time), \
+                                    home_studysession.building, \
+                                    home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -260,9 +264,11 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                            ORDER BY    home_studysession.date, \
-                                        home_studysession.start_time, \
-                                        home_studysession.end_time", [str(request.user)])
+                        ORDER BY    datetime(home_studysession.date), \
+                                    datetime(home_studysession.start_time), \
+                                    datetime(home_studysession.end_time), \
+                                    home_studysession.building, \
+                                    home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -292,8 +298,7 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID AND \
-                                        home_classofsession.seshID = home_sessionhas.seshID, \
-                                        home_studysession.end_time", [str(request.user)])
+                                        home_classofsession.seshID = home_sessionhas.seshID", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -534,8 +539,8 @@ class NewSessionView(TemplateView):
             hours = req['end_time'][:colon_idx]
             hours = int(hours)
             hours += 12
-            if(hours <= 21):
-                colon_idx+=1
+            if(hours >= 10):
+                colon_idx=2
             req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
         else:
             req['end_time'] = req['end_time'][:colon_idx+3]
@@ -734,8 +739,8 @@ class EditSessionView(TemplateView):
             hours = req['end_time'][:colon_idx]
             hours = int(hours)
             hours += 12
-            if(hours <= 21):
-                colon_idx+=1
+            if(hours >= 10):
+                colon_idx=2
             req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
         else:
             req['end_time'] = req['end_time'][:colon_idx+3]
@@ -798,7 +803,7 @@ class EditSessionView(TemplateView):
             #sql query here
             #print(request)
 
-            form.save(request, seshID);
+            form.save(req, seshID);
             # StudySession.objects.raw('INSERT INTO  home_studysession(start_time,
             #                                        end_time,
             #                                        date,

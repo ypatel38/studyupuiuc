@@ -17,18 +17,18 @@ if __name__ == "__main__":
 import pickle
 from django.db import connection
 
-data = pickle.load(open("class_name.p", "rb"))
+data = pickle.load(open("addresses.p", "rb"))
 cursor = connection.cursor()
-attrs = ['instructor', 'location', 'time', 'type', 'day']
+attrs = ['building', 'address']
 for dep in data.keys():
     for course in data[dep].keys():
         #obj = data[dep][course]
         #print(course)
         if(course != 'link' and 'name' in data[dep][course].keys()):
-            cursor.execute("INSERT INTO home_classes(class_code, \
-		                                                class_name)\
-		                                        VALUES (%s,\
-		                                                %s)",
-		                                                [course.replace(" ", ""), data[dep][course]['name']])
+            cursor.execute("INSERT INTO map(building, \
+		                                    address)\
+		                                    VALUES (%s,\
+		                                            %s)",
+		                                    [course, data[dep][course]['name']])
 
 cursor.close()

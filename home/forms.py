@@ -38,6 +38,8 @@ class NewSessionForm(forms.Form):
 
                 new_session_id = str(uuid.uuid4()) #note in postrgress this might not want to be str
 
+                print(session_data['id_date'])
+
                 cursor = connection.cursor()
 
                 #add new session in sql
@@ -94,9 +96,10 @@ class NewSessionForm(forms.Form):
 
                 currDateTime = currDate + " " + currTime
 
+                #update notifications with invited people
+
                 newNotId =str(uuid.uuid4())
 
-                #update notifications with invited people
                 cursor.execute("INSERT INTO  home_notification(created, \
                                                                is_read, \
                                                                seshID, \
@@ -118,7 +121,7 @@ class NewSessionForm(forms.Form):
                                               newNotId])
 
 
-                print(request.POST.getlist('invited_friends'))
+                #print(request.POST.getlist('invited_friends'))
                 #print(request.POST['invited_friends'])
 
                 for i in range(0, len(request.POST.getlist('invited_friends'))):
@@ -213,19 +216,19 @@ class EditSessionForm(forms.Form):
                                       room_number = %s, \
                                       description = %s \
                         WHERE         seshID = %s",
-                                      [request.POST['start_time'],
-                                      request.POST['end_time'],
-                                      request.POST['date'],
-                                      request.POST['building'],
-                                      request.POST['room_number'],
-                                      request.POST['description'],
+                                      [request['start_time'],
+                                      request['end_time'],
+                                      request['date'],
+                                      request['building'],
+                                      request['room_number'],
+                                      request['description'],
                                       seshID])
 
         #add class of session in sql
         cursor.execute("UPDATE        home_classofsession \
                         SET           class_code = %s \
                         WHERE         seshID = %s",
-                                      [request.POST['enrolled_class'],
+                                      [request['enrolled_class'],
                                       seshID])
 
         connection.close()
