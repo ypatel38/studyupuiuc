@@ -64,11 +64,22 @@ class HomeView(TemplateView):
                 sessions[count]['date'] = sessions_arr[i][2]
                 sessions[count]['building'] = sessions_arr[i][3]
                 sessions[count]['room_number'] = sessions_arr[i][4]
-                sessions[count]['description'] = sessions_arr[i][5]
+
+                hasData = False
+                for j in range(len(sessions_arr[i][5])):
+                    if sessions_arr[i][5][j] != " ":
+                        hasData = True
+                        break
+                if hasData:
+                    sessions[count]['description'] = sessions_arr[i][5]
+                else:
+                    sessions[count]['description'] = ""
+                    
                 sessions[count]['seshID'] = sessions_arr[i][6]
                 sessions[count]['class_code'] = sessions_arr[i][7]
                 sessions[count]['class_name'] = sessions_arr[i][8]
                 count+=1
+
 
         cursor.execute("SELECT      home_sessionhas.is_owner, \
                                     home_studysession.seshID \

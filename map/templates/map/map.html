@@ -133,7 +133,7 @@ html, body {
     <div id="key5_color"></div>
   </div>
   <div class="col-md-5 col-md-offset-2">
-    <div id="key_text"> 0 - # </div>
+    <div id="key_text"> 1 - # </div>
     <div id="key_text"> # - # </div>
     <div id="key_text"> # - # </div>
     <div id="key_text"> # - # </div>
@@ -202,7 +202,13 @@ html, body {
 
     var ecebCircle = new google.maps.Marker({
         icon: circle1,
-        position: {lat: 40.114998, lng: -88.228007}
+        position: {lat: 40.114998, lng: -88.228007},
+        label: {
+          text: "50",
+          color: "#FFFFFF",
+          fontSize: "35px",
+          fontWeight: "bold"
+        }
     });
     ecebCircle.setMap(map);
     /*
@@ -216,7 +222,13 @@ html, body {
     });*/
     var graingerCircle = new google.maps.Marker({
         icon: circle2,
-        position: {lat: 40.112652, lng: -88.226895}
+        position: {lat: 40.112652, lng: -88.226895},
+        label: {
+          text: "22",
+          color: "#FFFFFF",
+          fontSize: "30px",
+          fontWeight: "bold"
+        }
     });
     graingerCircle.setMap(map);
     /*
@@ -230,7 +242,13 @@ html, body {
     });*/
     var siebelCircle = new google.maps.Marker({
         icon: circle3,
-        position: {lat: 40.114031, lng: -88.224920}
+        position: {lat: 40.114031, lng: -88.224920},
+        label: {
+          text: "10",
+          color: "#FFFFFF",
+          fontSize: "25px",
+          fontWeight: "bold"
+        }
     });
     siebelCircle.setMap(map);
     /*
@@ -244,7 +262,13 @@ html, body {
     });*/
     var unionCircle = new google.maps.Marker({
         icon: circle4,
-        position: {lat: 40.109370, lng: -88.227216}
+        position: {lat: 40.109370, lng: -88.227216},
+        label: {
+          text: "6",
+          color: "#FFFFFF",
+          fontSize: "25px",
+          fontWeight: "bold"
+        }
     });
     unionCircle.setMap(map);
     /*
@@ -258,7 +282,13 @@ html, body {
     });*/
     var dclCircle = new google.maps.Marker({
         icon: circle5,
-        position: {lat: 40.113281, lng: -88.226539}
+        position: {lat: 40.113281, lng: -88.226539},
+        label: {
+          text: "1",
+          color: "#FFFFFF",
+          fontSize: "20px",
+          fontWeight: "bold"
+        }
     });
     dclCircle.setMap(map);
 

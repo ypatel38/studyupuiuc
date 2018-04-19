@@ -75,6 +75,7 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   font-family: 'Jua';
+  margin-right: 30px;
 }
 
 .classheaders {
@@ -106,6 +107,7 @@
     background: #F8F8F8;
     max-width: 800px;
     min-width: 800px;
+    padding-right: 0px;
     /*
     border-color: #6D7FCC;
     border-width: 2px;*/
@@ -245,13 +247,15 @@ label {
                       {% if session.class_code == classes.class_code %}
 
                       <div class="well">
-                            <div>
-                              <span class="sessionLabel"><label>Study Session</label></span>
+                            <div class="col-md-10 col-md-offset-0" style="float: left;">
+                              <span class="sessionLabel" style="margin-right: 10px;"><label>Study Session</label></span>
                               <span class="sessionLabel"><label>{{ session.date }}</label></span> <!-- date -->
                               <span class="sessionLabel"><label>{{ session.start_time }} - {{ session.end_time }}</label></span> <!-- start and end time -->
                               <span class="sessionLabel"><label>{{ session.building }} {{ session.room_number }}</label></span> <!-- location and room number -->
+                            </div>
 
                               {% if session.is_owner == 1 %}
+                              <div class="col-md-2 col-md-offset-0" style="float: right;">
                               <form method="post">
                                   {% csrf_token %} <!-- security -->
                                   <button class="btn btn-danger a-btn-slide-text btn-space pull-right btn-primary btn-xs editanddeletebtn" name="delete" type="submit" value="{{session.seshID}}" style="margin-right: 24px;">
@@ -265,18 +269,28 @@ label {
                                      <span class="glyphicon glyphicon-pencil" style="vertical-align: -1px; margin-left: 1px;" aria-hidden="true"></span>
                                   </button>
                               </form>
+                              </div>
+                              <br>
                               {% else %}
+                              <div style="margin-top: 18px;">
                               <form id="join_session" value="{{session.seshID}}">
                                   {% csrf_token %} <!-- security -->
                                   <button class="btn btn-success a-btn-slide-text btn-space pull-right btn-primary btn-md joinandleavebtn" id='btnjoin{{session.seshID}}' name="join" type="submit" value="{{session.seshID}}" is_joined = "{{session.is_joined}}">
                                       <span><strong>Join</strong></span>
                                   </button>
                               </form>
+                              </div>
                               {% endif %}
-                          </div>
+
                           <br>
                           <div class="container">
-                              <p>{{ session.description }}</p> <!-- decription -->
+                            <div class="col-md-6 col-md-offset-0" style="float: left;">
+                              {% if session.description == "" %}
+                                <i>No Description</i>
+                              {% else %}
+                                <p>{{ session.description }}</p> <!-- decription -->
+                              {% endif %}
+                            </div>
                           </div>
                       </div>
                       <!-- <input type="hidden" name="hidden_session_{{session.id}}" value={{session.id}}> -->
