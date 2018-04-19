@@ -4,3 +4,5 @@ from django.db import models
 class Buildings(models.Model):
     building = models.TextField(primary_key = True)
     address = models.TextField()
+    lat = models.FloatField()
+    lng = models.FloatField()
