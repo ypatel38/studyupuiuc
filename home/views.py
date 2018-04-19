@@ -74,7 +74,7 @@ class HomeView(TemplateView):
                     sessions[count]['description'] = sessions_arr[i][5]
                 else:
                     sessions[count]['description'] = ""
-                    
+
                 sessions[count]['seshID'] = sessions_arr[i][6]
                 sessions[count]['class_code'] = sessions_arr[i][7]
                 sessions[count]['class_name'] = sessions_arr[i][8]
@@ -144,18 +144,41 @@ class HomeView(TemplateView):
                 enrolledin[i]['class_empty'] = True
 
 
+        # find number of sessions joined by the user
+        cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                        FROM             home_studysession, \
+                                         home_sessionhas \
+                        WHERE            %s = home_sessionhas.netID AND \
+                                         home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
 
+        #reorganize queryset to dict
+        sessions_joined_arr = cursor.fetchall()
+        sessions_joined = 0
+        sessions_joined = sessions_joined_arr[0][0]
+
+        # find number of sessions created by the user
+        cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                        FROM             home_studysession, \
+                                         home_sessionhas \
+                        WHERE            %s = home_sessionhas.netID AND \
+                                         home_studysession.seshID = home_sessionhas.seshID AND \
+                                         %s = home_sessionhas.is_owner", [str(request.user), True])
+
+        #reorganize queryset to dict
+        sessions_created_arr = cursor.fetchall()
+        sessions_created = 0
+        sessions_created = sessions_created_arr[0][0]
 
         connection.close()
 
         #print(sessions)
-        args = {'sessions': sessions, 'enrolledin': enrolledin}
+        args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
         #print(sessions)
         return render(request, self.template_name, args)
 
 
     def post(self, request):
-        print("HELLO")
+        #print("HELLO")
         #print(request.POST)
         if("edit" in request.POST):
             seshID = request.POST["edit"]
@@ -290,11 +313,39 @@ class HomeView(TemplateView):
                 else:
                     enrolledin[i]['class_empty'] = True
 
+
+            # find number of sessions joined by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+
+            #reorganize queryset to dict
+            sessions_joined_arr = cursor.fetchall()
+            sessions_joined = 0
+            sessions_joined = sessions_joined_arr[0][0]
+
+            # find number of sessions created by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+
+            #reorganize queryset to dict
+            sessions_created_arr = cursor.fetchall()
+            sessions_created = 0
+            sessions_created = sessions_created_arr[0][0]
+
             connection.close()
+
             #print(sessions)
-            args = {'sessions': sessions, 'enrolledin': enrolledin}
+            args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
             #print(sessions)
             return render(request, self.template_name, args)
+
 
         elif function == "delete":
             cursor = connection.cursor()
@@ -421,10 +472,37 @@ class HomeView(TemplateView):
                 else:
                     enrolledin[i]['class_empty'] = True
 
+
+            # find number of sessions joined by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+
+            #reorganize queryset to dict
+            sessions_joined_arr = cursor.fetchall()
+            sessions_joined = 0
+            sessions_joined = sessions_joined_arr[0][0]
+
+            # find number of sessions created by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+
+            #reorganize queryset to dict
+            sessions_created_arr = cursor.fetchall()
+            sessions_created = 0
+            sessions_created = sessions_created_arr[0][0]
+
             connection.close()
+
             #print(sessions)
-            args = {'sessions': sessions, 'enrolledin': enrolledin}
-            print(sessions)
+            args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
+            #print(sessions)
             return render(request, self.template_name, args)
 
         elif function == "edit":

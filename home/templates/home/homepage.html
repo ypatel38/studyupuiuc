@@ -168,6 +168,42 @@ label {
   background-color: #E9EBEE;/*#798ce0;*/
   border-radius: 5px;
 }
+
+#floating_key {
+  position: fixed;
+  top: 38%;
+  left: 9%;
+  z-index: 5;
+  background-color: #FAFAFA;
+  border: 2px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 5px;
+  text-align: center;
+  line-height: 30px;
+  padding-left: 10px;
+  min-width: 210px;
+  max-width: 210px;
+  min-height: 240px;
+  max-height: 240px;
+}
+
+
+#sidebar_header {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 20px;
+  text-align: center;
+
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+#sidebar_text {
+  font-size: 40px;
+  margin-top: 15px;
+  margin-bottom: 35px;
+}
+
 </style>
 
 
@@ -182,6 +218,14 @@ label {
 
 
 </nav>
+
+<div id="floating_key">
+  <div id="sidebar_header">Sessions Created</div>
+  <div id="sidebar_text">{{sessions_created}}/5</div>
+  <div id="sidebar_header">Sessions Joined</div>
+  <div id="sidebar_text">{{sessions_joined}}/10</div>
+
+</div>
 <!--
     <div class="row-offcanvas row-offcanvas-left">
       <div id="sidebar" class="sidebar-offcanvas">
