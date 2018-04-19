@@ -45,20 +45,30 @@ class HomeView(TemplateView):
 
         sessions_arr = cursor.fetchall()
 
+        print(sessions_arr[0][2])
+        print(sessions_arr[0][1])
+        print(type(sessions_arr[0][2]))
+        print(type(sessions_arr[0][1]))
+        print(datetime.now().date())
+        print(datetime.now().time())
         #print(sessions_arr)
         #reorganize queryset to dict
         sessions = []
+        count = 0;
         for i in range(len(sessions_arr)):
-            sessions.append({})
-            sessions[i]['start_time'] = sessions_arr[i][0]
-            sessions[i]['end_time'] = sessions_arr[i][1]
-            sessions[i]['date'] = sessions_arr[i][2]
-            sessions[i]['building'] = sessions_arr[i][3]
-            sessions[i]['room_number'] = sessions_arr[i][4]
-            sessions[i]['description'] = sessions_arr[i][5]
-            sessions[i]['seshID'] = sessions_arr[i][6]
-            sessions[i]['class_code'] = sessions_arr[i][7]
-            sessions[i]['class_name'] = sessions_arr[i][8]
+            #check if session is sceduled for adf
+            if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
+                sessions.append({})
+                sessions[count]['start_time'] = sessions_arr[i][0]
+                sessions[count]['end_time'] = sessions_arr[i][1]
+                sessions[count]['date'] = sessions_arr[i][2]
+                sessions[count]['building'] = sessions_arr[i][3]
+                sessions[count]['room_number'] = sessions_arr[i][4]
+                sessions[count]['description'] = sessions_arr[i][5]
+                sessions[count]['seshID'] = sessions_arr[i][6]
+                sessions[count]['class_code'] = sessions_arr[i][7]
+                sessions[count]['class_name'] = sessions_arr[i][8]
+                count+=1
 
         cursor.execute("SELECT      home_sessionhas.is_owner, \
                                     home_studysession.seshID \
@@ -194,17 +204,21 @@ class HomeView(TemplateView):
             #print(sessions_arr)
             #reorganize queryset to dict
             sessions = []
+            count = 0;
             for i in range(len(sessions_arr)):
-                sessions.append({})
-                sessions[i]['start_time'] = sessions_arr[i][0]
-                sessions[i]['end_time'] = sessions_arr[i][1]
-                sessions[i]['date'] = sessions_arr[i][2]
-                sessions[i]['building'] = sessions_arr[i][3]
-                sessions[i]['room_number'] = sessions_arr[i][4]
-                sessions[i]['description'] = sessions_arr[i][5]
-                sessions[i]['seshID'] = sessions_arr[i][6]
-                sessions[i]['class_code'] = sessions_arr[i][7]
-                sessions[i]['class_name'] = sessions_arr[i][8]
+                #check if session is sceduled for adf
+                if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
+                    sessions.append({})
+                    sessions[count]['start_time'] = sessions_arr[i][0]
+                    sessions[count]['end_time'] = sessions_arr[i][1]
+                    sessions[count]['date'] = sessions_arr[i][2]
+                    sessions[count]['building'] = sessions_arr[i][3]
+                    sessions[count]['room_number'] = sessions_arr[i][4]
+                    sessions[count]['description'] = sessions_arr[i][5]
+                    sessions[count]['seshID'] = sessions_arr[i][6]
+                    sessions[count]['class_code'] = sessions_arr[i][7]
+                    sessions[count]['class_name'] = sessions_arr[i][8]
+                    count+=1
 
             cursor.execute("SELECT      home_sessionhas.is_owner, \
                                         home_studysession.seshID \
@@ -321,17 +335,21 @@ class HomeView(TemplateView):
             #print(sessions_arr)
             #reorganize queryset to dict
             sessions = []
+            count = 0;
             for i in range(len(sessions_arr)):
-                sessions.append({})
-                sessions[i]['start_time'] = sessions_arr[i][0]
-                sessions[i]['end_time'] = sessions_arr[i][1]
-                sessions[i]['date'] = sessions_arr[i][2]
-                sessions[i]['building'] = sessions_arr[i][3]
-                sessions[i]['room_number'] = sessions_arr[i][4]
-                sessions[i]['description'] = sessions_arr[i][5]
-                sessions[i]['seshID'] = sessions_arr[i][6]
-                sessions[i]['class_code'] = sessions_arr[i][7]
-                sessions[i]['class_name'] = sessions_arr[i][8]
+                #check if session is sceduled for adf
+                if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
+                    sessions.append({})
+                    sessions[count]['start_time'] = sessions_arr[i][0]
+                    sessions[count]['end_time'] = sessions_arr[i][1]
+                    sessions[count]['date'] = sessions_arr[i][2]
+                    sessions[count]['building'] = sessions_arr[i][3]
+                    sessions[count]['room_number'] = sessions_arr[i][4]
+                    sessions[count]['description'] = sessions_arr[i][5]
+                    sessions[count]['seshID'] = sessions_arr[i][6]
+                    sessions[count]['class_code'] = sessions_arr[i][7]
+                    sessions[count]['class_name'] = sessions_arr[i][8]
+                    count+=1
 
             cursor.execute("SELECT      home_sessionhas.is_owner, \
                                         home_studysession.seshID \

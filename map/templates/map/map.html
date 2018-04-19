@@ -16,37 +16,94 @@ html, body {
   margin: 0;
   padding: 0;
 }
-#floating-panel {
-  position: absolute;
-  top: 70px;
-  left: 25%;
-  z-index: 5;
-  background-color: #fff;
-  padding: 5px;
-  border: 1px solid #999;
-  text-align: center;
-  font-family: 'Roboto','sans-serif';
-  line-height: 30px;
-  padding-left: 10px;
-}
 
 #floating_key {
   position: fixed;
-
-  top: 60px;
-  left: 89%;
+  top: 65px;
+  left: 85%;
   z-index: 8;
   background-color: #FAFAFA;
-  border: 1px solid #3a4470;
+  border: 2px solid #e2e2e2;
+  border-radius: 10px;
   padding: 5px;
   text-align: center;
-  font-family: 'Roboto','sans-serif';
   line-height: 30px;
   padding-left: 10px;
-  min-width: 200px;
-  max-width: 200px;
-  min-height: 800px;
-  max-height: 800px;
+  min-width: 260px;
+  max-width: 260px;
+  min-height: 330px;
+  max-height: 330px;
+
+}
+
+#sidebar_filter_header {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 25px;
+  text-align: center;
+
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+#sidebar_key_header {
+  font-family: 'Coustard';
+  color: #3a4470;
+  font-size: 25px;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+#key1_color {
+  width: 40px;
+  height: 20px;
+  background: #d6ddff;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  margin-top: 2px;
+  margin-left: 30px;
+}
+
+#key2_color {
+  width: 40px;
+  height: 20px;
+  background: #bbc6f7;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  margin-left: 30px;
+}
+
+#key3_color {
+  width: 40px;
+  height: 20px;
+  background: #8b9ae0;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  margin-left: 30px;
+}
+
+#key4_color {
+  width: 40px;
+  height: 20px;
+  background: #6D7FCC;
+  border-radius: 5px;
+  margin-bottom: 6px;
+  margin-left: 30px;
+}
+
+#key5_color {
+  width: 40px;
+  height: 20px;
+  background: #5c6ebc;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  margin-left: 30px;
+}
+
+#key_text {
+  line-height: 1.85;
 }
 
 
@@ -57,28 +114,95 @@ html, body {
 {% endblock %}
 
 {% block body %}
-<!--<div id="floating-panel">
-  <input id="address" type="textbox" value="Sydney, NSW">
-  <input id="submit" type="button" value="Geocode">
-</div>-->
 
 <div id="floating_key">
+  <div id="sidebar_filter_header">Class Filter</div>
+
+  <select data-placeholder="  Filter" name="filter" class="form-control chosen-select" required id="filter">
+    <option value="All" selected="selected">All</option>
+    <option value="ECE391">ECE391</option>
+  </select>
+
+
+  <div id="sidebar_key_header">Sessions</div>
+  <div class="col-md-2 col-md-offset-1" >
+    <div id="key1_color"></div>
+    <div id="key2_color"></div>
+    <div id="key3_color"></div>
+    <div id="key4_color"></div>
+    <div id="key5_color"></div>
+  </div>
+  <div class="col-md-5 col-md-offset-2">
+    <div id="key_text"> 0 - # </div>
+    <div id="key_text"> # - # </div>
+    <div id="key_text"> # - # </div>
+    <div id="key_text"> # - # </div>
+    <div id="key_text"> # + </div>
+  </div>
+</div>
+
+
 </div>
 
 <div id="map"></div>
+
+
 <script>
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 17,
-      center: {lat: 40.102969, lng: -88.227440}
+      center: {lat: 40.102969, lng: -88.227440}, //uiuc loc
+
     });
+
+    var ecebCircle = new google.maps.Circle({
+       strokeOpacity: 0,
+       fillColor: '#5c6ebc',
+       fillOpacity: 0.85,
+       map: map,
+       center: {lat: 40.114998, lng: -88.228007}, //insert lat long here
+       radius: 60
+    });
+    var graingerCircle = new google.maps.Circle({
+       strokeOpacity: 0,
+       fillColor: '#6D7FCC',
+       fillOpacity: 0.85,
+       map: map,
+       center: {lat: 40.112652, lng: -88.226895}, //insert lat long here
+       radius: 50
+    });
+    var siebelCircle = new google.maps.Circle({
+       strokeOpacity: 0,
+       fillColor: '#8b9ae0',
+       fillOpacity: 0.85,
+       map: map,
+       center: {lat: 40.114031, lng: -88.224920}, //insert lat long here
+       radius: 40
+    });
+    var unionCircle = new google.maps.Circle({
+       strokeOpacity: 0,
+       fillColor: '#bbc6f7',
+       fillOpacity: 0.85,
+       map: map,
+       center: {lat: 40.109370, lng: -88.227216}, //insert lat long here
+       radius: 30
+    });
+    var dclCircle = new google.maps.Circle({
+       strokeOpacity: 0,
+       fillColor: '#d6ddff',
+       fillOpacity: 0.85,
+       map: map,
+       center: {lat: 40.113281, lng: -88.226539}, //insert lat long here
+       radius: 20
+    });
+    //dclCircle.setMap(null) to remove
     var geocoder = new google.maps.Geocoder();
 
     document.getElementById('submit').addEventListener('click', function() {
       geocodeAddress(geocoder, map);
     });
   }
-
+/*
   function geocodeAddress(geocoder, resultsMap) {
     var address = document.getElementById('address').value;
     geocoder.geocode({'address': address}, function(results, status) {
@@ -92,8 +216,42 @@ html, body {
         alert('Geocode was not successful for the following reason: ' + status);
       }
     });
-  }
+  }*/
 </script>
+
+<script>
+	$(document).ready(function(){
+		$(".chosen-select").chosen({width: "75%"});
+
+    // Draw initial map markers here
+})
+</script>
+
+<script>
+  $( "#id_enrolled_class" ).change(function() {
+
+    // Draw switched map markers here
+    //var filteredClass = $("#filter option:selected").text();
+  });
+</script>
+
+<!-- bounds of the desired area
+var allowedBounds = new google.maps.LatLngBounds(
+     new google.maps.LatLng(70.33956792419954, 178.01171875),
+     new google.maps.LatLng(83.86483689701898, -88.033203125)
+);
+var lastValidCenter = map.getCenter();
+
+google.maps.event.addListener(map, 'center_changed', function() {
+    if (allowedBounds.contains(map.getCenter())) {
+        // still within valid bounds, so save the last valid position
+        lastValidCenter = map.getCenter();
+        return;
+    }
+
+    // not valid anymore => return to last valid position
+    map.panTo(lastValidCenter);
+});-->
 
 
 
