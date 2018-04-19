@@ -270,6 +270,7 @@ green: #19a036
 
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'home:home' %}">Home</a>
+            <li><a href="{% url 'map:map' %}">Map</a>
             {% if user.is_authenticated %}
             <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
             <li><a href="{% url 'accounts:logout' %}"><span class="glyphicon glyphicon-log-out logout"></span> <strong>Logout</strong></a></li>

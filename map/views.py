@@ -1,3 +1,4 @@
+from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.http import HttpResponse
 
@@ -6,7 +7,7 @@ class MapView(TemplateView):
     template_name = 'map/map.html'
 
     def get(self, request):
-        return HttpResponse("Map")
+        return render(request, self.template_name, {})
 
     def post(self, request):
         pass
