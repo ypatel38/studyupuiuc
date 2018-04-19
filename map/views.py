@@ -63,9 +63,6 @@ class MapView(TemplateView):
 
 
 
-
-
-
         #now i need to get the classes the user is in
         cursor.execute("SELECT 	accounts_enrolledin.class_code        \
                         FROM    accounts_enrolledin                 \
