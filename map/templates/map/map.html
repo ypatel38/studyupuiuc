@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+<!-- used gapi docs here -->
+{% block head %}
+
+<title>Concentration Map</title>
+
+<style>
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+#map {
+  height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#floating-panel {
+  position: absolute;
+  top: 70px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+#floating_key {
+  position: fixed;
+
+  top: 60px;
+  left: 89%;
+  z-index: 8;
+  background-color: #FAFAFA;
+  border: 1px solid #3a4470;
+  padding: 5px;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+  min-width: 200px;
+  max-width: 200px;
+  min-height: 800px;
+  max-height: 800px;
+}
+
+
+</style>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJ4C-DfepoKxXp8UtSZ4HgRmLX1NUBIp4&callback=initMap" async defer></script>
+
+{% endblock %}
+
+{% block body %}
+<!--<div id="floating-panel">
+  <input id="address" type="textbox" value="Sydney, NSW">
+  <input id="submit" type="button" value="Geocode">
+</div>-->
+
+<div id="floating_key">
+</div>
+
+<div id="map"></div>
+<script>
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 17,
+      center: {lat: 40.102969, lng: -88.227440}
+    });
+    var geocoder = new google.maps.Geocoder();
+
+    document.getElementById('submit').addEventListener('click', function() {
+      geocodeAddress(geocoder, map);
+    });
+  }
+
+  function geocodeAddress(geocoder, resultsMap) {
+    var address = document.getElementById('address').value;
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+        resultsMap.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+</script>
+
+
+
+{% endblock %}
