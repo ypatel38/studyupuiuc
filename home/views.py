@@ -625,8 +625,22 @@ class NewSessionView(TemplateView):
                     else:
                         user_dict[i] = max(int(float(mate_dict[j][i]*0.20) + 0.5), user_dict[i])
             #sort user_dict
+            print(user_dict)
             sorted_x = sorted(user_dict.items(), key=operator.itemgetter(1), reverse = True)
             class_dict[curr_class] = sorted_x
+            print(sorted_x)
+
+        #find top 5 per class
+        for i in classes:
+            temp_list = []
+            count = 0
+            for j in range(len(class_dict[i])):
+                temp_list.append([])
+                temp_list[j] = class_dict[i][j]
+                count += 1
+                if count >= 5:
+                    break;
+            class_dict[i] = temp_list
 
         #debug print
         # for j in class_dict.keys():
