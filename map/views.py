@@ -41,8 +41,14 @@ class MapView(TemplateView):
                             building_dict[building_arr[i][0]]['num_sesh'] = 1
                             building_dict[building_arr[i][0]]['num_students'] = 0
                             valid_sesh.append(building_arr[i][4])
+                            #get the corrdinates of this building
+                            cursor.execute("SELECT  map_buildings.lat, map_buildings.lng    \
+                                            FROM    map_buildings   \
+                                            WHERE   map_buildings.building = %s", [building_arr[i][0]])
+                            build = cursor.fetchall()
+                            building_dict[building_arr[i][0]]['LatLng'] = {'lat': build[0][0], 'lng': build[0][1]}
                         else:
-                            building_dict[building_arr[i][0]] += 1
+                            building_dict[building_arr[i][0]]['num_sesh'] += 1
 
         #now get number of students per a valid study session
 
@@ -54,20 +60,68 @@ class MapView(TemplateView):
                             GROUP BY    home_studysession.building", [str(i)])
             temp_arr = cursor.fetchall()
             building_dict[temp_arr[0][0]]['num_students'] += temp_arr[0][1]
+
+
+        #get the ranges for coloring purposes
+        top = -1
+        delta = 0
+        #find smallest and largest weight
+        for i in building_dict.keys():
+            if building_dict[i]['num_sesh'] > top:
+                top = building_dict[i]['num_sesh']
+
+        #assign ranges for each section
+        build_range_list = []
+        #goes from the lowest bracket to the highest
+        if top > 10:
+            #use dynamic set up for greater than 10
+            val = 1
+            delta = int(top/5)-1
+            remainder = top - (delta+1)*5
+            for i in range(5):
+                build_range_list.append({})
+                build_range_list[i]['min'] = val
+                build_range_list[i]['max'] = val + delta
+                if remainder > 0:
+                    build_range_list[i]['max'] += 1
+                    val += delta + 2
+                    remainder -= 1
+                else:
+                    val += delta + 1
+        else:
+            #use preset ranges
+            for i in range(5):
+                build_range_list.append({})
+                build_range_list[i]['min'] = 1 + i*2
+                build_range_list[i]['max'] = 2 + i*2
+
+        build_range_list[4]['max'] = -1
+
+
+        #assign range val to each building
+        for i in building_dict:
+            for j in range(5):
+                print()
+                if building_dict[i]['num_sesh'] >= build_range_list[j]['min'] and building_dict[i]['num_sesh'] <= build_range_list[j]['max']:
+                    building_dict[i]['section'] = j
+                    break
+
+
+        print(build_range_list)
+        print(building_dict)
+
+
         print("FILTERED by ALL: ")
         print("Currently active study sessions: ")
         for i in building_dict.keys():
             print("There are", building_dict[i]['num_sesh'], "study sessions in", i, "with", building_dict[i]['num_students'], "students.")
-            #building_dict[i] = json.dumps(building_dict[i])
         building_dict = json.dumps(building_dict)
 
 
 
 
-
-
         #now i need to get the classes the user is in
-        cursor.execute("SELECT 	accounts_enrolledin.class_code        \
+        cursor.execute("SELECT     accounts_enrolledin.class_code        \
                         FROM    accounts_enrolledin                 \
                         WHERE   accounts_enrolledin.netID = %s", [str(request.user)])
         middleman = cursor.fetchall()
@@ -106,8 +160,14 @@ class MapView(TemplateView):
                                 temp_dict[building_arr[i][0]]['num_sesh'] = 1
                                 temp_dict[building_arr[i][0]]['num_students'] = 0
                                 valid_sesh.append(building_arr[i][4])
+                                #get the corrdinates of this building
+                                cursor.execute("SELECT  map_buildings.lat, map_buildings.lng    \
+                                                FROM    map_buildings   \
+                                                WHERE   map_buildings.building = %s", [building_arr[i][0]])
+                                build = cursor.fetchall()
+                                temp_dict[building_arr[i][0]]['LatLng'] = {'Lat': build[0][0], 'Lng': build[0][1]}
                             else:
-                                temp_dict[building_arr[i][0]] += 1
+                                temp_dict[building_arr[i][0]]['num_sesh'] += 1
 
             #now get number of students per a valid study session
 
@@ -123,6 +183,50 @@ class MapView(TemplateView):
             #store this dict into classbuild dict
             classbuild_dict[curr_class] = temp_dict
 
+
+
+        #find smallest and largest weight per class
+        classbuild_range_list = {}
+        for curr_class in classbuild_dict.keys():
+            top = -1
+            delta = 0
+            #assign ranges for each section
+            classbuild_range_list[curr_class] = []
+            for i in classbuild_dict[curr_class]:
+                if classbuild_dict[curr_class][i]['num_sesh'] > top:
+                    top = classbuild_dict[curr_class][i]['num_sesh']
+            if top > 10:
+                #dynamic algorithm
+                #goes from the lowest bracket to the highest
+                val = 1
+                delta = int(top/5)-1
+                remainder = top - (delta+1)*5
+                for i in range(5):
+                    classbuild_range_list[curr_class].append({})
+                    classbuild_range_list[curr_class][i]['min'] = val
+                    classbuild_range_list[curr_class][i]['max'] = val + delta
+                    if remainder > 0:
+                        classbuild_range_list[curr_class][i]['max'] += 1
+                        remainder -= 1
+                        val += delta + 2
+                    else:
+                        val += delta + 1
+            else:
+                #preset splits
+                for i in range(5):
+                    classbuild_range_list[curr_class].append({})
+                    classbuild_range_list[curr_class][i]['min'] = 1 + i*2
+                    classbuild_range_list[curr_class][i]['max'] = 2 + i*2
+            classbuild_range_list[curr_class][4]['max'] = -1
+            #assign range val to each building
+            for i in classbuild_dict[curr_class]:
+                for j in range(5):
+                    if classbuild_dict[curr_class][i]['num_sesh'] >= classbuild_range_list[curr_class][j]['min'] and classbuild_dict[curr_class][i]['num_sesh'] <= classbuild_range_list[curr_class][j]['max']:
+                        classbuild_dict[curr_class][i]['section'] = j
+                        break
+
+        print(classbuild_dict)
+
         print("")
         print("FILTERED by CLASSES")
         for i in classbuild_dict.keys():
@@ -130,8 +234,6 @@ class MapView(TemplateView):
             print("Currently active study sessions for", i, ":")
             for j in classbuild_dict[i].keys():
                 print("There are", classbuild_dict[i][j]['num_sesh'], "study sessions in", j, "with", classbuild_dict[i][j]['num_students'], "students.")
-                #classbuild_dict[i][j] = json.dumps(classbuild_dict[i][j])
-            #classbuild_dict[i] = json.dumps(classbuild_dict[i])
         classbuild_dict = json.dumps(classbuild_dict)
 
 
@@ -150,9 +252,7 @@ class MapView(TemplateView):
 
         cursor.close()
 
-        print(classbuild_dict)
-        print(building_dict)
-        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "building_dict": building_dict}
+        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "classbuild_range_list": classbuild_range_list, "building_dict": building_dict, "build_range_list": build_range_list}
 
         return render(request, self.template_name, args)
 

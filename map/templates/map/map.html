@@ -135,11 +135,14 @@ html, body {
     <div id="key5_color"></div>
   </div>
   <div class="col-md-5 col-md-offset-2">
-    <div id="key_text"> 1 - # </div>
-    <div id="key_text"> # - # </div>
-    <div id="key_text"> # - # </div>
-    <div id="key_text"> # - # </div>
-    <div id="key_text"> # + </div>
+    <!--Dynamically add ranges-->
+    {% for range in build_range_list %}
+      {% if range.max != -1 %}
+        <div id="key_text"> {{range.min}} - {{range.max}} </div>
+      {% else %}
+        <div id="key_text"> {{range.min}} + </div>
+      {% endif %}
+    {% endfor %}
   </div>
 </div>
 
@@ -150,172 +153,13 @@ html, body {
 
 
 <script>
+  var map;
   function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
       zoom: 17,
       center: {lat: 40.107737, lng: -88.227234}, //uiuc loc
 
     });
-    var circle1 = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0.85,
-      fillColor: '#5c6ebc',
-      strokeOpacity: 0.0,
-      scale: 60.0
-    };
-    var circle2 = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0.85,
-      fillColor: '#6D7FCC',
-      strokeOpacity: 0.0,
-      scale: 50.0
-    };
-    var circle3 = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0.85,
-      fillColor: '#8b9ae0',
-      strokeOpacity: 0.0,
-      scale: 40.0
-    };
-    var circle4 = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0.85,
-      fillColor: '#bbc6f7',
-      strokeOpacity: 0.0,
-      scale: 30.0
-    };
-    var circle5 = {
-      path: google.maps.SymbolPath.CIRCLE,
-      fillOpacity: 0.85,
-      fillColor: '#d6ddff',
-      strokeOpacity: 0.0,
-      scale: 20.0
-    };
-
-    /*
-    var ecebCircle = new google.maps.Circle({
-       strokeOpacity: 0,
-       fillColor: '#5c6ebc',
-       fillOpacity: 0.85,
-       map: map,
-       center: {lat: 40.114998, lng: -88.228007}, //insert lat long here
-       radius: 60
-    });*/
-
-    var ecebCircle = new google.maps.Marker({
-        icon: circle1,
-        position: {lat: 40.114998, lng: -88.228007},
-        label: {
-          text: "50",
-          color: "#FFFFFF",
-          fontSize: "35px",
-          fontWeight: "bold"
-        }
-    });
-    ecebCircle.setMap(map);
-    /*
-    var graingerCircle = new google.maps.Circle({
-       strokeOpacity: 0,
-       fillColor: '#6D7FCC',
-       fillOpacity: 0.85,
-       map: map,
-       center: {lat: 40.112652, lng: -88.226895}, //insert lat long here
-       radius: 50
-    });*/
-    var graingerCircle = new google.maps.Marker({
-        icon: circle2,
-        position: {lat: 40.112652, lng: -88.226895},
-        label: {
-          text: "22",
-          color: "#FFFFFF",
-          fontSize: "30px",
-          fontWeight: "bold"
-        }
-    });
-    graingerCircle.setMap(map);
-    /*
-    var siebelCircle = new google.maps.Circle({
-       strokeOpacity: 0,
-       fillColor: '#8b9ae0',
-       fillOpacity: 0.85,
-       map: map,
-       center: {lat: 40.114031, lng: -88.224920}, //insert lat long here
-       radius: 40
-    });*/
-    var siebelCircle = new google.maps.Marker({
-        icon: circle3,
-        position: {lat: 40.114031, lng: -88.224920},
-        label: {
-          text: "10",
-          color: "#FFFFFF",
-          fontSize: "25px",
-          fontWeight: "bold"
-        }
-    });
-    siebelCircle.setMap(map);
-    /*
-    var unionCircle = new google.maps.Circle({
-       strokeOpacity: 0,
-       fillColor: '#bbc6f7',
-       fillOpacity: 0.85,
-       map: map,
-       center: {lat: 40.109370, lng: -88.227216}, //insert lat long here
-       radius: 30
-    });*/
-    var unionCircle = new google.maps.Marker({
-        icon: circle4,
-        position: {lat: 40.109370, lng: -88.227216},
-        label: {
-          text: "6",
-          color: "#FFFFFF",
-          fontSize: "25px",
-          fontWeight: "bold"
-        }
-    });
-    unionCircle.setMap(map);
-    /*
-    var dclCircle = new google.maps.Circle({
-       strokeOpacity: 0,
-       fillColor: '#d6ddff',
-       fillOpacity: 0.85,
-       map: map,
-       center: {lat: 40.113281, lng: -88.226539}, //insert lat long here
-       radius: 20
-    });*/
-    var dclCircle = new google.maps.Marker({
-        icon: circle5,
-        position: {lat: 40.113281, lng: -88.226539},
-        label: {
-          text: "1",
-          color: "#FFFFFF",
-          fontSize: "20px",
-          fontWeight: "bold"
-        }
-    });
-    dclCircle.setMap(map);
-
-  }
-/*
-  function geocodeAddress(geocoder, resultsMap) {
-    var address = document.getElementById('address').value;
-    geocoder.geocode({'address': address}, function(results, status) {
-      if (status === 'OK') {
-        resultsMap.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-          map: resultsMap,
-          position: results[0].geometry.location
-        });
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-  }*/
-</script>
-
-<script>
-	$(document).ready(function(){
-		$(".chosen-select").chosen({width: "75%"});
-
     //The following takes html JSON and converts to JS JSON
     var html_building_dict = "{{building_dict}}"
     var html_building_split = html_building_dict.split('&quot;')
@@ -327,42 +171,172 @@ html, body {
     }
 
     json_building = json_building.substring(0, json_building.length-1);
-    JSON.parse(json_building);
+    json_building = JSON.parse(json_building);
 
-    //jsonbuilding now hold info in JSON
+    //The following takes html JSON and converts to JS JSON
+    var html_classbuild_dict = "{{classbuild_dict}}"
+    var html_classbuild_split = html_classbuild_dict.split('&quot;')
+    var json_classbuild = "";
 
-    // Draw initial map markers here
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 17,
-      center: {lat: 40.107737, lng: -88.227234}, //uiuc loc
+    for(var i = 0; i < html_classbuild_split.length; i++){
+      json_classbuild += html_classbuild_split[i];
+      json_classbuild += "\"";
+    }
 
-    });
+    json_classbuild = json_classbuild.substring(0, json_classbuild.length-1);
+    json_classbuild = JSON.parse(json_classbuild);
 
-    //LOOP THROUGH BUILDING THAT NEEDS TO BE MARKED
-      var circle = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillOpacity: 0.85,
-        fillColor: '#5c6ebc',
-        strokeOpacity: 0.0,
-        scale: 60.0 //filter this by number of sessions and divisions
-      };
+    //jsonbuilding and jsonclassbuild now hold info in JSON
+    console.log(json_building);
+    console.log(json_classbuild);
 
-      var circleMark = new google.maps.Marker({
-          icon: circle1,
-          position: {lat: 40.114998, lng: -88.228007},
-          label: {
-            text: "50",//filter this by number of sessions and divisions
-            color: "#FFFFFF",
-            fontSize: "35px",
-            fontWeight: "bold"
-          }
-      });
-      circleMark.setMap(map);
+    var filteredClass = $("#class_filter option:selected").text();
 
+    if(filteredClass == "All"){
+      for(var key in json_building)
+        console.log("WOOO");
+        console.log(json_building[key]);
+    }
+    else {
+      ;
+    }
+    /* FRONT END TEMPLATE */
+    // var circle1 = {
+    //   path: google.maps.SymbolPath.CIRCLE,
+    //   fillOpacity: 0.85,
+    //   fillColor: '#5c6ebc',
+    //   strokeOpacity: 0.0,
+    //   scale: 60.0
+    // };
+    // var circle2 = {
+    //   path: google.maps.SymbolPath.CIRCLE,
+    //   fillOpacity: 0.85,
+    //   fillColor: '#6D7FCC',
+    //   strokeOpacity: 0.0,
+    //   scale: 50.0
+    // };
+    // var circle3 = {
+    //   path: google.maps.SymbolPath.CIRCLE,
+    //   fillOpacity: 0.85,
+    //   fillColor: '#8b9ae0',
+    //   strokeOpacity: 0.0,
+    //   scale: 40.0
+    // };
+    // var circle4 = {
+    //   path: google.maps.SymbolPath.CIRCLE,
+    //   fillOpacity: 0.85,
+    //   fillColor: '#bbc6f7',
+    //   strokeOpacity: 0.0,
+    //   scale: 30.0
+    // };
+    // var circle5 = {
+    //   path: google.maps.SymbolPath.CIRCLE,
+    //   fillOpacity: 0.85,
+    //   fillColor: '#d6ddff',
+    //   strokeOpacity: 0.0,
+    //   scale: 20.0
+    // };
+    //
+    //
+    // // var ecebCircle = new google.maps.Marker({
+    // //     icon: circle1,
+    // //     position: {lat: 40.114998, lng: -88.228007},
+    // //     label: {
+    // //       text: "50",
+    // //       color: "#FFFFFF",
+    // //       fontSize: "35px",
+    // //       fontWeight: "bold"
+    // //     }
+    // // });
+    // // ecebCircle.setMap(map);
+    // /*
+    // var graingerCircle = new google.maps.Circle({
+    //    strokeOpacity: 0,
+    //    fillColor: '#6D7FCC',
+    //    fillOpacity: 0.85,
+    //    map: map,
+    //    center: {lat: 40.112652, lng: -88.226895}, //insert lat long here
+    //    radius: 50
+    // });*/
+    // var graingerCircle = new google.maps.Marker({
+    //     icon: circle2,
+    //     position: {lat: 40.112652, lng: -88.226895},
+    //     label: {
+    //       text: "22",
+    //       color: "#FFFFFF",
+    //       fontSize: "30px",
+    //       fontWeight: "bold"
+    //     }
+    // });
+    // graingerCircle.setMap(map);
+    // /*
+    // var siebelCircle = new google.maps.Circle({
+    //    strokeOpacity: 0,
+    //    fillColor: '#8b9ae0',
+    //    fillOpacity: 0.85,
+    //    map: map,
+    //    center: {lat: 40.114031, lng: -88.224920}, //insert lat long here
+    //    radius: 40
+    // });*/
+    // var siebelCircle = new google.maps.Marker({
+    //     icon: circle3,
+    //     position: {lat: 40.114031, lng: -88.224920},
+    //     label: {
+    //       text: "10",
+    //       color: "#FFFFFF",
+    //       fontSize: "25px",
+    //       fontWeight: "bold"
+    //     }
+    // });
+    // siebelCircle.setMap(map);
+    // /*
+    // var unionCircle = new google.maps.Circle({
+    //    strokeOpacity: 0,
+    //    fillColor: '#bbc6f7',
+    //    fillOpacity: 0.85,
+    //    map: map,
+    //    center: {lat: 40.109370, lng: -88.227216}, //insert lat long here
+    //    radius: 30
+    // });*/
+    // var unionCircle = new google.maps.Marker({
+    //     icon: circle4,
+    //     position: {lat: 40.109370, lng: -88.227216},
+    //     label: {
+    //       text: "6",
+    //       color: "#FFFFFF",
+    //       fontSize: "25px",
+    //       fontWeight: "bold"
+    //     }
+    // });
+    // unionCircle.setMap(map);
+    // /*
+    // var dclCircle = new google.maps.Circle({
+    //    strokeOpacity: 0,
+    //    fillColor: '#d6ddff',
+    //    fillOpacity: 0.85,
+    //    map: map,
+    //    center: {lat: 40.113281, lng: -88.226539}, //insert lat long here
+    //    radius: 20
+    // });*/
+    // var dclCircle = new google.maps.Marker({
+    //     icon: circle5,
+    //     position: {lat: 40.113281, lng: -88.226539},
+    //     label: {
+    //       text: "3",
+    //       color: "#FFFFFF",
+    //       fontSize: "20px",
+    //       fontWeight: "bold"
+    //     }
+    // });
+    // dclCircle.setMap(map);
+
+  }
+
+
+	$(document).ready(function(){
+    $(".chosen-select").chosen({width: "75%"});
   })
-</script>
 
-<script>
   $( "#class_filter" ).change(function() {
 
     // Draw switched map markers here
@@ -405,12 +379,11 @@ html, body {
     var filteredClass = $("#class_filter option:selected").text();
 
     if(filteredClass == "All"){
-
+      ;
     }
     else {
-
+      ;
     }
-
 
   });
 </script>

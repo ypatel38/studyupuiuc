@@ -56,6 +56,8 @@ class HomeView(TemplateView):
         sessions = []
         count = 0;
         for i in range(len(sessions_arr)):
+            if(sessions_arr[i] is None):
+                continue;
             #check if session is sceduled for adf
             if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
                 sessions.append({})
