@@ -58,7 +58,7 @@ class MapView(TemplateView):
         print("Currently active study sessions: ")
         for i in building_dict.keys():
             print("There are", building_dict[i]['num_sesh'], "study sessions in", i, "with", building_dict[i]['num_students'], "students.")
-            building_dict[i] = json.dumps(building_dict[i])
+            #building_dict[i] = json.dumps(building_dict[i])
         building_dict = json.dumps(building_dict)
 
 
@@ -130,8 +130,8 @@ class MapView(TemplateView):
             print("Currently active study sessions for", i, ":")
             for j in classbuild_dict[i].keys():
                 print("There are", classbuild_dict[i][j]['num_sesh'], "study sessions in", j, "with", classbuild_dict[i][j]['num_students'], "students.")
-                classbuild_dict[i][j] = json.dumps(classbuild_dict[i][j])
-            classbuild_dict[i] = json.dumps(classbuild_dict[i])
+                #classbuild_dict[i][j] = json.dumps(classbuild_dict[i][j])
+            #classbuild_dict[i] = json.dumps(classbuild_dict[i])
         classbuild_dict = json.dumps(classbuild_dict)
 
 
@@ -150,6 +150,8 @@ class MapView(TemplateView):
 
         cursor.close()
 
+        print(classbuild_dict)
+        print(building_dict)
         args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "building_dict": building_dict}
 
         return render(request, self.template_name, args)

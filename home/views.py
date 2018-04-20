@@ -198,7 +198,6 @@ class HomeView(TemplateView):
             cursor = connection.cursor()
 
             if (is_joined == "1"):
-
                 cursor.execute("INSERT INTO      home_sessionhas(seshID, netID, is_owner) \
                                 VALUES           (%s, %s, 0)", [seshID, str(request.user)])
             else:
@@ -780,6 +779,162 @@ class NewSessionView(TemplateView):
         #temp = re.compile("regex here")
         #temp.match("input string")
         #need to fix data here
+
+        #TODO:CHECK FOR LIMIT ON CREATION COUNT
+        cursor = connection.cursor()
+
+        #check for max
+        cursor.execute("SELECT COUNT    (DISTINCT home_studysession.seshID)  \
+                        FROM            home_studysession, \
+                                        home_sessionhas \
+                        WHERE           home_studysession.seshID = home_sessionhas.seshID AND \
+                                        home_sessionhas.is_owner = %s AND \
+                                        home_sessionhas.netID = %s", ["1", str(request.user)])
+
+        sesh_created_arr = cursor.fetchall()
+
+        sesh_created = sesh_created_arr[0][0]
+
+        if(sesh_created >= 5):
+            #GET REQUEST
+            # find session corresponding to users enrolled ClassOfSession
+            cursor = connection.cursor()
+            cursor.execute("SELECT      home_studysession.start_time, \
+                                        home_studysession.end_time, \
+                                        home_studysession.date, \
+                                        home_studysession.building, \
+                                        home_studysession.room_number, \
+                                        home_studysession.description, \
+                                        home_studysession.seshID, \
+                                        home_classes.class_code, \
+                                        home_classes.class_name \
+                            FROM        accounts_enrolledin, \
+                                        home_classes, \
+                                        home_classofsession, \
+                                        home_studysession \
+                            WHERE       accounts_enrolledin.netID = %s AND \
+                                        accounts_enrolledin.class_code = home_classes.class_code AND \
+                                        home_classes.class_code = home_classofsession.class_code AND \
+                                        home_classofsession.seshID = home_studysession.seshID \
+                        ORDER BY    datetime(home_studysession.date), \
+                                    datetime(home_studysession.start_time), \
+                                    datetime(home_studysession.end_time), \
+                                    home_studysession.building, \
+                                    home_studysession.room_number", [str(request.user)])
+
+            sessions_arr = cursor.fetchall()
+            #print(sessions_arr)
+            #reorganize queryset to dict
+            sessions = []
+            count = 0;
+            for i in range(len(sessions_arr)):
+                #check if session is sceduled for adf
+                if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
+                    sessions.append({})
+                    sessions[count]['start_time'] = sessions_arr[i][0]
+                    sessions[count]['end_time'] = sessions_arr[i][1]
+                    sessions[count]['date'] = sessions_arr[i][2]
+                    sessions[count]['building'] = sessions_arr[i][3]
+                    sessions[count]['room_number'] = sessions_arr[i][4]
+                    sessions[count]['description'] = sessions_arr[i][5]
+                    sessions[count]['seshID'] = sessions_arr[i][6]
+                    sessions[count]['class_code'] = sessions_arr[i][7]
+                    sessions[count]['class_name'] = sessions_arr[i][8]
+                    count+=1
+
+            cursor.execute("SELECT      home_sessionhas.is_owner, \
+                                        home_studysession.seshID \
+                            FROM        accounts_enrolledin, \
+                                        home_classes, \
+                                        home_classofsession, \
+                                        home_studysession, \
+                                        home_sessionhas \
+                            WHERE       accounts_enrolledin.netID = %s AND \
+                                        home_sessionhas.netID = accounts_enrolledin.netID AND \
+                                        accounts_enrolledin.class_code = home_classes.class_code AND \
+                                        home_classes.class_code = home_classofsession.class_code AND \
+                                        home_classofsession.seshID = home_studysession.seshID AND \
+                                        home_classofsession.seshID = home_sessionhas.seshID", [str(request.user)])
+
+            sessions_arr = cursor.fetchall()
+            #print(sessions_arr)
+
+            for i in range(len(sessions)):
+                sessions[i]['is_owner'] = 0
+                sessions[i]['is_joined'] = 0
+            for i in range(len(sessions_arr)):
+                for j in range(len(sessions)):
+                    if(sessions[j]['seshID'] == sessions_arr[i][1]):
+                        sessions[i]['is_owner'] = sessions_arr[i][0]
+                        sessions[i]['is_joined'] = 1
+
+            # find classes user is enrolled in and are empty
+            cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                            FROM             accounts_enrolledin \
+                            WHERE            %s = accounts_enrolledin.netID AND \
+                                             accounts_enrolledin.class_code IN( \
+                                                SELECT DISTINCT home_classofsession.class_code \
+                                                FROM home_studysession, home_classofsession \
+                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+
+            #reorganize queryset to dict
+            enrolledin_empty_arr = cursor.fetchall()
+            enrolledin_empty = []
+            for i in range(len(enrolledin_empty_arr)):
+                enrolledin_empty.append(enrolledin_empty_arr[i][0])
+
+
+            # find classes user is enrolled in
+            cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                            FROM             accounts_enrolledin, \
+                                             home_classes \
+                            WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
+
+            #reorganize queryset to dict
+            enrolledin_arr = cursor.fetchall()
+            enrolledin = []
+            for i in range(len(enrolledin_arr)):
+                enrolledin.append({})
+                enrolledin[i]['class_code'] = enrolledin_arr[i][0]
+                if(enrolledin[i]['class_code'] in enrolledin_empty):
+                    enrolledin[i]['class_empty'] = False
+                else:
+                    enrolledin[i]['class_empty'] = True
+
+
+            # find number of sessions joined by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+
+            #reorganize queryset to dict
+            sessions_joined_arr = cursor.fetchall()
+            sessions_joined = 0
+            sessions_joined = sessions_joined_arr[0][0]
+
+            # find number of sessions created by the user
+            cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                            FROM             home_studysession, \
+                                             home_sessionhas \
+                            WHERE            %s = home_sessionhas.netID AND \
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+
+            #reorganize queryset to dict
+            sessions_created_arr = cursor.fetchall()
+            sessions_created = 0
+            sessions_created = sessions_created_arr[0][0]
+
+            connection.close()
+
+            #print(sessions)
+            args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
+            #print(sessions)
+            return render(request, self.template_name, args)
+
+        cursor.close()
 
         if not is_correct:
             return redirect(reverse('home:new_session'))

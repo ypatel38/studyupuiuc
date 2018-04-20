@@ -118,7 +118,7 @@ html, body {
 <div id="floating_key">
   <div id="sidebar_filter_header">Class Filter</div>
 
-  <select data-placeholder="  Filter" name="filter" class="form-control chosen-select" required id="filter">
+  <select data-placeholder="  Filter" name="class_filter" class="form-control chosen-select" required id="class_filter">
     <option value="All" selected="selected">All</option>
     {% for class in enrolledin %}
       <option value="{{class.class_code}}">{{class.class_code}}</option>
@@ -294,18 +294,6 @@ html, body {
     });
     dclCircle.setMap(map);
 
-
-
-
-
-
-
-    //dclCircle.setMap(null) to remove
-    var geocoder = new google.maps.Geocoder();
-
-    document.getElementById('submit').addEventListener('click', function() {
-      geocodeAddress(geocoder, map);
-    });
   }
 /*
   function geocodeAddress(geocoder, resultsMap) {
@@ -328,15 +316,102 @@ html, body {
 	$(document).ready(function(){
 		$(".chosen-select").chosen({width: "75%"});
 
+    //The following takes html JSON and converts to JS JSON
+    var html_building_dict = "{{building_dict}}"
+    var html_building_split = html_building_dict.split('&quot;')
+    var json_building = "";
+
+    for(var i = 0; i < html_building_split.length; i++){
+      json_building += html_building_split[i];
+      json_building += "\"";
+    }
+
+    json_building = json_building.substring(0, json_building.length-1);
+    JSON.parse(json_building);
+
+    //jsonbuilding now hold info in JSON
+
     // Draw initial map markers here
-})
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 17,
+      center: {lat: 40.107737, lng: -88.227234}, //uiuc loc
+
+    });
+
+    //LOOP THROUGH BUILDING THAT NEEDS TO BE MARKED
+      var circle = {
+        path: google.maps.SymbolPath.CIRCLE,
+        fillOpacity: 0.85,
+        fillColor: '#5c6ebc',
+        strokeOpacity: 0.0,
+        scale: 60.0 //filter this by number of sessions and divisions
+      };
+
+      var circleMark = new google.maps.Marker({
+          icon: circle1,
+          position: {lat: 40.114998, lng: -88.228007},
+          label: {
+            text: "50",//filter this by number of sessions and divisions
+            color: "#FFFFFF",
+            fontSize: "35px",
+            fontWeight: "bold"
+          }
+      });
+      circleMark.setMap(map);
+
+  })
 </script>
 
 <script>
-  $( "#id_enrolled_class" ).change(function() {
+  $( "#class_filter" ).change(function() {
 
     // Draw switched map markers here
     //var filteredClass = $("#filter option:selected").text();
+
+    //console.log("{{building_dict}}");
+    //console.log("{{classbuild_dict}}");
+
+
+    //The following takes html JSON and converts to JS JSON
+    var html_building_dict = "{{building_dict}}"
+    var html_building_split = html_building_dict.split('&quot;')
+    var json_building = "";
+
+    for(var i = 0; i < html_building_split.length; i++){
+      json_building += html_building_split[i];
+      json_building += "\"";
+    }
+
+    json_building = json_building.substring(0, json_building.length-1);
+    JSON.parse(json_building);
+
+    //The following takes html JSON and converts to JS JSON
+    var html_classbuild_dict = "{{classbuild_dict}}"
+    var html_classbuild_split = html_classbuild_dict.split('&quot;')
+    var json_classbuild = "";
+
+    for(var i = 0; i < html_classbuild_split.length; i++){
+      json_classbuild += html_classbuild_split[i];
+      json_classbuild += "\"";
+    }
+
+    json_classbuild = json_classbuild.substring(0, json_classbuild.length-1);
+    JSON.parse(json_classbuild);
+
+    //jsonbuilding and jsonclassbuild now hold info in JSON
+    console.log(json_building);
+    console.log(json_classbuild);
+
+    var filteredClass = $("#class_filter option:selected").text();
+
+    if(filteredClass == "All"){
+
+    }
+    else {
+
+    }
+
+
   });
 </script>
 
