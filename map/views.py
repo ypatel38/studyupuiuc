@@ -165,7 +165,7 @@ class MapView(TemplateView):
                                                 FROM    map_buildings   \
                                                 WHERE   map_buildings.building = %s", [building_arr[i][0]])
                                 build = cursor.fetchall()
-                                temp_dict[building_arr[i][0]]['LatLng'] = {'Lat': build[0][0], 'Lng': build[0][1]}
+                                temp_dict[building_arr[i][0]]['LatLng'] = {'lat': build[0][0], 'lng': build[0][1]}
                             else:
                                 temp_dict[building_arr[i][0]]['num_sesh'] += 1
 
