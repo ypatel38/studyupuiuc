@@ -252,7 +252,11 @@ class MapView(TemplateView):
 
         cursor.close()
 
-        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "classbuild_range_list": classbuild_range_list, "building_dict": building_dict, "build_range_list": build_range_list}
+        args = {"enrolledin": enrolledin,
+                "classbuild_dict": classbuild_dict,
+                "classbuild_range_list": classbuild_range_list,
+                "building_dict": building_dict,
+                "build_range_list": build_range_list}
 
         return render(request, self.template_name, args)
 
