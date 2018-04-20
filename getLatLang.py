@@ -3,6 +3,8 @@ from django.db import connection
 import os
 import sys
 
+# RUN THIS AFTER populate_buildings.py
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "studyupuiuc.settings")
     try:

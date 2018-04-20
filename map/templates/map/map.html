@@ -120,7 +120,9 @@ html, body {
 
   <select data-placeholder="  Filter" name="filter" class="form-control chosen-select" required id="filter">
     <option value="All" selected="selected">All</option>
-    <option value="ECE391">ECE391</option>
+    {% for class in enrolledin %}
+      <option value="{{class.class_code}}">{{class.class_code}}</option>
+    {% endfor %}
   </select>
 
 

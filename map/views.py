@@ -134,7 +134,25 @@ class MapView(TemplateView):
             classbuild_dict[i] = json.dumps(classbuild_dict[i])
         classbuild_dict = json.dumps(classbuild_dict)
 
-        return render(request, self.template_name, {})
+
+        # find classes user is enrolled in
+        cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
+                        FROM             accounts_enrolledin, \
+                                         home_classes \
+                        WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
+
+        #reorganize queryset to dict
+        enrolledin_arr = cursor.fetchall()
+        enrolledin = []
+        for i in range(len(enrolledin_arr)):
+            enrolledin.append({})
+            enrolledin[i]['class_code'] = enrolledin_arr[i][0]
+
+        cursor.close()
+
+        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "building_dict": building_dict}
+
+        return render(request, self.template_name, args)
 
     def post(self, request):
         pass

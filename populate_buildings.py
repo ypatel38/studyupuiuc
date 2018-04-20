@@ -1,6 +1,8 @@
 import os
 import sys
 
+# RUN THIS BEFORE getLatLong.py
+
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "studyupuiuc.settings")
     try:
@@ -31,6 +33,8 @@ for b, a in data:
         b = "ECEB"
     elif (b == "Grainger Engineering Library Information Center"):
         b = "Grainger Engineering Library"
+    elif (b == "Ymca"):
+        b = "YMCA"
 
 
     cursor.execute("SELECT  map_buildings.building\
