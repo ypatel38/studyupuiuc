@@ -42,7 +42,7 @@ class MapView(TemplateView):
                             building_dict[building_arr[i][0]]['num_students'] = 0
                             valid_sesh.append(building_arr[i][4])
                         else:
-                            building_dict[building_arr[i][0]] += 1
+                            building_dict[building_arr[i][0]]['num_sesh'] += 1
 
         #now get number of students per a valid study session
 
@@ -57,53 +57,62 @@ class MapView(TemplateView):
 
 
         #get the ranges for coloring purposes
-		top = -1
+        top = -1
         bot = 1000000
         delta = 0
         splits = 0
         #find smallest and largest weight
-        for i in building_dict:
-        	if i['num_sesh'] > top:
-        		top = i['num_sesh']
-        	if i['num_sesh'] < bot:
-        		bot = i['num_sesh']
+        for i in building_dict.keys():
+            if building_dict[i]['num_sesh'] > top:
+                top = building_dict[i]['num_sesh']
+            if building_dict[i]['num_sesh'] < bot:
+                bot = building_dict[i]['num_sesh']
         if ((top - bot + 1)/2) + 1 >= 5:
-        	splits = 5
+            splits = 5
         else:
-        	splits = ((top - bot)/2) + 1
-        delta = (top-bot+1)/(splits+1)
+            splits = int(((top - bot)/2) + 1)
+        delta = int((top-bot+1)/(splits+1))-1
         remainder = (top-bot+1) - (delta+1)*splits
+        print("Delta:", delta, "remainder:", remainder)
         #assign ranges for each section
         build_range_list = []
         #goes from the lowest bracket to the highest
-        val = 1
-        for i in range(5):
-        	build_range_list.append({})
-        	build_range_list[i]['min'] = val
-        	build_range_list[i]['max'] = val + delta
-        	if remainder > 0:
-        		build_range_list[i]['max'] += 1
-        		remainder -= 1
-        		val += delta + 2
-        	else:
-        		val += delta + 1
+        val = bot
+        for i in range(splits):
+            build_range_list.append({})
+            build_range_list[i]['min'] = val
+            build_range_list[i]['max'] = val + delta
+            if remainder > 0:
+                build_range_list[i]['max'] += 1
+                remainder -= 1
+                val += delta + 2
+            else:
+                val += delta + 1
+
+        #assign range val to each building
+        for i in building_dict:
+            for j in range(splits):
+                print()
+                if building_dict[i]['num_sesh'] >= build_range_list[j]['min'] and building_dict[i]['num_sesh'] <= build_range_list[j]['max']:
+                    building_dict[i]['section'] = j
+                    break
 
 
-
+        print(build_range_list)
+        print(building_dict)
 
 
         print("FILTERED by ALL: ")
         print("Currently active study sessions: ")
         for i in building_dict.keys():
             print("There are", building_dict[i]['num_sesh'], "study sessions in", i, "with", building_dict[i]['num_students'], "students.")
-            building_dict[i] = json.dumps(building_dict[i])
         building_dict = json.dumps(building_dict)
 
         
 
 
         #now i need to get the classes the user is in
-        cursor.execute("SELECT 	accounts_enrolledin.class_code        \
+        cursor.execute("SELECT     accounts_enrolledin.class_code        \
                         FROM    accounts_enrolledin                 \
                         WHERE   accounts_enrolledin.netID = %s", [str(request.user)])
         middleman = cursor.fetchall()
@@ -143,7 +152,7 @@ class MapView(TemplateView):
                                 temp_dict[building_arr[i][0]]['num_students'] = 0
                                 valid_sesh.append(building_arr[i][4])
                             else:
-                                temp_dict[building_arr[i][0]] += 1
+                                temp_dict[building_arr[i][0]]['num_sesh'] += 1
 
             #now get number of students per a valid study session
 
@@ -159,6 +168,50 @@ class MapView(TemplateView):
             #store this dict into classbuild dict
             classbuild_dict[curr_class] = temp_dict
 
+
+
+        #find smallest and largest weight per class
+        classbuild_range_list = {}
+        for curr_class in classbuild_dict.keys():
+            top = -1
+            bot = 1000000
+            delta = 0
+            splits = 0
+            for i in classbuild_dict[curr_class]:
+                if classbuild_dict[curr_class][i]['num_sesh'] > top:
+                    top = classbuild_dict[curr_class][i]['num_sesh']
+                if classbuild_dict[curr_class][i]['num_sesh'] < bot:
+                    bot = classbuild_dict[curr_class][i]['num_sesh']
+            if ((top - bot + 1)/2) + 1 >= 5:
+                splits = 5
+            else:
+                splits = int(((top - bot)/2) + 1)
+            delta = int((top-bot+1)/(splits+1))-1
+            remainder = (top-bot+1) - (delta+1)*splits
+            #assign ranges for each section
+            classbuild_range_list[curr_class] = []
+            #goes from the lowest bracket to the highest
+            val = bot
+            for i in range(splits):
+                classbuild_range_list[curr_class].append({})
+                classbuild_range_list[curr_class][i]['min'] = val
+                classbuild_range_list[curr_class][i]['max'] = val + delta
+                if remainder > 0:
+                    classbuild_range_list[curr_class][i]['max'] += 1
+                    remainder -= 1
+                    val += delta + 2
+                else:
+                    val += delta + 1
+
+            #assign range val to each building
+            for i in classbuild_dict[curr_class]:
+                for j in range(splits):
+                    if classbuild_dict[curr_class][i]['num_sesh'] >= classbuild_range_list[curr_class][j]['min'] and classbuild_dict[curr_class][i]['num_sesh'] <= classbuild_range_list[curr_class][j]['max']:
+                        classbuild_dict[curr_class][i]['section'] = j
+                        break
+
+
+
         print("")
         print("FILTERED by CLASSES")
         for i in classbuild_dict.keys():
@@ -166,8 +219,6 @@ class MapView(TemplateView):
             print("Currently active study sessions for", i, ":")
             for j in classbuild_dict[i].keys():
                 print("There are", classbuild_dict[i][j]['num_sesh'], "study sessions in", j, "with", classbuild_dict[i][j]['num_students'], "students.")
-                classbuild_dict[i][j] = json.dumps(classbuild_dict[i][j])
-            classbuild_dict[i] = json.dumps(classbuild_dict[i])
         classbuild_dict = json.dumps(classbuild_dict)
 
 
@@ -186,7 +237,7 @@ class MapView(TemplateView):
 
         cursor.close()
 
-        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "building_dict": building_dict}
+        args = {"enrolledin": enrolledin, "classbuild_dict": classbuild_dict, "classbuild_range_list": classbuild_range_list, "building_dict": building_dict, "build_range_list": build_range_list}
 
         return render(request, self.template_name, args)
 
