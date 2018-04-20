@@ -58,40 +58,43 @@ class MapView(TemplateView):
 
         #get the ranges for coloring purposes
         top = -1
-        bot = 1000000
         delta = 0
-        splits = 0
         #find smallest and largest weight
         for i in building_dict.keys():
             if building_dict[i]['num_sesh'] > top:
                 top = building_dict[i]['num_sesh']
-            if building_dict[i]['num_sesh'] < bot:
-                bot = building_dict[i]['num_sesh']
-        if ((top - bot + 1)/2) + 1 >= 5:
-            splits = 5
-        else:
-            splits = int(((top - bot)/2) + 1)
-        delta = int((top-bot+1)/(splits+1))-1
-        remainder = (top-bot+1) - (delta+1)*splits
-        print("Delta:", delta, "remainder:", remainder)
+
         #assign ranges for each section
         build_range_list = []
         #goes from the lowest bracket to the highest
-        val = bot
-        for i in range(splits):
-            build_range_list.append({})
-            build_range_list[i]['min'] = val
-            build_range_list[i]['max'] = val + delta
-            if remainder > 0:
-                build_range_list[i]['max'] += 1
-                remainder -= 1
-                val += delta + 2
-            else:
-                val += delta + 1
+        if top > 10:
+            #use dynamic set up for greater than 10
+            val = 1
+            delta = int(top/5)-1
+            remainder = top - (delta+1)*5
+            for i in range(5):
+                build_range_list.append({})
+                build_range_list[i]['min'] = val
+                build_range_list[i]['max'] = val + delta
+                if remainder > 0:
+                    build_range_list[i]['max'] += 1
+                    val += delta + 2
+                    remainder -= int(remainder/5)
+                else:
+                    val += delta + 1
+        else:
+            #use preset ranges
+            for i in range(5):
+                build_range_list.append({})
+                build_range_list[i]['min'] = 1 + i*2
+                build_range_list[i]['max'] = 2 + i*2
+
+        build_range_list[4]['max'] = -1
+        
 
         #assign range val to each building
         for i in building_dict:
-            for j in range(splits):
+            for j in range(5):
                 print()
                 if building_dict[i]['num_sesh'] >= build_range_list[j]['min'] and building_dict[i]['num_sesh'] <= build_range_list[j]['max']:
                     building_dict[i]['section'] = j
@@ -174,43 +177,46 @@ class MapView(TemplateView):
         classbuild_range_list = {}
         for curr_class in classbuild_dict.keys():
             top = -1
-            bot = 1000000
             delta = 0
-            splits = 0
+            #assign ranges for each section
+            classbuild_range_list[curr_class] = []
             for i in classbuild_dict[curr_class]:
                 if classbuild_dict[curr_class][i]['num_sesh'] > top:
                     top = classbuild_dict[curr_class][i]['num_sesh']
-                if classbuild_dict[curr_class][i]['num_sesh'] < bot:
-                    bot = classbuild_dict[curr_class][i]['num_sesh']
-            if ((top - bot + 1)/2) + 1 >= 5:
-                splits = 5
+            if top > 10:
+                #dynamic algorithm
+                #goes from the lowest bracket to the highest
+                val = 1
+                delta = int(top/5)-1
+                remainder = top - (delta+1)*5
+                for i in range(5):
+                    classbuild_range_list[curr_class].append({})
+                    classbuild_range_list[curr_class][i]['min'] = val
+                    classbuild_range_list[curr_class][i]['max'] = val + delta
+                    if remainder > 0:
+                        classbuild_range_list[curr_class][i]['max'] += 1
+                        remainder -= 1
+                        val += delta + 2
+                    else:
+                        val += delta + 1
             else:
-                splits = int(((top - bot)/2) + 1)
-            delta = int((top-bot+1)/(splits+1))-1
-            remainder = (top-bot+1) - (delta+1)*splits
-            #assign ranges for each section
-            classbuild_range_list[curr_class] = []
-            #goes from the lowest bracket to the highest
-            val = bot
-            for i in range(splits):
-                classbuild_range_list[curr_class].append({})
-                classbuild_range_list[curr_class][i]['min'] = val
-                classbuild_range_list[curr_class][i]['max'] = val + delta
-                if remainder > 0:
-                    classbuild_range_list[curr_class][i]['max'] += 1
-                    remainder -= 1
-                    val += delta + 2
-                else:
-                    val += delta + 1
-
+                #preset splits
+                for i in range(5):
+                    classbuild_range_list[curr_class].append({})
+                    classbuild_range_list[curr_class][i]['min'] = 1 + i*2
+                    classbuild_range_list[curr_class][i]['max'] = 2 + i*2
+            classbuild_range_list[curr_class][4]['max'] = -1
             #assign range val to each building
             for i in classbuild_dict[curr_class]:
-                for j in range(splits):
+                for j in range(5):
                     if classbuild_dict[curr_class][i]['num_sesh'] >= classbuild_range_list[curr_class][j]['min'] and classbuild_dict[curr_class][i]['num_sesh'] <= classbuild_range_list[curr_class][j]['max']:
                         classbuild_dict[curr_class][i]['section'] = j
                         break
 
 
+
+        print(classbuild_dict)
+        print(classbuild_range_list)
 
         print("")
         print("FILTERED by CLASSES")
