@@ -54,6 +54,44 @@ class MapView(TemplateView):
                             GROUP BY    home_studysession.building", [str(i)])
             temp_arr = cursor.fetchall()
             building_dict[temp_arr[0][0]]['num_students'] += temp_arr[0][1]
+
+
+        #get the ranges for coloring purposes
+		top = -1
+        bot = 1000000
+        delta = 0
+        splits = 0
+        #find smallest and largest weight
+        for i in building_dict:
+        	if i['num_sesh'] > top:
+        		top = i['num_sesh']
+        	if i['num_sesh'] < bot:
+        		bot = i['num_sesh']
+        if ((top - bot + 1)/2) + 1 >= 5:
+        	splits = 5
+        else:
+        	splits = ((top - bot)/2) + 1
+        delta = (top-bot+1)/(splits+1)
+        remainder = (top-bot+1) - (delta+1)*splits
+        #assign ranges for each section
+        build_range_list = []
+        #goes from the lowest bracket to the highest
+        val = 1
+        for i in range(5):
+        	build_range_list.append({})
+        	build_range_list[i]['min'] = val
+        	build_range_list[i]['max'] = val + delta
+        	if remainder > 0:
+        		build_range_list[i]['max'] += 1
+        		remainder -= 1
+        		val += delta + 2
+        	else:
+        		val += delta + 1
+
+
+
+
+
         print("FILTERED by ALL: ")
         print("Currently active study sessions: ")
         for i in building_dict.keys():
@@ -61,9 +99,7 @@ class MapView(TemplateView):
             building_dict[i] = json.dumps(building_dict[i])
         building_dict = json.dumps(building_dict)
 
-
-
-
+        
 
 
         #now i need to get the classes the user is in
