@@ -41,6 +41,12 @@ class MapView(TemplateView):
                             building_dict[building_arr[i][0]]['num_sesh'] = 1
                             building_dict[building_arr[i][0]]['num_students'] = 0
                             valid_sesh.append(building_arr[i][4])
+                            #get the corrdinates of this building
+                            cursor.execute("SELECT  map_buildings.lat, map_buildings.lng    \
+                                            FROM    map_buildings   \
+                                            WHERE   map_buildings.building = %s", [building_arr[i][0]])
+                            build = cursor.fetchall()
+                            building_dict[building_arr[i][0]]['LatLng'] = {'Lat': build[0][0], 'Lng': build[0][1]}
                         else:
                             building_dict[building_arr[i][0]]['num_sesh'] += 1
 
@@ -79,7 +85,7 @@ class MapView(TemplateView):
                 if remainder > 0:
                     build_range_list[i]['max'] += 1
                     val += delta + 2
-                    remainder -= int(remainder/5)
+                    remainder -= 1
                 else:
                     val += delta + 1
         else:
@@ -154,6 +160,12 @@ class MapView(TemplateView):
                                 temp_dict[building_arr[i][0]]['num_sesh'] = 1
                                 temp_dict[building_arr[i][0]]['num_students'] = 0
                                 valid_sesh.append(building_arr[i][4])
+                                #get the corrdinates of this building
+                                cursor.execute("SELECT  map_buildings.lat, map_buildings.lng    \
+                                                FROM    map_buildings   \
+                                                WHERE   map_buildings.building = %s", [building_arr[i][0]])
+                                build = cursor.fetchall()
+                                temp_dict[building_arr[i][0]]['LatLng'] = {'Lat': build[0][0], 'Lng': build[0][1]}
                             else:
                                 temp_dict[building_arr[i][0]]['num_sesh'] += 1
 
@@ -213,10 +225,7 @@ class MapView(TemplateView):
                         classbuild_dict[curr_class][i]['section'] = j
                         break
 
-
-
         print(classbuild_dict)
-        print(classbuild_range_list)
 
         print("")
         print("FILTERED by CLASSES")
