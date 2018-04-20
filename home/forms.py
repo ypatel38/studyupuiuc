@@ -102,15 +102,19 @@ class NewSessionForm(forms.Form):
 
                 cursor.execute("INSERT INTO  home_notification(created, \
                                                                is_read, \
-                                                               seshID, \
                                                                notID) \
                                 VALUES       (%s, \
-                                              %s, \
                                               %s, \
                                               %s)",
                                               [currDateTime,
                                               False,
-                                              new_session_id,
+                                              newNotId])
+
+                cursor.execute("INSERT INTO  home_notificationof(seshID, \
+                                                                 notID) \
+                                VALUES       (%s, \
+                                              %s)",
+                                              [new_session_id,
                                               newNotId])
 
                 cursor.execute("INSERT INTO  home_sentfrom(netID, \
