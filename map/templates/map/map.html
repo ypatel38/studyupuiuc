@@ -59,7 +59,7 @@ html, body {
 #key1_color {
   width: 40px;
   height: 20px;
-  background: #d6ddff;
+  background: #bfcaff;
   border-radius: 5px;
   margin-bottom: 6px;
   margin-top: 2px;
@@ -69,7 +69,7 @@ html, body {
 #key2_color {
   width: 40px;
   height: 20px;
-  background: #bbc6f7;
+  background: #a2afe8;
   border-radius: 5px;
   margin-bottom: 6px;
   margin-left: 30px;
@@ -154,6 +154,11 @@ html, body {
 
 <script>
   var map;
+  var markers = [];
+  var colors = ['#bfcaff', '#a2afe8', '#8b9ae0', '#6D7FCC', '#5c6ebc'];
+  var scale = [20.0, 30.0, 40.0, 50.0, 60.0];
+  var fontsize = ["20px", "25px", "25px", "30px", "35px"];
+
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 17,
@@ -187,18 +192,78 @@ html, body {
     json_classbuild = JSON.parse(json_classbuild);
 
     //jsonbuilding and jsonclassbuild now hold info in JSON
-    console.log(json_building);
-    console.log(json_classbuild);
+    //console.log(json_building);
+    //console.log(json_classbuild);
 
     var filteredClass = $("#class_filter option:selected").text();
 
     if(filteredClass == "All"){
-      for(var key in json_building)
-        console.log("WOOO");
-        console.log(json_building[key]);
+      //remove old markers
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(null);
+      markers = [];
+
+      var markerIcon;
+      //loop and create all markers
+
+      for(var key in json_building){
+        //console.log(json_building[key]);
+        building = json_building[key];
+        markerIcon = {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillOpacity: 0.85,
+          fillColor: colors[building.section],
+          strokeOpacity: 0.0,
+          scale: scale[building.section]
+        };
+
+        markers.push(new google.maps.Marker({
+            icon: markerIcon,
+            position: building.LatLng,
+            label: {
+              text: building.num_sesh.toString(),
+              color: "#FFFFFF",
+              fontSize: fontsize[building.section],
+              fontWeight: "bold"
+            }
+        }));
+      }
+      //console.log(markers.length)
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(map);
     }
     else {
-      ;
+      //remove old markers
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(null);
+      markers = [];
+
+      var markerIcon;
+      //loop and create all markers
+      for(var key in json_classbuild[filteredClass]){
+        building = json_classbuild[filteredClass][key];
+        markerIcon = {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillOpacity: 0.85,
+          fillColor: colors[building.section],
+          strokeOpacity: 0.0,
+          scale: scale[building.section]
+        };
+
+        markers.push(new google.maps.Marker({
+            icon: markerIcon,
+            position: building.LatLng,
+            label: {
+              text: building.num_sesh.toString(),
+              color: "#FFFFFF",
+              fontSize: fontsize[building.section],
+              fontWeight: "bold"
+            }
+        }));
+      }
+      //console.log(markers.length)
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(map);
     }
     /* FRONT END TEMPLATE */
     // var circle1 = {
@@ -357,7 +422,7 @@ html, body {
     }
 
     json_building = json_building.substring(0, json_building.length-1);
-    JSON.parse(json_building);
+    json_building = JSON.parse(json_building);
 
     //The following takes html JSON and converts to JS JSON
     var html_classbuild_dict = "{{classbuild_dict}}"
@@ -370,19 +435,83 @@ html, body {
     }
 
     json_classbuild = json_classbuild.substring(0, json_classbuild.length-1);
-    JSON.parse(json_classbuild);
+    json_classbuild = JSON.parse(json_classbuild);
 
     //jsonbuilding and jsonclassbuild now hold info in JSON
-    console.log(json_building);
-    console.log(json_classbuild);
+    //console.log(json_building);
+    //console.log(json_classbuild);
 
     var filteredClass = $("#class_filter option:selected").text();
 
     if(filteredClass == "All"){
-      ;
+      //remove old markers
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(null);
+      markers = [];
+
+      var markerIcon;
+      //loop and create all markers
+      console.log(markers)
+      for(var key in json_building){
+        building = json_building[key];
+
+        markerIcon = {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillOpacity: 0.85,
+          fillColor: colors[building.section],
+          strokeOpacity: 0.0,
+          scale: scale[building.section]
+        };
+
+
+
+        markers.push(new google.maps.Marker({
+            icon: markerIcon,
+            position: building.LatLng,
+            label: {
+              text: building.num_sesh.toString(),
+              color: "#FFFFFF",
+              fontSize: fontsize[building.section],
+              fontWeight: "bold"
+            }
+        }));
+      }
+      //console.log(markers.length)
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(map);
     }
     else {
-      ;
+      //remove old markers
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(null);
+      markers = [];
+
+      var markerIcon;
+      //loop and create all markers
+      for(var key in json_classbuild[filteredClass]){
+        building = json_classbuild[filteredClass][key];
+        markerIcon = {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillOpacity: 0.85,
+          fillColor: colors[building.section],
+          strokeOpacity: 0.0,
+          scale: scale[building.section]
+        };
+
+        markers.push(new google.maps.Marker({
+            icon: markerIcon,
+            position: building.LatLng,
+            label: {
+              text: building.num_sesh.toString(),
+              color: "#FFFFFF",
+              fontSize: fontsize[building.section],
+              fontWeight: "bold"
+            }
+        }));
+      }
+      //console.log(markers.length)
+      for(var i = 0; i < markers.length; i++)
+        markers[i].setMap(map);
     }
 
   });
