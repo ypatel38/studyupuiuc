@@ -188,7 +188,7 @@ label {
 }
 
 
-#sidebar_header {
+.sidebar_header {
   font-family: 'Coustard';
   color: #3a4470;
   font-size: 20px;
@@ -198,7 +198,7 @@ label {
   margin-bottom: 5px;
 }
 
-#sidebar_text {
+.sidebar_text {
   font-size: 40px;
   margin-top: 15px;
   margin-bottom: 35px;
@@ -220,10 +220,10 @@ label {
 </nav>
 
 <div id="floating_key">
-  <div id="sidebar_header">Sessions Created</div>
-  <div id="sidebar_text">{{sessions_created}}/5</div>
-  <div id="sidebar_header">Sessions Joined</div>
-  <div id="sidebar_text">{{sessions_joined}}</div>
+  <div class="sidebar_header">Sessions Created</div>
+  <div class="sidebar_text">{{sessions_created}}/5</div>
+  <div class="sidebar_header">Sessions Joined</div>
+  <div class="sidebar_text" id="joined_value" value="{{sessions_joined}}">{{sessions_joined}}</div>
 
 </div>
 <!--
@@ -421,11 +421,18 @@ label {
                 $("#btnjoin" + seshID).removeClass('btn-danger');
                 $("#btnjoin" + seshID).addClass('btn-success');
                 $("#btnjoin" + seshID).html('</span><span><strong>Join</strong></span>');
+                $("#joined_value").attr('value', (parseInt($("#joined_value").attr('value')) - 1).toString());
+                $("#joined_value").html($("#joined_value").attr('value'));
+                //console.log($("#joined_value").attr('value'));
+
               }
               else{
                 $("#btnjoin" + seshID).removeClass('btn-success');
                 $("#btnjoin" + seshID).addClass('btn-danger');
                 $("#btnjoin" + seshID).html('</span><span><strong>Leave</strong></span>');
+                $("#joined_value").attr('value', (parseInt($("#joined_value").attr('value')) + 1).toString());
+                $("#joined_value").html($("#joined_value").attr('value'));
+                //console.log($("#joined_value").attr('value'));
               }
           }
 

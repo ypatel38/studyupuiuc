@@ -37,9 +37,9 @@ class HomeView(TemplateView):
                                     accounts_enrolledin.class_code = home_classes.class_code AND \
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    datetime(home_studysession.date), \
-                                    datetime(home_studysession.start_time) DESC, \
-                                    datetime(home_studysession.end_time) DESC, \
+                        ORDER BY    date(home_studysession.date), \
+                                    time(home_studysession.start_time), \
+                                    time(home_studysession.end_time), \
                                     home_studysession.building, \
                                     home_studysession.room_number", [str(request.user)])
 
@@ -82,6 +82,7 @@ class HomeView(TemplateView):
                 sessions[count]['class_name'] = sessions_arr[i][8]
                 count+=1
 
+        #print(sessions)
 
         cursor.execute("SELECT      home_sessionhas.is_owner, \
                                     home_studysession.seshID \
@@ -132,7 +133,7 @@ class HomeView(TemplateView):
         cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                         FROM             accounts_enrolledin, \
                                          home_classes \
-                        WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
+                        WHERE            accounts_enrolledin.netID = %s", [str(request.user)])
 
         #reorganize queryset to dict
         enrolledin_arr = cursor.fetchall()
@@ -689,7 +690,7 @@ class NewSessionView(TemplateView):
         #     is_correct = False
 
 
-        #fix the times here
+        #TODO:FIX THIS
 
         #start time
         colon_idx = -1
@@ -1044,12 +1045,12 @@ class EditSessionView(TemplateView):
         req = request.POST.copy()
         is_correct = True
 
-        #check enrolled class TODO
+        #check enrolled class
         # check_class = re.compile('regex here')
         # if not check_class.match(req['enrolled_class']:
         #     is_correct = False
 
-        #check start_time and end_time TODO
+        #check start_time and end_time
         # check_time = re.compile('regex here')
         # if not check_time.match(req['start_time']:
         #     is_correct = False
@@ -1057,7 +1058,7 @@ class EditSessionView(TemplateView):
         #     is_correct = False
 
 
-        #fix the times here
+        #TODO:FIX THIS
 
         #start time
         colon_idx = -1
