@@ -196,8 +196,8 @@ class HomeView(TemplateView):
         if function == "is_joined":
             is_joined  = str(request.POST["is_joined"])
 
-            print(is_joined)
-            print(seshID)
+            #print(is_joined)
+            #print(seshID)
             cursor = connection.cursor()
 
             if (is_joined == "1"):
@@ -404,6 +404,7 @@ class HomeView(TemplateView):
                 #check if session is sceduled for adf
                 if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
                     sessions.append({})
+                    #TODO: Convert times here
                     sessions[count]['start_time'] = sessions_arr[i][0]
                     sessions[count]['end_time'] = sessions_arr[i][1]
                     sessions[count]['date'] = sessions_arr[i][2]
@@ -548,7 +549,7 @@ class NewSessionView(TemplateView):
                                     s1.seshID = s2.seshID", [str(request.user), str(curr_class)])
 
             date_arr = cursor.fetchall()
-            print(date_arr)
+            #print(date_arr)
             exists_dict = {}
             session_arr = []
             for i in range(len(date_arr)):
@@ -562,7 +563,7 @@ class NewSessionView(TemplateView):
                 elif (datetime.now().date() - date_arr[i][1]).days >= 0 and (date_arr[i][1] - session_arr[exists_dict[date_arr[i][0]]][2]).days >= 0:
                         session_arr[exists_dict[date_arr[i][0]]][1] += 1
                         session_arr[exists_dict[date_arr[i][0]]][2] = date_arr[i][1]
-            print(session_arr)
+            #print(session_arr)
             #aggregate the study sessions
             user_dict = {}
             #define weights
@@ -626,10 +627,10 @@ class NewSessionView(TemplateView):
                     else:
                         user_dict[i] = max(int(float(mate_dict[j][i]*0.20) + 0.5), user_dict[i])
             #sort user_dict
-            print(user_dict)
+            #print(user_dict)
             sorted_x = sorted(user_dict.items(), key=operator.itemgetter(1), reverse = True)
             class_dict[curr_class] = sorted_x
-            print(sorted_x)
+            #print(sorted_x)
 
         #find top 5 per class
         for i in classes:
@@ -923,10 +924,10 @@ class NewSessionView(TemplateView):
 
         req['end_time'] = end_hours_str + ':' + end_min_str
 
-        print("start_hours" + str(start_hours))
-        print("start_min" + str(start_min))
-        print("end_hours" + str(end_hours))
-        print("end_min" + str(end_min))
+        #print("start_hours" + str(start_hours))
+        #print("start_min" + str(start_min))
+        #print("end_hours" + str(end_hours))
+        #print("end_min" + str(end_min))
 
         #check for valid bounds here
         if(end_hours == start_hours):
@@ -1035,6 +1036,7 @@ class EditSessionView(TemplateView):
 
         old_session_sql = cursor.fetchall()
 
+        #TODO: Convert times here
         old_session_data = {}
         old_session_data["start_time"] = old_session_sql[0][0]
         old_session_data["end_time"] = old_session_sql[0][1]
@@ -1058,6 +1060,7 @@ class EditSessionView(TemplateView):
 
         cursor.close()
 
+        print(old_session_data)
         args = {'form': form, 'buildings': buildings, 'classes': classes, 'old_session_data': old_session_data}
         return render(request, self.template_name, args)
 
@@ -1155,10 +1158,10 @@ class EditSessionView(TemplateView):
 
         req['end_time'] = end_hours_str + ':' + end_min_str
 
-        print("start_hours" + start_hours)
-        print("start_min" + start_min)
-        print("end_hours" + end_hours)
-        print("end_min" + end_min)
+        #print("start_hours" + start_hours)
+        #print("start_min" + start_min)
+        #print("end_hours" + end_hours)
+        #print("end_min" + end_min)
 
         #check for valid bounds here
         if(end_hours == start_hours):

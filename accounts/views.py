@@ -15,7 +15,7 @@ class RegisterView(TemplateView):
     def get(self, request):
         form = RegistrationForm()
         args = {'form': form}
-        print(form)
+        #print(form)
         return render(request, self.template_name, args)
 
     def post(self, request):
@@ -84,7 +84,7 @@ class ProfileView(TemplateView):
         return render(request, self.template_name, args)
 
     def post(self, request):
-        print(request.POST)
+        #print(request.POST)
         #classes_select has added classes
         #remove_class has removed classes
 

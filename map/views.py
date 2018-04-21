@@ -101,20 +101,20 @@ class MapView(TemplateView):
         #assign range val to each building
         for i in building_dict:
             for j in range(5):
-                print()
+                #print()
                 if building_dict[i]['num_sesh'] >= build_range_list[j]['min'] and building_dict[i]['num_sesh'] <= build_range_list[j]['max']:
                     building_dict[i]['section'] = j
                     break
 
 
-        print(build_range_list)
-        print(building_dict)
+        #print(build_range_list)
+        #print(building_dict)
 
 
-        print("FILTERED by ALL: ")
-        print("Currently active study sessions: ")
-        for i in building_dict.keys():
-            print("There are", building_dict[i]['num_sesh'], "study sessions in", i, "with", building_dict[i]['num_students'], "students.")
+        #print("FILTERED by ALL: ")
+        #print("Currently active study sessions: ")
+        #for i in building_dict.keys():
+            #print("There are", building_dict[i]['num_sesh'], "study sessions in", i, "with", building_dict[i]['num_students'], "students.")
         building_dict = json.dumps(building_dict)
 
 
@@ -225,15 +225,15 @@ class MapView(TemplateView):
                         classbuild_dict[curr_class][i]['section'] = j
                         break
 
-        print(classbuild_dict)
+        #print(classbuild_dict)
 
-        print("")
-        print("FILTERED by CLASSES")
-        for i in classbuild_dict.keys():
-            print("")
-            print("Currently active study sessions for", i, ":")
-            for j in classbuild_dict[i].keys():
-                print("There are", classbuild_dict[i][j]['num_sesh'], "study sessions in", j, "with", classbuild_dict[i][j]['num_students'], "students.")
+        #print("")
+        #print("FILTERED by CLASSES")
+        #for i in classbuild_dict.keys():
+            #print("")
+            #print("Currently active study sessions for", i, ":")
+            #for j in classbuild_dict[i].keys():
+                #print("There are", classbuild_dict[i][j]['num_sesh'], "study sessions in", j, "with", classbuild_dict[i][j]['num_students'], "students.")
         classbuild_dict = json.dumps(classbuild_dict)
 
 

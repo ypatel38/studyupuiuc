@@ -38,7 +38,7 @@ class NewSessionForm(forms.Form):
 
                 new_session_id = str(uuid.uuid4()) #note in postrgress this might not want to be str
 
-                print(session_data['id_date'])
+                #print(session_data['id_date'])
 
                 cursor = connection.cursor()
 
