@@ -1036,7 +1036,7 @@ class EditSessionView(TemplateView):
 
         old_session_sql = cursor.fetchall()
 
-        #TODO: Convert times here
+
         old_session_data = {}
         old_session_data["start_time"] = old_session_sql[0][0]
         old_session_data["end_time"] = old_session_sql[0][1]
@@ -1046,6 +1046,46 @@ class EditSessionView(TemplateView):
         old_session_data["description"] = old_session_sql[0][5]
         old_session_data["enrolled_class"] = old_session_sql[0][6]
 
+        #TODO: Convert times to proper strings here
+        #print(old_session_data["start_time"].hour)
+        am_or_pm = ""
+        start_hrs = int(old_session_data["start_time"].hour)
+        if(start_hrs < 12):
+            if(start_hrs == 0):
+                start_hrs = 12
+            start_hrs_str = str(start_hrs)
+            am_or_pm = "am"
+        else:
+            if(start_hrs != 12):
+                start_hrs -= 12
+            start_hrs_str = str(start_hrs)
+            am_or_pm = "pm"
+
+        start_mins_str = str(old_session_data["start_time"].minute)
+        if(len(start_mins_str) == 1):
+            start_mins_str = "0" + start_mins_str
+
+        old_session_data["start_time"] = start_hrs_str + ":" + start_mins_str + am_or_pm
+        #print(old_session_data["start_time"])
+
+        am_or_pm = ""
+        end_hrs = int(old_session_data["end_time"].hour)
+        if(end_hrs < 12):
+            if(end_hrs == 0):
+                end_hrs = 12
+            end_hrs_str = str(end_hrs)
+            am_or_pm = "am"
+        else:
+            if(end_hrs != 12):
+                end_hrs -= 12
+            end_hrs_str = str(end_hrs)
+            am_or_pm = "pm"
+
+        end_mins_str = str(old_session_data["end_time"].minute)
+        if(len(end_mins_str) == 1):
+            end_mins_str = "0" + end_mins_str
+
+        old_session_data["end_time"] = end_hrs_str + ":" + end_mins_str + am_or_pm
 
         #find all buildings on campus
         cursor.execute("SELECT      map_buildings.building  \
