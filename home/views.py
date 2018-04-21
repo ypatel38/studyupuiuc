@@ -38,19 +38,19 @@ class HomeView(TemplateView):
                                     home_classes.class_code = home_classofsession.class_code AND \
                                     home_classofsession.seshID = home_studysession.seshID \
                         ORDER BY    datetime(home_studysession.date), \
-                                    datetime(home_studysession.start_time), \
-                                    datetime(home_studysession.end_time), \
+                                    datetime(home_studysession.start_time) DESC, \
+                                    datetime(home_studysession.end_time) DESC, \
                                     home_studysession.building, \
                                     home_studysession.room_number", [str(request.user)])
 
         sessions_arr = cursor.fetchall()
 
-        print(sessions_arr[0][2])
-        print(sessions_arr[0][1])
-        print(type(sessions_arr[0][2]))
-        print(type(sessions_arr[0][1]))
-        print(datetime.now().date())
-        print(datetime.now().time())
+        #print(sessions_arr[0][2])
+        #print(sessions_arr[0][1])
+        #print(type(sessions_arr[0][2]))
+        #print(type(sessions_arr[0][1]))
+        #print(datetime.now().date())
+        #print(datetime.now().time())
         #print(sessions_arr)
         #reorganize queryset to dict
         sessions = []
@@ -229,11 +229,11 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    datetime(home_studysession.date), \
-                                    datetime(home_studysession.start_time), \
-                                    datetime(home_studysession.end_time), \
-                                    home_studysession.building, \
-                                    home_studysession.room_number", [str(request.user)])
+                            ORDER BY    datetime(home_studysession.date), \
+                                        datetime(home_studysession.start_time), \
+                                        datetime(home_studysession.end_time), \
+                                        home_studysession.building, \
+                                        home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -333,7 +333,7 @@ class HomeView(TemplateView):
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
                                              home_studysession.seshID = home_sessionhas.seshID AND \
-                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+                                             home_sessionhas.is_owner = 0", [str(request.user)])
 
             #reorganize queryset to dict
             sessions_created_arr = cursor.fetchall()
@@ -388,11 +388,11 @@ class HomeView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    datetime(home_studysession.date), \
-                                    datetime(home_studysession.start_time), \
-                                    datetime(home_studysession.end_time), \
-                                    home_studysession.building, \
-                                    home_studysession.room_number", [str(request.user)])
+                            ORDER BY    datetime(home_studysession.date), \
+                                        datetime(home_studysession.start_time), \
+                                        datetime(home_studysession.end_time), \
+                                        home_studysession.building, \
+                                        home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -492,7 +492,7 @@ class HomeView(TemplateView):
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
                                              home_studysession.seshID = home_sessionhas.seshID AND \
-                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+                                             home_sessionhas.is_owner = 1", [str(request.user)])
 
             #reorganize queryset to dict
             sessions_created_arr = cursor.fetchall()
@@ -804,8 +804,8 @@ class NewSessionView(TemplateView):
                         FROM            home_studysession, \
                                         home_sessionhas \
                         WHERE           home_studysession.seshID = home_sessionhas.seshID AND \
-                                        home_sessionhas.is_owner = %s AND \
-                                        home_sessionhas.netID = %s", ["1", str(request.user)])
+                                        home_sessionhas.is_owner = 1 AND \
+                                        home_sessionhas.netID = %s", [str(request.user)])
 
         sesh_created_arr = cursor.fetchall()
 
@@ -832,11 +832,11 @@ class NewSessionView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                        ORDER BY    datetime(home_studysession.date), \
-                                    datetime(home_studysession.start_time), \
-                                    datetime(home_studysession.end_time), \
-                                    home_studysession.building, \
-                                    home_studysession.room_number", [str(request.user)])
+                            ORDER BY    datetime(home_studysession.date), \
+                                        datetime(home_studysession.start_time), \
+                                        datetime(home_studysession.end_time), \
+                                        home_studysession.building, \
+                                        home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
             #print(sessions_arr)
@@ -881,8 +881,8 @@ class NewSessionView(TemplateView):
             for i in range(len(sessions_arr)):
                 for j in range(len(sessions)):
                     if(sessions[j]['seshID'] == sessions_arr[i][1]):
-                        sessions[i]['is_owner'] = sessions_arr[i][0]
-                        sessions[i]['is_joined'] = 1
+                        sessions[j]['is_owner'] = sessions_arr[i][0]
+                        sessions[j]['is_joined'] = 1
 
             # find classes user is enrolled in and are empty
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
