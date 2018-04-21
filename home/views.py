@@ -689,118 +689,10 @@ class NewSessionView(TemplateView):
         # if not check_time.match(req['end_time']:
         #     is_correct = False
 
-
-        #TODO:FIX THIS
-
-        #start time
-        colon_idx = -1
-        am_or_pm = ""
-
-        for i in range(0, len(req['start_time'])):
-            if(req['start_time'][i] == ':'):
-                colon_idx = i;
-            elif(colon_idx != -1 and req['start_time'][i] == 'a'):
-                am_or_pm = "am"
-                break
-            elif(colon_idx != -1 and req['start_time'][i] == 'p'):
-                am_or_pm = "pm"
-                break
-
-        if(am_or_pm == "pm"):
-            hours = req['start_time'][:colon_idx]
-            hours = int(hours)
-            hours += 12
-            if(hours >= 10):
-                colon_idx=2
-            req['start_time'] = str(hours) + ':' + req['start_time'][colon_idx:colon_idx+2]
-        else:
-            req['start_time'] = req['start_time'][:colon_idx+3]
-
-        start_hours = int(req['start_time'][:colon_idx])
-
-        if start_hours == 12:
-            start_hours = 0
-        start_min = req['start_time'][colon_idx:]
-
-
-        #end time
-        colon_idx = -1
-        am_or_pm = ""
-        for i in range(0, len(req['end_time'])):
-            if(req['end_time'][i] == ':'):
-                colon_idx = i;
-            elif(colon_idx != -1 and req['end_time'][i] == 'a'):
-                am_or_pm = "am"
-                break
-            elif(colon_idx != -1 and req['end_time'][i] == 'p'):
-                am_or_pm = "pm"
-                break
-
-        if(am_or_pm == "pm"):
-            hours = req['end_time'][:colon_idx]
-            hours = int(hours)
-            hours += 12
-            if(hours >= 10):
-                colon_idx=2
-            req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
-        else:
-            req['end_time'] = req['end_time'][:colon_idx+3]
-
-
-        end_hours = int(req['end_time'][:colon_idx])
-        if end_hours == 12:
-            end_hours = 0
-        end_min = req['end_time'][colon_idx:]
-
-
-        if(end_hours == start_hours):
-            if(end_min <= start_min):
-                is_correct = False
-        elif(end_hours < start_hours):
-            is_correct = False
-
-        #check date TODO
-        # check_date = re.compile('regex here')
-        # if not check_date.match(req['date']:
-        #     is_correct = False
-
-        #fix date here
-        first_slash_idx = -1
-        second_slash_idx = -1
-        for i in range(0, len(req['date'])):
-            if(req['date'][i] == '/'):
-                if(first_slash_idx == -1):
-                    first_slash_idx = i
-                else:
-                    second_slash_idx = i
-                    break
-
-        req['date'] = req['date'][second_slash_idx+1:] + '-' + req['date'][:first_slash_idx] + '-' + req['date'][first_slash_idx+1:second_slash_idx]
-
-
-        #check building TODO
-        # check_building = re.compile('regex here')
-        # if not check_building.match(req['building']:
-        #     is_correct = False
-
-        #check room_number TODO
-        # check_room = re.compile('regex here')
-        # if not check_room.match(req['date']:
-        #     is_correct = False
-
-        #check invited_friends (not done atm)
-
-        #use regex to determine true of false here
-        #STILL NEED TO CHECK IF THE USER OWNS THE STUDY SESSION THEY ARE EDITING
-
-        #temp = re.compile("regex here")
-        #temp.match("input string")
-        #need to fix data here
-
         #TODO:CHECK FOR LIMIT ON CREATION COUNT
         cursor = connection.cursor()
 
-        #check for max
+        #check for max seshes
         cursor.execute("SELECT COUNT    (DISTINCT home_studysession.seshID)  \
                         FROM            home_studysession, \
                                         home_sessionhas \
@@ -811,6 +703,8 @@ class NewSessionView(TemplateView):
         sesh_created_arr = cursor.fetchall()
 
         sesh_created = sesh_created_arr[0][0]
+
+        cursor.close()
 
         if(sesh_created >= 5):
             #GET REQUEST
@@ -944,14 +838,142 @@ class NewSessionView(TemplateView):
             sessions_created = 0
             sessions_created = sessions_created_arr[0][0]
 
-            connection.close()
+            cursor.close()
 
             #print(sessions)
             args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
             #print(sessions)
-            return render(request, self.template_name, args)
+            return render(request, "home/homepage.html", args)
 
         cursor.close()
+
+
+        #Change html input to django inputs TODO: REGEX STUFF HERE
+
+        #start time
+        colon_idx = -1
+        am_or_pm = ""
+
+        for i in range(0, len(req['start_time'])):
+            if(req['start_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['start_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['start_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+
+        start_min_str = req['start_time'][colon_idx + 1:colon_idx + 3]
+        start_min = int(req['start_time'][colon_idx + 1:colon_idx + 3])
+
+        start_hours_str = req['start_time'][:colon_idx]
+        start_hours = int(req['start_time'][:colon_idx])
+
+        #HH pm = HH+12
+        if (am_or_pm == "pm" and start_hours != 12):
+            start_hours = start_hours + 12
+            start_hours_str = str(start_hours)
+        #12am = 00
+        elif (am_or_pm == "am" and start_hours == 12):
+            start_hours_str = "0"
+            start_hours = 0
+
+        #changes H to HH
+        if(len(start_hours_str) == 1):
+            start_hours_str = "0" + start_hours_str
+
+        req['start_time'] = start_hours_str + ':' + start_min_str
+
+
+        #end time
+        colon_idx = -1
+        am_or_pm = ""
+
+        for i in range(0, len(req['end_time'])):
+            if(req['end_time'][i] == ':'):
+                colon_idx = i;
+            elif(colon_idx != -1 and req['end_time'][i] == 'a'):
+                am_or_pm = "am"
+                break
+            elif(colon_idx != -1 and req['end_time'][i] == 'p'):
+                am_or_pm = "pm"
+                break
+
+
+        end_min_str = req['end_time'][colon_idx + 1:colon_idx + 3]
+        end_min = int(req['end_time'][colon_idx + 1:colon_idx + 3])
+
+        end_hours_str = req['end_time'][:colon_idx]
+        end_hours = int(req['end_time'][:colon_idx])
+
+        #HH pm = HH+12
+        if (am_or_pm == "pm" and end_hours != 12):
+            end_hours = end_hours + 12
+            end_hours_str = str(end_hours)
+        #12am = 00
+        elif (am_or_pm == "am" and end_hours == 12):
+            end_hours_str = "0"
+            end_hours = 0
+
+        #changes H to HH
+        if(len(end_hours_str) == 1):
+            end_hours_str = "0" + end_hours_str
+
+        req['end_time'] = end_hours_str + ':' + end_min_str
+
+        print("start_hours" + str(start_hours))
+        print("start_min" + str(start_min))
+        print("end_hours" + str(end_hours))
+        print("end_min" + str(end_min))
+
+        #check for valid bounds here
+        if(end_hours == start_hours):
+            if(end_min <= start_min):
+                is_correct = False
+        elif(end_hours < start_hours):
+            is_correct = False
+
+
+        #check date TODO REGEX
+        # check_date = re.compile('regex here')
+        # if not check_date.match(req['date']:
+        #     is_correct = False
+
+        #fix date here
+        first_slash_idx = -1
+        second_slash_idx = -1
+        for i in range(0, len(req['date'])):
+            if(req['date'][i] == '/'):
+                if(first_slash_idx == -1):
+                    first_slash_idx = i
+                else:
+                    second_slash_idx = i
+                    break
+
+        req['date'] = req['date'][second_slash_idx+1:] + '-' + req['date'][:first_slash_idx] + '-' + req['date'][first_slash_idx+1:second_slash_idx]
+
+
+        #check building TODO REGEX
+        # check_building = re.compile('regex here')
+        # if not check_building.match(req['building']:
+        #     is_correct = False
+
+        #check room_number TODO REGEX
+        # check_room = re.compile('regex here')
+        # if not check_room.match(req['date']:
+        #     is_correct = False
+
+        #check invited_friends (not done atm)
+
+        #use regex to determine true of false here
+        #STILL NEED TO CHECK IF THE USER OWNS THE STUDY SESSION THEY ARE EDITING
+
+        #temp = re.compile("regex here")
+        #temp.match("input string")
+        #need to fix data here
+
 
         if not is_correct:
             return redirect(reverse('home:new_session'))
@@ -1058,7 +1080,7 @@ class EditSessionView(TemplateView):
         #     is_correct = False
 
 
-        #TODO:FIX THIS
+        #Change html input to django inputs TODO: REGEX STUFF HERE
 
         #start time
         colon_idx = -1
@@ -1074,26 +1096,33 @@ class EditSessionView(TemplateView):
                 am_or_pm = "pm"
                 break
 
-        if(am_or_pm == "pm"):
-            hours = req['start_time'][:colon_idx]
-            hours = int(hours)
-            hours += 12
-            if(hours >= 10):
-                colon_idx=2
-            req['start_time'] = str(hours) + ':' + req['start_time'][colon_idx:colon_idx+2]
-        else:
-            req['start_time'] = req['start_time'][:colon_idx+3]
 
+        start_min_str = req['start_time'][colon_idx + 1:colon_idx + 3]
+        start_min = int(req['start_time'][colon_idx + 1:colon_idx + 3])
+
+        start_hours_str = req['start_time'][:colon_idx]
         start_hours = int(req['start_time'][:colon_idx])
 
-        if start_hours == 12:
+        #HH pm = HH+12
+        if (am_or_pm == "pm" and start_hours != 12):
+            start_hours = start_hours + 12
+            start_hours_str = str(start_hours)
+        #12am = 00
+        elif (am_or_pm == "am" and start_hours == 12):
+            start_hours_str = "0"
             start_hours = 0
-        start_min = req['start_time'][colon_idx:]
+
+        #changes H to HH
+        if(len(start_hours_str) == 1):
+            start_hours_str = "0" + start_hours_str
+
+        req['start_time'] = start_hours_str + ':' + start_min_str
 
 
         #end time
         colon_idx = -1
         am_or_pm = ""
+
         for i in range(0, len(req['end_time'])):
             if(req['end_time'][i] == ':'):
                 colon_idx = i;
@@ -1104,30 +1133,42 @@ class EditSessionView(TemplateView):
                 am_or_pm = "pm"
                 break
 
-        if(am_or_pm == "pm"):
-            hours = req['end_time'][:colon_idx]
-            hours = int(hours)
-            hours += 12
-            if(hours >= 10):
-                colon_idx=2
-            req['end_time'] = str(hours) + ':' + req['end_time'][colon_idx:colon_idx+2]
-        else:
-            req['end_time'] = req['end_time'][:colon_idx+3]
 
+        end_min_str = req['end_time'][colon_idx + 1:colon_idx + 3]
+        end_min = int(req['end_time'][colon_idx + 1:colon_idx + 3])
 
+        end_hours_str = req['end_time'][:colon_idx]
         end_hours = int(req['end_time'][:colon_idx])
-        if end_hours == 12:
+
+        #HH pm = HH+12
+        if (am_or_pm == "pm" and end_hours != 12):
+            end_hours = end_hours + 12
+            end_hours_str = str(end_hours)
+        #12am = 00
+        elif (am_or_pm == "am" and end_hours == 12):
+            end_hours_str = "0"
             end_hours = 0
-        end_min = req['end_time'][colon_idx:]
 
+        #changes H to HH
+        if(len(end_hours_str) == 1):
+            end_hours_str = "0" + end_hours_str
 
+        req['end_time'] = end_hours_str + ':' + end_min_str
+
+        print("start_hours" + start_hours)
+        print("start_min" + start_min)
+        print("end_hours" + end_hours)
+        print("end_min" + end_min)
+
+        #check for valid bounds here
         if(end_hours == start_hours):
             if(end_min <= start_min):
                 is_correct = False
         elif(end_hours < start_hours):
             is_correct = False
 
-        #check date TODO
+
+        #check date TODO REGEX
         # check_date = re.compile('regex here')
         # if not check_date.match(req['date']:
         #     is_correct = False
@@ -1146,12 +1187,12 @@ class EditSessionView(TemplateView):
         req['date'] = req['date'][second_slash_idx+1:] + '-' + req['date'][:first_slash_idx] + '-' + req['date'][first_slash_idx+1:second_slash_idx]
 
 
-        #check building TODO
+        #check building TODO REGEX
         # check_building = re.compile('regex here')
         # if not check_building.match(req['building']:
         #     is_correct = False
 
-        #check room_number TODO
+        #check room_number TODO REGEX
         # check_room = re.compile('regex here')
         # if not check_room.match(req['date']:
         #     is_correct = False
@@ -1165,8 +1206,9 @@ class EditSessionView(TemplateView):
         #temp.match("input string")
         #need to fix data here
 
+
         if not is_correct:
-            return redirect(reverse('home:new_session'))
+            return redirect(reverse('home:edit_session', kwargs={"seshID": seshID}))
 
         if form.is_valid(): #override is_valid later for more restriction
             #sql query here
