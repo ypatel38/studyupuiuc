@@ -447,8 +447,8 @@ class HomeView(TemplateView):
             for i in range(len(sessions_arr)):
                 for j in range(len(sessions)):
                     if(sessions[j]['seshID'] == sessions_arr[i][1]):
-                        sessions[i]['is_owner'] = sessions_arr[i][0]
-                        sessions[i]['is_joined'] = 1
+                        sessions[j]['is_owner'] = sessions_arr[i][0]
+                        sessions[j]['is_joined'] = 1
 
             # find classes user is enrolled in and are empty
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
