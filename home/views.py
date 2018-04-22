@@ -885,7 +885,7 @@ class NewSessionView(TemplateView):
             #print(sessions)
             args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
             #print(sessions)
-            return render(request, "home/homepage.html", args)
+            return redirect(reverse('home:home'))
 
         #Change html input to django inputs TODO: REGEX STUFF HERE
 
