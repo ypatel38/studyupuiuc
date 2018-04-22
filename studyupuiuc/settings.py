@@ -25,9 +25,13 @@ SECRET_KEY = 'jjqj3(rjuxu9t2*u+*(+3ceopovm&(2%52#bl(&f9671%av0jv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['studyupuiuc.com']
+ALLOWED_HOSTS = ['.studyupuiuc.com', '127.0.0.1']
 
-
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'studyupuic@gmail.com'
+EMAIL_HOST_PASSWORD = '".ucEb>\'+Z3buuQL'
+EMAIL_PORT = 587
 # Application definition
 
 INSTALLED_APPS = [

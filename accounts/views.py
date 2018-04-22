@@ -3,12 +3,23 @@ from django.shortcuts import render, redirect
 from django.db import connection #sql
 from django.urls import reverse #used for namespaces
 from django.http import HttpResponse
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_text
+
+from .tokens import account_activation_token
 
 from accounts.forms import RegistrationForm
 
 
 
 # Create your views here.
+
+
 class RegisterView(TemplateView):
     template_name = 'accounts/register.html'
 
@@ -22,10 +33,39 @@ class RegisterView(TemplateView):
         form = RegistrationForm(request.POST)
 
         if form.is_valid(): #override is_valid later for more restriction
+            user = form.save(commit = False)
+            user.is_active = False
             form.save()
-            return redirect(reverse('accounts:login'))
+            current_site = get_current_site(request)
+            message = render_to_string('acc_active_email.html', {
+                'user':user, 
+                'domain':current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            mail_subject = 'Activate your StudyUP account.'
+            to_email = "@".join([form.cleaned_data.get('user'), 'illinois.edu'])
+            email = EmailMessage(mail_subject, message, to=[to_email])
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration')
+            #return redirect(reverse('accounts:login'))
         else:
             return redirect(reverse('accounts:register')) #deal with fail cases here
+
+    def activate(request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            login(request, user)
+            # return redirect('home')
+            return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        else:
+            return HttpResponse('Activation link is invalid!')
 
 class ProfileView(TemplateView):
     template_name = 'accounts/profile.html'
