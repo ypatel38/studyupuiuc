@@ -706,12 +706,14 @@ class NewSessionView(TemplateView):
         cursor = connection.cursor()
 
         #check for max seshes
-        cursor.execute("SELECT COUNT    (DISTINCT home_studysession.seshID)  \
-                        FROM            home_studysession, \
-                                        home_sessionhas \
-                        WHERE           home_studysession.seshID = home_sessionhas.seshID AND \
-                                        home_sessionhas.is_owner = 1 AND \
-                                        home_sessionhas.netID = %s", [str(request.user)])
+        cursor.execute("SELECT COUNT     (DISTINCT home_studysession.seshID) \
+                        FROM             home_studysession, \
+                                         home_sessionhas \
+                        WHERE            %s = home_sessionhas.netID AND \
+                                         home_studysession.seshID = home_sessionhas.seshID AND \
+                                         home_sessionhas.is_owner = 1 AND \
+                                         ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                         [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
         sesh_created_arr = cursor.fetchall()
 
