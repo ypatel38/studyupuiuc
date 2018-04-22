@@ -120,7 +120,9 @@ class HomeView(TemplateView):
                                          accounts_enrolledin.class_code IN( \
                                             SELECT DISTINCT home_classofsession.class_code \
                                             FROM home_studysession, home_classofsession \
-                                            WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+                                            WHERE home_studysession.seshID = home_classofsession.seshID AND \
+                                                  ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time))))", \
+                                                  [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
         #reorganize queryset to dict
         enrolledin_empty_arr = cursor.fetchall()
@@ -293,7 +295,9 @@ class HomeView(TemplateView):
                                              accounts_enrolledin.class_code IN( \
                                                 SELECT DISTINCT home_classofsession.class_code \
                                                 FROM home_studysession, home_classofsession \
-                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+                                                WHERE home_studysession.seshID = home_classofsession.seshID AND \
+                                                      ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time))))", \
+                                                      [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             enrolledin_empty_arr = cursor.fetchall()
@@ -457,7 +461,9 @@ class HomeView(TemplateView):
                                              accounts_enrolledin.class_code IN( \
                                                 SELECT DISTINCT home_classofsession.class_code \
                                                 FROM home_studysession, home_classofsession \
-                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+                                                WHERE home_studysession.seshID = home_classofsession.seshID AND \
+                                                      ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time))))", \
+                                                      [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             enrolledin_empty_arr = cursor.fetchall()
@@ -816,7 +822,6 @@ class NewSessionView(TemplateView):
 
 
 
-
             # find classes user is enrolled in and are empty
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                             FROM             accounts_enrolledin \
@@ -824,7 +829,10 @@ class NewSessionView(TemplateView):
                                              accounts_enrolledin.class_code IN( \
                                                 SELECT DISTINCT home_classofsession.class_code \
                                                 FROM home_studysession, home_classofsession \
-                                                WHERE home_studysession.seshID = home_classofsession.seshID)", [str(request.user)])
+                                                WHERE home_studysession.seshID = home_classofsession.seshID AND \
+                                                      ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time))))", \
+                                                      [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
+
 
             #reorganize queryset to dict
             enrolledin_empty_arr = cursor.fetchall()
