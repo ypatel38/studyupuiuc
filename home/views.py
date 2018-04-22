@@ -176,7 +176,7 @@ class HomeView(TemplateView):
         sessions_created = 0
         sessions_created = sessions_created_arr[0][0]
 
-        connection.close()
+        cursor.close()
 
         #print(sessions)
         args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
@@ -349,7 +349,7 @@ class HomeView(TemplateView):
             sessions_created = 0
             sessions_created = sessions_created_arr[0][0]
 
-            connection.close()
+            cursor.close()
 
             #print(sessions)
             args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
@@ -513,7 +513,7 @@ class HomeView(TemplateView):
             sessions_created = 0
             sessions_created = sessions_created_arr[0][0]
 
-            connection.close()
+            cursor.close()
 
             #print(sessions)
             args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
@@ -720,7 +720,6 @@ class NewSessionView(TemplateView):
         cursor.close()
 
         if(sesh_created >= 5):
-            #GET REQUEST
             # find session corresponding to users enrolled ClassOfSession
             cursor = connection.cursor()
             cursor.execute("SELECT      home_studysession.start_time, \
@@ -740,18 +739,27 @@ class NewSessionView(TemplateView):
                                         accounts_enrolledin.class_code = home_classes.class_code AND \
                                         home_classes.class_code = home_classofsession.class_code AND \
                                         home_classofsession.seshID = home_studysession.seshID \
-                            ORDER BY    datetime(home_studysession.date), \
-                                        datetime(home_studysession.start_time), \
-                                        datetime(home_studysession.end_time), \
+                            ORDER BY    date(home_studysession.date), \
+                                        time(home_studysession.start_time), \
+                                        time(home_studysession.end_time), \
                                         home_studysession.building, \
                                         home_studysession.room_number", [str(request.user)])
 
             sessions_arr = cursor.fetchall()
+
+            #print(sessions_arr[0][2])
+            #print(sessions_arr[0][1])
+            #print(type(sessions_arr[0][2]))
+            #print(type(sessions_arr[0][1]))
+            #print(datetime.now().date())
+            #print(datetime.now().time())
             #print(sessions_arr)
             #reorganize queryset to dict
             sessions = []
             count = 0;
             for i in range(len(sessions_arr)):
+                if(sessions_arr[i] is None):
+                    continue;
                 #check if session is sceduled for adf
                 if(datetime.now().date() < sessions_arr[i][2]) or ((datetime.now().date() == sessions_arr[i][2]) and (datetime.now().time() < sessions_arr[i][1])):
                     sessions.append({})
@@ -760,11 +768,23 @@ class NewSessionView(TemplateView):
                     sessions[count]['date'] = sessions_arr[i][2]
                     sessions[count]['building'] = sessions_arr[i][3]
                     sessions[count]['room_number'] = sessions_arr[i][4]
-                    sessions[count]['description'] = sessions_arr[i][5]
+
+                    hasData = False
+                    for j in range(len(sessions_arr[i][5])):
+                        if sessions_arr[i][5][j] != " ":
+                            hasData = True
+                            break
+                    if hasData:
+                        sessions[count]['description'] = sessions_arr[i][5]
+                    else:
+                        sessions[count]['description'] = ""
+
                     sessions[count]['seshID'] = sessions_arr[i][6]
                     sessions[count]['class_code'] = sessions_arr[i][7]
                     sessions[count]['class_name'] = sessions_arr[i][8]
                     count+=1
+
+            #print(sessions)
 
             cursor.execute("SELECT      home_sessionhas.is_owner, \
                                         home_studysession.seshID \
@@ -792,6 +812,9 @@ class NewSessionView(TemplateView):
                         sessions[j]['is_owner'] = sessions_arr[i][0]
                         sessions[j]['is_joined'] = 1
 
+
+
+
             # find classes user is enrolled in and are empty
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                             FROM             accounts_enrolledin \
@@ -812,7 +835,7 @@ class NewSessionView(TemplateView):
             cursor.execute("SELECT DISTINCT  accounts_enrolledin.class_code \
                             FROM             accounts_enrolledin, \
                                              home_classes \
-                            WHERE            %s = accounts_enrolledin.netID", [str(request.user)])
+                            WHERE            accounts_enrolledin.netID = %s", [str(request.user)])
 
             #reorganize queryset to dict
             enrolledin_arr = cursor.fetchall()
@@ -831,7 +854,9 @@ class NewSessionView(TemplateView):
                             FROM             home_studysession, \
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
-                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_joined_arr = cursor.fetchall()
@@ -844,7 +869,9 @@ class NewSessionView(TemplateView):
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
                                              home_studysession.seshID = home_sessionhas.seshID AND \
-                                             %s = home_sessionhas.is_owner", [str(request.user), True])
+                                             home_sessionhas.is_owner = 1 AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_created_arr = cursor.fetchall()
@@ -857,9 +884,6 @@ class NewSessionView(TemplateView):
             args = {'sessions': sessions, 'enrolledin': enrolledin, 'sessions_joined': sessions_joined, 'sessions_created': sessions_created}
             #print(sessions)
             return render(request, "home/homepage.html", args)
-
-        cursor.close()
-
 
         #Change html input to django inputs TODO: REGEX STUFF HERE
 
