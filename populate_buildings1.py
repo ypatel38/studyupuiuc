@@ -61,7 +61,7 @@ for b, a in data:
         b = "Materials Science and Eng Bldg"
     elif (b == "Micro And Nanotechnology Laboratory"):
         b = "Micro and Nanotechnology Laboratory"
-    elif (b == "National Center For Supercomputing Applications"):
+    elif (b == "National Center For Supercomputing Applications")
         b = "National Center for Supercomputing Applications"
     elif (b == "Noyes Laboratory Of Chemistry"):
         b = "Noyes Laboratory of Chemistry"
@@ -81,8 +81,6 @@ for b, a in data:
         b = "Trelease Hall Hall - FAR"
     elif (b == "Wardall Hall - Isrh"):
         b = "Wardall Hall - ISR"
-    elif (b == "College Of Fine And Applied Arts Performing Arts Annex"):
-        b = "College of Fine and Applied Arts Performing Arts Annex"
 
 
     cursor.execute("SELECT  map_buildings.building\
@@ -92,13 +90,9 @@ for b, a in data:
 
     if((not cursor.fetchall()) and b[0].isalpha()):
         cursor.execute("INSERT INTO map_buildings(building, \
-                                                  address, \
-                                                  lat, \
-                                                  lng)\
+                                                    address)\
                                             VALUES (%s,\
-                                                    %s, \
-                                                    0, \
-                                                    0)",
+                                                    %s)",
                                                     [b, a])
 
 
