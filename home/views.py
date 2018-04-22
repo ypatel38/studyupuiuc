@@ -152,7 +152,9 @@ class HomeView(TemplateView):
                         FROM             home_studysession, \
                                          home_sessionhas \
                         WHERE            %s = home_sessionhas.netID AND \
-                                         home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+                                         home_studysession.seshID = home_sessionhas.seshID AND \
+                                         ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                         [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
         #reorganize queryset to dict
         sessions_joined_arr = cursor.fetchall()
@@ -165,7 +167,9 @@ class HomeView(TemplateView):
                                          home_sessionhas \
                         WHERE            %s = home_sessionhas.netID AND \
                                          home_studysession.seshID = home_sessionhas.seshID AND \
-                                         %s = home_sessionhas.is_owner", [str(request.user), True])
+                                         home_sessionhas.is_owner = 1 AND \
+                                         ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                         [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
         #reorganize queryset to dict
         sessions_created_arr = cursor.fetchall()
@@ -321,7 +325,9 @@ class HomeView(TemplateView):
                             FROM             home_studysession, \
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
-                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_joined_arr = cursor.fetchall()
@@ -334,7 +340,9 @@ class HomeView(TemplateView):
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
                                              home_studysession.seshID = home_sessionhas.seshID AND \
-                                             home_sessionhas.is_owner = 0", [str(request.user)])
+                                             home_sessionhas.is_owner = 1 AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_created_arr = cursor.fetchall()
@@ -481,7 +489,9 @@ class HomeView(TemplateView):
                             FROM             home_studysession, \
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
-                                             home_studysession.seshID = home_sessionhas.seshID", [str(request.user)])
+                                             home_studysession.seshID = home_sessionhas.seshID AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_joined_arr = cursor.fetchall()
@@ -494,7 +504,9 @@ class HomeView(TemplateView):
                                              home_sessionhas \
                             WHERE            %s = home_sessionhas.netID AND \
                                              home_studysession.seshID = home_sessionhas.seshID AND \
-                                             home_sessionhas.is_owner = 1", [str(request.user)])
+                                             home_sessionhas.is_owner = 1 AND \
+                                             ((date(%s) < date(home_studysession.date)) OR (%s == date(home_studysession.date) AND %s < time(home_studysession.end_time)))", \
+                                             [str(request.user), str(datetime.now().date()), str(datetime.now().date()), str(datetime.now().time())])
 
             #reorganize queryset to dict
             sessions_created_arr = cursor.fetchall()
