@@ -5,6 +5,7 @@ from django.urls import reverse #used for namespaces
 from home.forms import *
 from datetime import datetime, timedelta
 import operator, json, re
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -411,6 +412,16 @@ class NewSessionView(TemplateView):
     def post(self, request):
         #temp_post = request.POST.copy() use this to edit the request.POST
         req = request.POST.copy()
+        invitees = set(req['invited_friends'])
+        invitor = request.user.username
+        if invitees:
+            s = "{} invites you to join {} study session".format(invitor, req['enrolled_class'])
+            m = "Join me for a study session on {} from {} to {}. \n Location: {} room: {}".format(req['date'], req['start_time'], req['end_time'], req['building'], req['room_number'])
+            e = 'studyupuiuc@gmail.com'
+            send_mail(s, m, e, list(invitees),fail_silently=True)
+
+
+        #print(req, request.user.username)
         is_correct = True
 
         #check enrolled class TODO
