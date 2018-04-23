@@ -51,7 +51,11 @@
 
 			<select data-placeholder="  Click to select a building..." name="building" class="form-control chosen-select" required id="id_building">
 				{% for building in buildings %}
-		    	<option value="{{building}}">{{ building }}</option>
+				{% if building == old_session_data.building %}
+					<option value="{{building}}" selected = "selected">{{ building }}</option>
+				{% else %}
+		    		<option value="{{building}}">{{ building }}</option>
+		    	{% endif %}
 				{% endfor %}
 		  </select>
 			<br><br>

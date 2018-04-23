@@ -646,12 +646,12 @@ class EditSessionView(TemplateView):
 
         old_session_sql = cursor.fetchall()
 
-
+        print(old_session_sql[0][3])
         old_session_data = {}
         old_session_data["start_time"] = old_session_sql[0][0]
         old_session_data["end_time"] = old_session_sql[0][1]
         old_session_data["date"] = str(old_session_sql[0][2])[5:7] + "/" + str(old_session_sql[0][2])[8:10] + "/" + str(old_session_sql[0][2])[:4]
-        old_session_data["building"] = old_session_sql[0][3]
+        old_session_data["building"] = str(old_session_sql[0][3])
         old_session_data["room_number"] = old_session_sql[0][4]
         old_session_data["description"] = old_session_sql[0][5]
         old_session_data["enrolled_class"] = old_session_sql[0][6]
