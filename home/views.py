@@ -413,7 +413,13 @@ class NewSessionView(TemplateView):
         #temp_post = request.POST.copy() use this to edit the request.POST
         req = request.POST.copy()
         if 'invited_friends' in req.keys():
-            invitees = set(req['invited_friends'])
+
+            invitees = req.getlist('invited_friends')
+            for i in range(len(invitees)):
+                invitees[i] += "@illinois.edu"
+
+            invitees = set(invitees)
+
             invitor = request.user.username
             if invitees:
                 s = "{} invites you to join a {} Study Session".format(invitor, req['enrolled_class'])
