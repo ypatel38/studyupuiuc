@@ -98,45 +98,45 @@ class NewSessionForm(forms.Form):
 
                 #update notifications with invited people
                 if (len(request.POST.getlist('invited_friends')) != 0):
-                    newNotId =str(uuid.uuid4())
+                    # newNotId =str(uuid.uuid4())
 
-                    cursor.execute("INSERT INTO  home_notification(created, \
-                                                                   is_read, \
-                                                                   notID) \
-                                    VALUES       (%s, \
-                                                  %s, \
-                                                  %s)",
-                                                  [currDateTime,
-                                                  False,
-                                                  newNotId])
+                    # cursor.execute("INSERT INTO  home_notification(created, \
+                    #                                                is_read, \
+                    #                                                notID) \
+                    #                 VALUES       (%s, \
+                    #                               %s, \
+                    #                               %s)",
+                    #                               [currDateTime,
+                    #                               False,
+                    #                               newNotId])
 
-                    cursor.execute("INSERT INTO  home_notificationof(seshID, \
-                                                                     notID) \
-                                    VALUES       (%s, \
-                                                  %s)",
-                                                  [new_session_id,
-                                                  newNotId])
+                    # cursor.execute("INSERT INTO  home_notificationof(seshID, \
+                    #                                                  notID) \
+                    #                 VALUES       (%s, \
+                    #                               %s)",
+                    #                               [new_session_id,
+                    #                               newNotId])
 
-                    cursor.execute("INSERT INTO  home_sentfrom(netID, \
-                                                               notID) \
-                                    VALUES       (%s, \
-                                                  %s)",
-                                                  [request.user.username,
-                                                  newNotId])
+                    # cursor.execute("INSERT INTO  home_sentfrom(netID, \
+                    #                                            notID) \
+                    #                 VALUES       (%s, \
+                    #                               %s)",
+                    #                               [request.user.username,
+                    #                               newNotId])
 
 
                     #print(request.POST.getlist('invited_friends'))
                     #print(request.POST['invited_friends'])
 
-                    for i in range(0, len(request.POST.getlist('invited_friends'))):
+                    # for i in range(0, len(request.POST.getlist('invited_friends'))):
 
-                        cursor.execute("INSERT INTO  home_sentto(netID, \
-                                                                 notID) \
-                                        VALUES       (%s, \
-                                                      %s)",
-                                                      [request.POST.getlist('invited_friends')[i],
-                                                      newNotId])
-
+                    #     cursor.execute("INSERT INTO  home_sentto(netID, \
+                    #                                              notID) \
+                    #                     VALUES       (%s, \
+                    #                                   %s)",
+                    #                                   [request.POST.getlist('invited_friends')[i],
+                    #                                   newNotId])
+                    pass
                 cursor.close()
 
 class EditSessionForm(forms.Form):
