@@ -415,8 +415,8 @@ class NewSessionView(TemplateView):
         invitees = set(req['invited_friends'])
         invitor = request.user.username
         if invitees:
-            s = "{} invites you to join {} study session".format(invitor, req['enrolled_class'])
-            m = "Join me for a study session on {} from {} to {}. \n Location: {} room: {}".format(req['date'], req['start_time'], req['end_time'], req['building'], req['room_number'])
+            s = "{} invites you to join a {} Study Session".format(invitor, req['enrolled_class'])
+            m = "Join me for a Study Session on {} from {} to {}. \n Location: {} {}".format(req['date'], req['start_time'], req['end_time'], req['building'], req['room_number'])
             e = 'studyupuiuc@gmail.com'
             send_mail(s, m, e, list(invitees),fail_silently=True)
 
