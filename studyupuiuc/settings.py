@@ -27,9 +27,9 @@ EMAIL_PORT = 587
 SECRET_KEY = 'jjqj3(rjuxu9t2*u+*(+3ceopovm&(2%52#bl(&f9671%av0jv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 0
+DEBUG = 1
 
-ALLOWED_HOSTS = ['127.0.0.1','.studyupuiuc.com']
+#ALLOWED_HOSTS = ['127.0.0.1','.studyupuiuc.com']
 
 
 # Application definition
